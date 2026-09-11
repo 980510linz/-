@@ -1,1 +1,10 @@
-[]
+[
+  {
+    "id": "topic-1789106146422-0",
+    "name": "Medical Notes",
+    "slug": "medical-notes",
+    "description": "瀏覽 Medical Notes 相關文章與延伸整理。",
+    "order": 0,
+    "active": true
+  }
+]
