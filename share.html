@@ -2400,6 +2400,730 @@ body.is-scrolled .brand-top{
   opacity:.82;
 }
 
+
+/* ============================================================
+   Public v16.3 · Optimistic Newsletter Flow
+   ============================================================ */
+.newsletter-flow-overlay{
+  position:fixed;
+  inset:0;
+  z-index:12000;
+  display:grid;
+  place-items:center;
+  padding:24px;
+  background:
+    radial-gradient(620px 380px at 50% 42%,rgba(164,221,255,.22),transparent 72%),
+    rgba(228,241,250,.30);
+  -webkit-backdrop-filter:blur(18px) saturate(155%);
+  backdrop-filter:blur(18px) saturate(155%);
+  opacity:0;
+  visibility:hidden;
+  pointer-events:none;
+  transition:opacity .28s ease,visibility 0s linear .28s;
+}
+.newsletter-flow-overlay.show{
+  opacity:1;
+  visibility:visible;
+  pointer-events:auto;
+  transition-delay:0s;
+}
+.newsletter-flow-card{
+  position:relative;
+  isolation:isolate;
+  width:min(430px,calc(100vw - 32px));
+  min-height:290px;
+  display:grid;
+  place-items:center;
+  overflow:hidden;
+  padding:34px 30px;
+  border-radius:34px;
+  background:
+    radial-gradient(260px 170px at 18% 0%,rgba(255,255,255,.86),transparent 70%),
+    radial-gradient(220px 160px at 96% 100%,rgba(157,222,209,.18),transparent 72%),
+    linear-gradient(150deg,rgba(255,255,255,.76),rgba(229,245,255,.48));
+  border:1px solid rgba(255,255,255,.88);
+  box-shadow:
+    0 34px 92px rgba(49,96,132,.18),
+    0 7px 24px rgba(49,96,132,.08),
+    inset 0 1px 0 rgba(255,255,255,.98);
+  transform:translate3d(0,12px,0) scale(.985);
+  transition:transform .42s cubic-bezier(.16,1,.3,1);
+}
+.newsletter-flow-overlay.show .newsletter-flow-card{
+  transform:translate3d(0,0,0) scale(1);
+}
+.newsletter-flow-card::before{
+  content:"";
+  position:absolute;
+  inset:-42%;
+  z-index:-1;
+  background:
+    conic-gradient(from 210deg,
+      transparent 0 22%,
+      rgba(102,188,241,.20) 30%,
+      transparent 38% 64%,
+      rgba(154,224,210,.14) 73%,
+      transparent 82%);
+  animation:nlFlowAurora 8s linear infinite;
+}
+@keyframes nlFlowAurora{to{transform:rotate(360deg)}}
+
+.nl-flow-stage{
+  position:relative;
+  z-index:2;
+  width:100%;
+  text-align:center;
+}
+.nl-flow-icon{
+  position:relative;
+  width:82px;
+  height:82px;
+  margin:0 auto 20px;
+  display:grid;
+  place-items:center;
+}
+.nl-flow-orbit{
+  position:absolute;
+  inset:0;
+  border-radius:50%;
+  border:1px solid rgba(88,168,220,.18);
+  animation:nlFlowSpin 2.4s linear infinite;
+}
+.nl-flow-orbit::before{
+  content:"";
+  position:absolute;
+  width:8px;height:8px;
+  left:50%;top:-4px;
+  margin-left:-4px;
+  border-radius:50%;
+  background:#75bde9;
+  box-shadow:0 0 0 6px rgba(117,189,233,.08),0 0 24px rgba(117,189,233,.28);
+}
+.nl-flow-orbit.second{
+  inset:12px;
+  animation-direction:reverse;
+  animation-duration:3.4s;
+  border-color:rgba(255,255,255,.62);
+}
+.nl-flow-core{
+  width:42px;height:42px;
+  border-radius:50%;
+  display:grid;place-items:center;
+  background:rgba(255,255,255,.72);
+  border:1px solid rgba(255,255,255,.92);
+  box-shadow:0 8px 24px rgba(65,126,170,.10),inset 0 1px 0 #fff;
+  color:#4f87ad;
+  font-size:18px;
+  font-weight:800;
+}
+@keyframes nlFlowSpin{to{transform:rotate(360deg)}}
+
+.nl-flow-title{
+  margin:0;
+  color:#29495f;
+  font:500 30px/1.05 Georgia,"Noto Serif TC",serif;
+  letter-spacing:-.04em;
+}
+.nl-flow-copy{
+  margin:10px auto 0;
+  width:min(310px,100%);
+  color:#718795;
+  font-size:12px;
+  line-height:1.7;
+}
+.nl-flow-email{
+  margin-top:10px;
+  color:#6f94ad;
+  font-size:10px;
+  font-weight:750;
+  letter-spacing:.04em;
+  word-break:break-all;
+}
+.nl-flow-progress{
+  width:min(260px,80%);
+  height:4px;
+  margin:24px auto 0;
+  overflow:hidden;
+  border-radius:99px;
+  background:rgba(87,137,173,.09);
+}
+.nl-flow-progress i{
+  display:block;
+  width:100%;
+  height:100%;
+  transform-origin:left center;
+  transform:scaleX(0);
+  border-radius:inherit;
+  background:linear-gradient(90deg,#7bc3ef,#6caed8,#8fd0bd);
+  animation:nlProgress4s 4s cubic-bezier(.2,.72,.22,1) forwards;
+}
+@keyframes nlProgress4s{to{transform:scaleX(1)}}
+
+.nl-flow-success{
+  display:none;
+}
+.newsletter-flow-overlay.success .nl-flow-loading{
+  display:none;
+}
+.newsletter-flow-overlay.success .nl-flow-success{
+  display:block;
+  animation:nlSuccessIn .52s cubic-bezier(.16,1,.3,1) both;
+}
+@keyframes nlSuccessIn{
+  from{opacity:0;transform:translate3d(0,12px,0) scale(.97);filter:blur(6px)}
+  to{opacity:1;transform:none;filter:none}
+}
+.nl-success-check{
+  width:78px;height:78px;
+  margin:0 auto 18px;
+  border-radius:50%;
+  display:grid;place-items:center;
+  background:
+    radial-gradient(circle at 35% 28%,rgba(255,255,255,.96),rgba(227,249,242,.76));
+  border:1px solid rgba(255,255,255,.94);
+  color:#4c8b75;
+  font-size:32px;
+  box-shadow:
+    0 18px 38px rgba(64,135,109,.12),
+    inset 0 1px 0 #fff;
+}
+.nl-flow-success .nl-flow-copy{
+  max-width:320px;
+}
+.nl-success-sub{
+  margin-top:10px;
+  color:#8a9aa5;
+  font-size:9.5px;
+  line-height:1.65;
+}
+.nl-success-close{
+  margin-top:20px;
+  height:42px;
+  padding:0 18px;
+  border:1px solid rgba(255,255,255,.82);
+  border-radius:14px;
+  background:rgba(255,255,255,.56);
+  color:#5d7484;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.92);
+  cursor:pointer;
+}
+
+/* Lightweight confetti layer. */
+#newsletterConfettiPublic{
+  position:fixed;
+  inset:0;
+  z-index:12020;
+  pointer-events:none;
+  overflow:hidden;
+}
+.nl-confetti-piece{
+  position:absolute;
+  left:var(--x);
+  top:var(--y);
+  width:var(--w);
+  height:var(--h);
+  border-radius:var(--r);
+  background:var(--c);
+  opacity:0;
+  transform:translate3d(0,0,0) rotate(var(--rot)) scale(.7);
+  animation:nlConfettiFly var(--dur) cubic-bezier(.12,.76,.24,1) var(--delay) both;
+}
+@keyframes nlConfettiFly{
+  0%{opacity:0;transform:translate3d(0,0,0) rotate(var(--rot)) scale(.65)}
+  8%{opacity:1}
+  58%{opacity:1}
+  100%{
+    opacity:0;
+    transform:translate3d(var(--dx),var(--dy),0) rotate(calc(var(--rot) + var(--spin))) scale(.95);
+  }
+}
+
+@media(max-width:620px){
+  .newsletter-flow-overlay{
+    padding:16px;
+    -webkit-backdrop-filter:blur(10px) saturate(135%);
+    backdrop-filter:blur(10px) saturate(135%);
+  }
+  .newsletter-flow-card{
+    min-height:270px;
+    padding:30px 22px;
+    border-radius:28px;
+  }
+  .newsletter-flow-card::before{animation:none;opacity:.52}
+  .nl-flow-title{font-size:27px}
+}
+@media(prefers-reduced-motion:reduce){
+  .newsletter-flow-card::before,
+  .nl-flow-orbit,
+  .nl-flow-progress i,
+  .nl-confetti-piece{
+    animation:none!important;
+  }
+}
+
+
+/* ============================================================
+   Public v16.6 · Full-page Gradient + Zoom Transition
+   ============================================================ */
+
+/* The transition belongs to the whole page, not to the bottom pager. */
+body::before{
+  content:"";
+  position:fixed;
+  inset:-10vh -10vw;
+  z-index:8890;
+  pointer-events:none;
+  opacity:0;
+  visibility:hidden;
+  transform:scale(.94);
+  transform-origin:50% 48%;
+  background:
+    radial-gradient(circle at 50% 46%,
+      rgba(255,255,255,.96) 0 7%,
+      rgba(193,232,253,.78) 20%,
+      rgba(119,194,238,.34) 42%,
+      rgba(230,247,255,.16) 62%,
+      transparent 80%),
+    linear-gradient(155deg,
+      rgba(250,253,255,.74),
+      rgba(199,232,251,.50) 46%,
+      rgba(123,194,236,.22));
+}
+body.page-route-fx::before{
+  visibility:visible;
+  animation:pageGradientBloom .32s cubic-bezier(.18,.82,.22,1) both;
+}
+@keyframes pageGradientBloom{
+  0%{opacity:0;transform:scale(.92)}
+  50%{opacity:.94;transform:scale(1.025)}
+  100%{opacity:.64;transform:scale(1.07)}
+}
+
+/* Entire visible page gently zooms forward and fades. */
+body.page-route-fx .ambient,
+body.page-route-fx .grain,
+body.page-route-fx .brand-top,
+body.page-route-fx .top-actions,
+body.page-route-fx #app,
+body.page-route-fx .footer,
+body.page-route-fx .totop{
+  animation:pageRouteZoomOut .30s cubic-bezier(.2,.78,.25,1) both!important;
+  transform-origin:50% 52%;
+}
+@keyframes pageRouteZoomOut{
+  0%{
+    opacity:1;
+    transform:translate3d(0,0,0) scale(1);
+    filter:blur(0);
+  }
+  100%{
+    opacity:.18;
+    transform:translate3d(0,-3px,0) scale(1.028);
+    filter:blur(3px);
+  }
+}
+
+/* The bottom pager stays visually stable; it is only the trigger. */
+body.page-route-fx .pager{
+  filter:none!important;
+}
+
+/* Destination page pops in as a whole. */
+body.page-enter-fx::after{
+  content:"";
+  position:fixed;
+  inset:0;
+  z-index:8885;
+  pointer-events:none;
+  background:
+    radial-gradient(circle at 50% 45%,
+      rgba(255,255,255,.86),
+      rgba(168,220,250,.26) 34%,
+      rgba(115,190,235,.10) 58%,
+      transparent 78%);
+  animation:pageEntryGlow .48s ease-out both;
+}
+body.page-enter-fx .ambient,
+body.page-enter-fx .grain,
+body.page-enter-fx .brand-top,
+body.page-enter-fx .top-actions,
+body.page-enter-fx #app,
+body.page-enter-fx .footer,
+body.page-enter-fx .totop{
+  animation:pageRoutePopIn .46s cubic-bezier(.16,1,.3,1) both!important;
+  transform-origin:50% 52%;
+}
+@keyframes pageRoutePopIn{
+  0%{
+    opacity:.16;
+    transform:translate3d(0,10px,0) scale(.962);
+    filter:blur(5px);
+  }
+  62%{
+    opacity:1;
+    transform:translate3d(0,-1px,0) scale(1.008);
+    filter:blur(0);
+  }
+  100%{
+    opacity:1;
+    transform:translate3d(0,0,0) scale(1);
+    filter:none;
+  }
+}
+@keyframes pageEntryGlow{
+  from{opacity:.72}
+  to{opacity:0}
+}
+
+/* Safari/iPhone: keep the page-wide effect compositor-friendly. */
+@media(hover:none) and (pointer:coarse){
+  body.page-route-fx .ambient,
+  body.page-route-fx .grain,
+  body.page-route-fx .brand-top,
+  body.page-route-fx .top-actions,
+  body.page-route-fx #app,
+  body.page-route-fx .footer,
+  body.page-route-fx .totop,
+  body.page-enter-fx .ambient,
+  body.page-enter-fx .grain,
+  body.page-enter-fx .brand-top,
+  body.page-enter-fx .top-actions,
+  body.page-enter-fx #app,
+  body.page-enter-fx .footer,
+  body.page-enter-fx .totop{
+    filter:none!important;
+  }
+}
+@media(prefers-reduced-motion:reduce){
+  body.page-route-fx::before,
+  body.page-enter-fx::after{
+    display:none!important;
+  }
+  body.page-route-fx .ambient,
+  body.page-route-fx .grain,
+  body.page-route-fx .brand-top,
+  body.page-route-fx .top-actions,
+  body.page-route-fx #app,
+  body.page-route-fx .footer,
+  body.page-route-fx .totop,
+  body.page-enter-fx .ambient,
+  body.page-enter-fx .grain,
+  body.page-enter-fx .brand-top,
+  body.page-enter-fx .top-actions,
+  body.page-enter-fx #app,
+  body.page-enter-fx .footer,
+  body.page-enter-fx .totop{
+    animation:none!important;
+    opacity:1!important;
+    transform:none!important;
+    filter:none!important;
+  }
+}
+
+
+/* ============================================================
+   Public v16.7 · Newsletter Terms Consent
+   ============================================================ */
+.newsletter-consent{
+  cursor:pointer;
+}
+.newsletter-consent span{
+  text-decoration-thickness:.08em;
+  text-underline-offset:3px;
+}
+.newsletter-consent:hover span{
+  color:#6d8494;
+}
+
+.newsletter-terms-overlay{
+  position:fixed;
+  inset:0;
+  z-index:12500;
+  display:grid;
+  place-items:center;
+  padding:18px;
+  background:
+    radial-gradient(620px 420px at 50% 44%,rgba(157,218,252,.22),transparent 72%),
+    rgba(222,238,249,.34);
+  -webkit-backdrop-filter:blur(18px) saturate(155%);
+  backdrop-filter:blur(18px) saturate(155%);
+  opacity:0;
+  visibility:hidden;
+  pointer-events:none;
+  transition:opacity .24s ease,visibility 0s linear .24s;
+}
+.newsletter-terms-overlay.show{
+  opacity:1;
+  visibility:visible;
+  pointer-events:auto;
+  transition-delay:0s;
+}
+.newsletter-terms-card{
+  position:relative;
+  overflow:hidden;
+  width:min(680px,calc(100vw - 30px));
+  max-height:min(82dvh,760px);
+  display:grid;
+  grid-template-rows:auto minmax(0,1fr) auto;
+  border-radius:34px;
+  background:
+    radial-gradient(260px 180px at 8% 0%,rgba(255,255,255,.92),transparent 72%),
+    radial-gradient(260px 180px at 100% 100%,rgba(144,215,201,.14),transparent 72%),
+    linear-gradient(150deg,rgba(255,255,255,.78),rgba(228,244,255,.50));
+  border:1px solid rgba(255,255,255,.90);
+  box-shadow:
+    0 38px 100px rgba(42,87,122,.20),
+    0 7px 24px rgba(42,87,122,.07),
+    inset 0 1px 0 rgba(255,255,255,.98);
+  transform:translate3d(0,14px,0) scale(.975);
+  transition:transform .38s cubic-bezier(.16,1,.3,1);
+}
+.newsletter-terms-overlay.show .newsletter-terms-card{
+  transform:translate3d(0,0,0) scale(1);
+}
+.newsletter-terms-card::before{
+  content:"";
+  position:absolute;
+  inset:-44%;
+  pointer-events:none;
+  background:
+    conic-gradient(from 215deg,
+      transparent 0 24%,
+      rgba(95,183,238,.14) 31%,
+      transparent 41% 65%,
+      rgba(138,215,200,.10) 74%,
+      transparent 84%);
+  animation:nlTermsAurora 10s linear infinite;
+}
+@keyframes nlTermsAurora{to{transform:rotate(360deg)}}
+
+.newsletter-terms-head{
+  position:relative;
+  z-index:2;
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:18px;
+  padding:26px 26px 18px;
+  border-bottom:1px solid rgba(81,124,155,.10);
+}
+.newsletter-terms-kicker{
+  color:#7092aa;
+  font-size:8.5px;
+  font-weight:850;
+  letter-spacing:.18em;
+}
+.newsletter-terms-title{
+  margin:7px 0 0;
+  color:#29495f;
+  font:500 clamp(28px,5vw,40px)/1.08 Georgia,"Noto Serif TC",serif;
+  letter-spacing:-.035em;
+}
+.newsletter-terms-close{
+  flex:0 0 auto;
+  width:34px;
+  height:34px;
+  border-radius:999px;
+  border:1px solid rgba(255,255,255,.82);
+  background:rgba(255,255,255,.54);
+  color:#708695;
+  display:grid;
+  place-items:center;
+  cursor:pointer;
+  font-size:17px;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.94);
+}
+.newsletter-terms-body{
+  position:relative;
+  z-index:2;
+  overflow:auto;
+  overscroll-behavior:contain;
+  padding:20px 26px 24px;
+  color:#5e7484;
+  font-size:12px;
+  line-height:1.78;
+}
+.newsletter-terms-body h3{
+  margin:20px 0 7px;
+  color:#35576e;
+  font-size:13px;
+}
+.newsletter-terms-body h3:first-child{margin-top:0}
+.newsletter-terms-body p{margin:0 0 10px}
+.newsletter-terms-body ul{
+  margin:6px 0 12px 18px;
+  padding:0;
+}
+.newsletter-terms-body li{margin:4px 0}
+.newsletter-terms-note{
+  margin-top:16px;
+  padding:12px 14px;
+  border-radius:16px;
+  background:rgba(255,255,255,.48);
+  border:1px solid rgba(255,255,255,.72);
+  color:#78909f;
+  font-size:10.5px;
+}
+.newsletter-terms-actions{
+  position:relative;
+  z-index:3;
+  display:grid;
+  grid-template-columns:1fr 1.25fr;
+  gap:10px;
+  padding:16px 20px calc(16px + env(safe-area-inset-bottom));
+  border-top:1px solid rgba(81,124,155,.10);
+  background:rgba(245,251,255,.46);
+  -webkit-backdrop-filter:blur(14px) saturate(145%);
+  backdrop-filter:blur(14px) saturate(145%);
+}
+.newsletter-terms-actions button{
+  min-height:48px;
+  border-radius:16px;
+  border:1px solid rgba(255,255,255,.82);
+  cursor:pointer;
+  font-weight:800;
+}
+.newsletter-terms-decline{
+  background:rgba(255,255,255,.58);
+  color:#708594;
+}
+.newsletter-terms-agree{
+  background:linear-gradient(145deg,#3c79a2,#275f84);
+  color:#fff;
+  box-shadow:
+    0 12px 26px rgba(39,95,132,.18),
+    inset 0 1px 0 rgba(255,255,255,.24);
+}
+.newsletter-terms-agree:active,
+.newsletter-terms-decline:active{
+  transform:scale(.98);
+}
+
+@media(max-width:620px){
+  .newsletter-terms-overlay{
+    padding:12px;
+    -webkit-backdrop-filter:blur(10px) saturate(138%);
+    backdrop-filter:blur(10px) saturate(138%);
+  }
+  .newsletter-terms-card{
+    width:calc(100vw - 20px);
+    max-height:88dvh;
+    border-radius:28px;
+  }
+  .newsletter-terms-head{padding:22px 20px 16px}
+  .newsletter-terms-body{padding:18px 20px 20px}
+  .newsletter-terms-actions{padding-left:14px;padding-right:14px}
+  .newsletter-terms-card::before{animation:none;opacity:.45}
+}
+@media(prefers-reduced-motion:reduce){
+  .newsletter-terms-card::before{animation:none!important}
+}
+
+
+/* ============================================================
+   Public v16.8 · Overall Performance + UX Polish
+   ============================================================ */
+
+/* Keep expensive animations out of background tabs. */
+body.visual-paused .orb,
+body.visual-paused .home-wave,
+body.visual-paused .home-foam,
+body.visual-paused .newsletter-card::after,
+body.visual-paused .newsletter-signal-orbit span,
+body.visual-paused .newsletter-signal-lines i,
+body.visual-paused .newsletter-flow-card::before,
+body.visual-paused .newsletter-terms-card::before{
+  animation-play-state:paused!important;
+}
+
+/* Off-screen sections do not need to paint until they approach the viewport. */
+.section,
+.about-team,
+.people-grid,
+.article-grid,
+.topic-grid{
+  content-visibility:auto;
+  contain-intrinsic-size:1px 720px;
+}
+.article-card,
+.topic-card,
+.person-card{
+  contain:layout paint style;
+}
+
+/* Page transitions stay on the compositor. Avoid blur during navigation. */
+body.page-route-fx .ambient,
+body.page-route-fx .grain,
+body.page-route-fx .brand-top,
+body.page-route-fx .top-actions,
+body.page-route-fx #app,
+body.page-route-fx .footer,
+body.page-route-fx .totop,
+body.page-enter-fx .ambient,
+body.page-enter-fx .grain,
+body.page-enter-fx .brand-top,
+body.page-enter-fx .top-actions,
+body.page-enter-fx #app,
+body.page-enter-fx .footer,
+body.page-enter-fx .totop{
+  filter:none!important;
+}
+
+/* Mobile / iPhone: retain the wave composition, remove endless animation work. */
+@media(hover:none) and (pointer:coarse){
+  .home-wave,
+  .home-foam{
+    animation:none!important;
+  }
+  .home-wave-stage,
+  .home-hero-copy,
+  .home-hero-card{
+    will-change:auto!important;
+  }
+  .newsletter-flow-card::before,
+  .newsletter-terms-card::before{
+    animation:none!important;
+  }
+}
+
+/* Terms dialog scroll lock + more obvious consent affordance. */
+body.newsletter-terms-open{
+  overflow:hidden;
+  overscroll-behavior:none;
+}
+.newsletter-consent{
+  border-radius:14px;
+  padding:7px 8px;
+  margin-left:-8px;
+  margin-right:-8px;
+  transition:background .2s ease,color .2s ease;
+}
+.newsletter-consent:hover{
+  background:rgba(255,255,255,.30);
+}
+.newsletter-consent input{
+  pointer-events:none;
+}
+.newsletter-terms-agree{
+  position:relative;
+  overflow:hidden;
+}
+.newsletter-terms-agree::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  transform:translateX(-120%) skewX(-18deg);
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.30),transparent);
+  animation:swTermsAgreeSheen 2.8s ease-in-out infinite;
+}
+@keyframes swTermsAgreeSheen{
+  0%,58%{transform:translateX(-120%) skewX(-18deg)}
+  82%,100%{transform:translateX(120%) skewX(-18deg)}
+}
+@media(prefers-reduced-motion:reduce){
+  .newsletter-terms-agree::after{animation:none!important}
+}
+
 </style>
 </head>
 <body class="boot-preparing" data-page="share">
@@ -3410,6 +4134,264 @@ function renderAbout(){
 }
 
 
+
+let newsletterOptimisticBusy=false;
+
+function ensureNewsletterFlowUI(){
+  if(document.getElementById('newsletterFlowOverlay'))return;
+  const wrap=document.createElement('div');
+  wrap.className='newsletter-flow-overlay';
+  wrap.id='newsletterFlowOverlay';
+  wrap.setAttribute('role','status');
+  wrap.setAttribute('aria-live','polite');
+  wrap.innerHTML=`
+    <div class="newsletter-flow-card">
+      <div class="nl-flow-stage nl-flow-loading">
+        <div class="nl-flow-icon" aria-hidden="true">
+          <span class="nl-flow-orbit"></span>
+          <span class="nl-flow-orbit second"></span>
+          <span class="nl-flow-core">✦</span>
+        </div>
+        <h2 class="nl-flow-title">訂閱中</h2>
+        <p class="nl-flow-copy">正在把你的 Email 安全送往 SIGN WELL。這一步會在背景繼續完成。</p>
+        <div class="nl-flow-email" data-nl-flow-email></div>
+        <div class="nl-flow-progress" aria-hidden="true"><i></i></div>
+      </div>
+
+      <div class="nl-flow-stage nl-flow-success">
+        <div class="nl-success-check">✓</div>
+        <h2 class="nl-flow-title">訂閱成功</h2>
+        <p class="nl-flow-copy">已收到你的訂閱申請。確認信會繼續在背景處理，稍後請留意收件匣。</p>
+        <div class="nl-success-sub">SIGN WELL Letter · No spam. Just signal.</div>
+        <button class="nl-success-close" type="button">完成</button>
+      </div>
+    </div>`;
+  document.body.appendChild(wrap);
+  wrap.querySelector('.nl-success-close')?.addEventListener('click',()=>hideNewsletterFlow());
+}
+
+function showNewsletterLoading(email){
+  ensureNewsletterFlowUI();
+  const wrap=document.getElementById('newsletterFlowOverlay');
+  if(!wrap)return;
+  wrap.classList.remove('success');
+  const emailEl=wrap.querySelector('[data-nl-flow-email]');
+  if(emailEl)emailEl.textContent=email||'';
+  /* restart the fixed 4-second progress animation */
+  const bar=wrap.querySelector('.nl-flow-progress i');
+  if(bar){
+    bar.style.animation='none';
+    void bar.offsetWidth;
+    bar.style.animation='';
+  }
+  wrap.classList.add('show');
+}
+
+function showNewsletterOptimisticSuccess(){
+  ensureNewsletterFlowUI();
+  const wrap=document.getElementById('newsletterFlowOverlay');
+  if(!wrap)return;
+  wrap.classList.add('success','show');
+  playNewsletterConfetti();
+}
+
+function hideNewsletterFlow(){
+  const wrap=document.getElementById('newsletterFlowOverlay');
+  if(!wrap)return;
+  wrap.classList.remove('show','success');
+}
+
+function playNewsletterConfetti(){
+  if(matchMedia('(prefers-reduced-motion: reduce)').matches)return;
+  document.getElementById('newsletterConfettiPublic')?.remove();
+
+  const layer=document.createElement('div');
+  layer.id='newsletterConfettiPublic';
+  layer.setAttribute('aria-hidden','true');
+  document.body.appendChild(layer);
+
+  const colors=['#7BC3EF','#A9DBF7','#8FD0BD','#DFF3FD','#FFFFFF','#6FA6C8','#BFDDEA'];
+  const pieces=matchMedia('(pointer:coarse)').matches?38:56;
+  const cx=innerWidth/2,cy=Math.min(innerHeight*.54,innerHeight-120);
+
+  for(let i=0;i<pieces;i++){
+    const el=document.createElement('i');
+    el.className='nl-confetti-piece';
+
+    const angle=(-158+(316*(i/Math.max(1,pieces-1))))*Math.PI/180;
+    const distance=110+Math.random()*Math.min(290,innerWidth*.30);
+    const dx=Math.cos(angle)*distance;
+    const dy=Math.sin(angle)*distance-(60+Math.random()*130)+180+Math.random()*110;
+
+    el.style.setProperty('--x',cx+'px');
+    el.style.setProperty('--y',cy+'px');
+    el.style.setProperty('--dx',dx.toFixed(1)+'px');
+    el.style.setProperty('--dy',dy.toFixed(1)+'px');
+    el.style.setProperty('--w',(5+Math.random()*7).toFixed(1)+'px');
+    el.style.setProperty('--h',(3+Math.random()*8).toFixed(1)+'px');
+    el.style.setProperty('--r',Math.random()<.2?'50%':'2px');
+    el.style.setProperty('--c',colors[i%colors.length]);
+    el.style.setProperty('--rot',(Math.random()*180).toFixed(0)+'deg');
+    el.style.setProperty('--spin',((Math.random()>.5?1:-1)*(260+Math.random()*620)).toFixed(0)+'deg');
+    el.style.setProperty('--dur',(920+Math.random()*760).toFixed(0)+'ms');
+    el.style.setProperty('--delay',(Math.random()*100).toFixed(0)+'ms');
+
+    layer.appendChild(el);
+  }
+
+  try{navigator.vibrate?.([16,22,10])}catch(_){}
+  setTimeout(()=>layer.remove(),2050);
+}
+
+function startNewsletterBackgroundRequest(email,source='signwell-public'){
+  /*
+   * Deliberately do not await this from the UI flow.
+   * The request continues inside its hidden iframe even after the 4-second
+   * optimistic success screen is shown.
+   */
+  return signwellPublicGasBridge('newsletter.subscribe',{
+    email,
+    consent:true,
+    source,
+    page:location.href,
+    honeypot:''
+  },45000);
+}
+
+
+
+
+let newsletterTermsAgreeCallback=null;
+let newsletterTermsPriorFocus=null;
+
+function ensureNewsletterTermsModal(){
+  let modal=document.getElementById('newsletterTermsOverlay');
+  if(modal)return modal;
+
+  modal=document.createElement('div');
+  modal.className='newsletter-terms-overlay';
+  modal.id='newsletterTermsOverlay';
+  modal.setAttribute('aria-hidden','true');
+  modal.innerHTML=`
+    <section class="newsletter-terms-card" role="dialog" aria-modal="true" aria-labelledby="newsletterTermsTitle">
+      <header class="newsletter-terms-head">
+        <div>
+          <div class="newsletter-terms-kicker">SIGN WELL LETTER</div>
+          <h2 class="newsletter-terms-title" id="newsletterTermsTitle">電子報訂閱服務條款</h2>
+        </div>
+        <button class="newsletter-terms-close" type="button" aria-label="關閉">×</button>
+      </header>
+
+      <div class="newsletter-terms-body">
+        <h3>1. 服務內容</h3>
+        <p>當你訂閱 SIGN WELL 電子報後，我們可能寄送新文章通知、醫學與健康知識整理、網站更新，以及與 SIGN WELL 內容相關的訊息。</p>
+
+        <h3>2. Email 使用方式</h3>
+        <p>你提供的 Email 僅用於電子報訂閱、確認訂閱、寄送內容、取消訂閱與必要的服務通知。我們不會因本服務主動公開你的 Email。</p>
+
+        <h3>3. 訂閱確認與取消</h3>
+        <p>部分情況下，你可能需要透過確認信完成訂閱。每封正式電子報應提供取消訂閱方式；你可隨時停止接收後續電子報。</p>
+
+        <h3>4. 第三方基礎服務</h3>
+        <p>SIGN WELL 目前可能使用 Google Apps Script、Google Sheets、Gmail 或其他雲端服務處理訂閱資料、發送確認信與電子報。這些服務可能依其自身條款處理必要的技術資料。</p>
+
+        <h3>5. 醫療資訊聲明</h3>
+        <p>SIGN WELL 電子報中的醫學與健康內容僅供教育與資訊整理，不構成個別醫療建議、診斷或治療，也不能取代正式臨床評估。</p>
+
+        <h3>6. 服務變更</h3>
+        <p>我們可能依實際營運需要調整寄送頻率、內容形式、技術服務或本條款內容。若有重大變更，會盡可能透過網站或電子報方式說明。</p>
+
+        <h3>7. 你的同意</h3>
+        <p>按下「我同意」代表你確認已閱讀並同意本電子報訂閱服務條款，並同意 SIGN WELL 依上述方式處理你的訂閱資料。</p>
+
+        <div class="newsletter-terms-note">
+          你不需要滑到最底才能同意；只要按下「我同意」即可完成本次同意。若不同意，請按「取消」。
+        </div>
+      </div>
+
+      <footer class="newsletter-terms-actions">
+        <button class="newsletter-terms-decline" type="button">取消</button>
+        <button class="newsletter-terms-agree" type="button">我同意</button>
+      </footer>
+    </section>`;
+
+  document.body.appendChild(modal);
+
+  const close=()=>{
+    modal.classList.remove('show');
+    modal.setAttribute('aria-hidden','true');
+    document.body.classList.remove('newsletter-terms-open');
+    newsletterTermsAgreeCallback=null;
+    setTimeout(()=>newsletterTermsPriorFocus?.focus?.(),40);
+  };
+
+  modal.querySelector('.newsletter-terms-close')?.addEventListener('click',close);
+  modal.querySelector('.newsletter-terms-decline')?.addEventListener('click',close);
+  modal.addEventListener('click',e=>{
+    if(e.target===modal)close();
+  });
+
+  modal.querySelector('.newsletter-terms-agree')?.addEventListener('click',()=>{
+    const cb=newsletterTermsAgreeCallback;
+    modal.classList.remove('show');
+    modal.setAttribute('aria-hidden','true');
+    document.body.classList.remove('newsletter-terms-open');
+    newsletterTermsAgreeCallback=null;
+    Promise.resolve(cb?.()).catch(()=>{});
+  });
+
+  addEventListener('keydown',e=>{
+    if(!modal.classList.contains('show'))return;
+    if(e.key==='Escape'){close();return}
+    if(e.key==='Tab'){
+      const focusables=[...modal.querySelectorAll('button,[href],input,select,textarea,[tabindex]:not([tabindex="-1"])')]
+        .filter(el=>!el.disabled&&el.offsetParent!==null);
+      if(!focusables.length)return;
+      const first=focusables[0],last=focusables[focusables.length-1];
+      if(e.shiftKey&&document.activeElement===first){e.preventDefault();last.focus()}
+      else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus()}
+    }
+  });
+
+  return modal;
+}
+
+function showNewsletterTermsModal(onAgree){
+  const modal=ensureNewsletterTermsModal();
+  newsletterTermsPriorFocus=document.activeElement;
+  newsletterTermsAgreeCallback=typeof onAgree==='function'?onAgree:null;
+  document.body.classList.add('newsletter-terms-open');
+  modal.classList.remove('show');
+  void modal.offsetWidth;
+  modal.classList.add('show');
+  modal.setAttribute('aria-hidden','false');
+  setTimeout(()=>modal.querySelector('.newsletter-terms-agree')?.focus(),70);
+}
+
+function bindNewsletterConsentTerms(){
+  const checkbox=$('#newsletterConsent');
+  const label=$('#newsletterConsentLabel');
+  if(!checkbox||!label)return;
+
+  label.addEventListener('click',e=>{
+    e.preventDefault();
+
+    if(checkbox.checked){
+      checkbox.checked=false;
+      checkbox.dispatchEvent(new Event('change',{bubbles:true}));
+      return;
+    }
+
+    showNewsletterTermsModal(()=>{
+      checkbox.checked=true;
+      checkbox.dispatchEvent(new Event('change',{bubbles:true}));
+      checkbox.focus({preventScroll:true});
+    });
+  });
+}
+
+
+
 /* ---------- SIGN WELL Letter ---------- */
 const NEWSLETTER_CFG=()=>window.SIGNWELL_NEWSLETTER||{};
 function newsletterEndpoint(){
@@ -3426,10 +4408,13 @@ function validNewsletterEmail(email=''){
 async function subscribeNewsletter(){
   const emailEl=$('#newsletterEmail'),consent=$('#newsletterConsent'),
         btn=$('#newsletterSubmit'),status=$('#newsletterStatus'),success=$('#newsletterSuccess');
-  if(!emailEl||!btn||!status)return;
+  if(!emailEl||!btn||!status||newsletterOptimisticBusy)return;
+
   const email=String(emailEl.value||'').trim().toLowerCase();
 
   status.className='newsletter-status';
+  success?.classList.remove('show');
+
   if(!validNewsletterEmail(email)){
     status.textContent='請輸入有效的電子郵件地址。';
     status.classList.add('error');
@@ -3447,35 +4432,62 @@ async function subscribeNewsletter(){
     return;
   }
 
+  newsletterOptimisticBusy=true;
   btn.disabled=true;
   const old=btn.textContent;
-  btn.textContent='正在訂閱…';
+  btn.textContent='訂閱中…';
   status.textContent='';
+
+  showNewsletterLoading(email);
+
+  /*
+   * Start the real request immediately, but keep it fully detached from the
+   * visible 4-second UI. A slow Apps Script response can finish in background.
+   */
+  const backgroundRequest=startNewsletterBackgroundRequest(email,'signwell-public');
+
+  /* At 4 seconds, present optimistic success regardless of response timing. */
+  await sleep(4000);
+  showNewsletterOptimisticSuccess();
+
+  emailEl.value='';
+  if(consent)consent.checked=false;
+  status.textContent='';
+  success?.classList.remove('show');
+
   try{
-    const body=await signwellPublicGasBridge('newsletter.subscribe',{
-      email,
-      consent:true,
-      source:'signwell-public',
-      page:location.href,
-      honeypot:''
+    localStorage.setItem('signwell-newsletter-subscribed','1');
+  }catch(_){}
+
+  btn.disabled=false;
+  btn.textContent=old;
+  newsletterOptimisticBusy=false;
+
+  /*
+   * Do not turn a late timeout into a visible failure after success.
+   * Keep a console diagnostic for debugging. If the request succeeds later,
+   * no additional UI work is needed.
+   */
+  backgroundRequest
+    .then(result=>{
+      try{
+        localStorage.setItem('signwell-newsletter-last-result',JSON.stringify({
+          ok:true,
+          at:Date.now(),
+          status:result?.status||'accepted'
+        }));
+      }catch(_){}
+    })
+    .catch(err=>{
+      console.warn('SIGN WELL newsletter background request:',err?.message||err);
+      try{
+        localStorage.setItem('signwell-newsletter-last-result',JSON.stringify({
+          ok:false,
+          at:Date.now(),
+          error:String(err?.message||err||'unknown')
+        }));
+      }catch(_){}
     });
-    status.textContent='';
-    success?.classList.add('show');
-    if(success){
-      const msg=success.querySelector('[data-success-copy]');
-      if(msg)msg.textContent=body.status==='pending'
-        ?'確認信已寄出，請到信箱完成訂閱。'
-        :'你已加入 SIGN WELL Letter。下一封值得讀的內容，我們會寄給你。';
-    }
-    emailEl.value='';
-    if(consent)consent.checked=false;
-  }catch(err){
-    status.textContent='目前無法完成訂閱：'+(err?.message||'請稍後再試');
-    status.classList.add('error');
-  }finally{
-    btn.disabled=false;
-    btn.textContent=old;
-  }
 }
 function renderNewsletter(){
   app.innerHTML=`<div class="shell newsletter-wrap">
@@ -3491,9 +4503,9 @@ function renderNewsletter(){
         <button class="newsletter-submit" id="newsletterSubmit" type="submit">訂閱 SIGN WELL</button>
       </form>
 
-      <label class="newsletter-consent">
-        <input id="newsletterConsent" type="checkbox">
-        <span>我同意接收 SIGN WELL 電子報與新文章通知。每封信都會提供取消訂閱方式。</span>
+      <label class="newsletter-consent" id="newsletterConsentLabel">
+        <input id="newsletterConsent" type="checkbox" aria-describedby="newsletterConsentText">
+        <span id="newsletterConsentText">我同意接收 SIGN WELL 電子報與新文章通知。每封信都會提供取消訂閱方式。</span>
       </label>
 
       <div class="newsletter-status" id="newsletterStatus" role="status" aria-live="polite"></div>
@@ -3509,6 +4521,7 @@ function renderNewsletter(){
     </section>
   </div>`;
   $('#newsletterForm')?.addEventListener('submit',e=>{e.preventDefault();subscribeNewsletter()});
+  bindNewsletterConsentTerms();
   initReveal();
 }
 
@@ -3593,6 +4606,37 @@ async function render(){
 }
 
 /* ---------- liquid nav ---------- */
+
+const PAGE_ROUTE_FX_KEY='signwell-page-route-fx-v1';
+
+function beginPagerRouteFX(){
+  if(reduceMotion())return;
+
+  document.body.classList.remove('page-route-fx');
+  void document.body.offsetWidth;
+  document.body.classList.add('page-route-fx');
+
+  try{
+    sessionStorage.setItem(PAGE_ROUTE_FX_KEY,String(Date.now()));
+  }catch(_){}
+}
+
+function playPagerRouteEntrance(){
+  let at=0;
+  try{
+    at=Number(sessionStorage.getItem(PAGE_ROUTE_FX_KEY)||0);
+    sessionStorage.removeItem(PAGE_ROUTE_FX_KEY);
+  }catch(_){}
+
+  if(!at||Date.now()-at>3500||reduceMotion())return;
+
+  requestAnimationFrame(()=>{
+    document.body.classList.add('page-enter-fx');
+    setTimeout(()=>document.body.classList.remove('page-enter-fx'),540);
+  });
+}
+
+
 /* ---------- page slider: compositor-first liquid glass ---------- */
 const Slider=(()=>{
   const rail=$('#pager'),thumb=$('#navThumb'),items=$$('.nav-item');
@@ -3710,10 +4754,15 @@ const Slider=(()=>{
       return;
     }
 
+    /* v16.5: the page handoff begins immediately on tap or drag release.
+       The gradient bloom hides the cross-document seam while the thumb
+       finishes its elastic motion. */
+    beginPagerRouteFX();
+
     const distance=Math.abs(target-from);
     const wait=tapped
-      ? Math.min(330,165+distance*58)
-      : Math.min(240,85+distance*34);
+      ? Math.min(230,135+distance*28)
+      : Math.min(210,115+distance*24);
 
     rail.classList.add('nav-traveling');
     document.body.classList.add('pager-programmatic');
@@ -4031,24 +5080,17 @@ function toggleTheme(){
 
 /* ---------- startup warm cache · v15.1 ---------- */
 function warmStartupCache(){
+  /*
+   * v16.8:
+   * Do not download the five sibling HTML documents during the critical
+   * startup path. They are already prefetched later during idle time.
+   * This window is only used to keep expensive visual loops paused while
+   * the first paint/data requests settle.
+   */
   document.body.classList.add('boot-preparing');
 
-  const current=(location.pathname.split('/').pop()||'index.html').toLowerCase();
-  const staticUrls=[
-    'index.html','topics.html','about.html','share.html','newsletter.html',
-    'site-content.js','analytics-config.js'
-  ].filter(x=>x!==current);
-
-  /* Only warm static shell/config files. Dynamic CMS JSON still revalidates
-     normally, so publishing freshness is not traded for startup speed. */
-  const work=staticUrls.map(url=>
-    fetch(url,{cache:'force-cache',credentials:'same-origin'}).catch(()=>null)
-  );
-
-  const settle=Promise.allSettled(work);
-  const deadline=new Promise(resolve=>setTimeout(resolve,620));
-
-  Promise.race([settle,deadline]).finally(()=>{
+  const settle=new Promise(resolve=>setTimeout(resolve,220));
+  settle.finally(()=>{
     requestAnimationFrame(()=>requestAnimationFrame(()=>{
       document.body.classList.remove('boot-preparing');
       document.body.classList.add('visuals-ready');
@@ -4073,6 +5115,14 @@ function preloadVisibleCovers(){
   else setTimeout(run,280);
 }
 
+
+
+/* v16.8 · pause non-essential animation work in background tabs */
+function initGlobalVisualPause(){
+  const apply=()=>document.body.classList.toggle('visual-paused',document.hidden);
+  document.addEventListener('visibilitychange',apply,{passive:true});
+  apply();
+}
 
 /* ---------- adaptive desktop visual quality ---------- */
 function initAdaptiveVisualQuality(){
@@ -4155,30 +5205,42 @@ function ensureIdleSubscribePrompt(){
 
   el.querySelector('.idle-subscribe-close')?.addEventListener('click',()=>hideIdleSubscribePrompt(false));
 
-  el.querySelector('form')?.addEventListener('submit',async e=>{
+  el.querySelector('form')?.addEventListener('submit',e=>{
     e.preventDefault();
     const input=el.querySelector('input');
     const button=el.querySelector('button[type="submit"]');
     const note=el.querySelector('.idle-subscribe-note');
-    const email=String(input?.value||'').trim();
+    const email=String(input?.value||'').trim().toLowerCase();
 
-    if(!email){note.textContent='請先輸入 Email。';input?.focus();return}
-    if(!newsletterEnabled()){note.textContent='電子報服務目前尚未連線，請稍後再試。';return}
-
-    try{
-      button.disabled=true;
-      button.textContent='送出中…';
-      await signwellPublicGasBridge('newsletter.subscribe',{
-        email,consent:true,source:'signwell-idle-prompt',page:location.href,honeypot:''
-      });
-      note.textContent='確認信已寄出 ✓ 請到信箱完成訂閱。';
-      markIdleSubscribeHandled(true);
-      setTimeout(()=>el.classList.remove('show'),1300);
-    }catch(_){
-      note.textContent='暫時無法送出，請稍後再試。';
-      button.disabled=false;
-      button.textContent='訂閱 SIGN WELL';
+    if(!validNewsletterEmail(email)){
+      note.textContent='請先輸入有效的 Email。';
+      input?.focus();
+      return;
     }
+    if(!newsletterEnabled()){
+      note.textContent='電子報服務目前尚未連線，請稍後再試。';
+      return;
+    }
+
+    showNewsletterTermsModal(async()=>{
+      button.disabled=true;
+      button.textContent='訂閱中…';
+      note.textContent='正在建立訂閱…';
+
+      const bg=startNewsletterBackgroundRequest(email,'signwell-idle-prompt');
+
+      /* Same optimistic UX as the full Newsletter page. */
+      await sleep(4000);
+      note.textContent='訂閱申請已送出 ✓ 請稍後留意確認信。';
+      button.textContent='已送出';
+      markIdleSubscribeHandled(true);
+
+      bg.catch(err=>{
+        console.warn('SIGN WELL idle newsletter background request:',err?.message||err);
+      });
+
+      setTimeout(()=>el.classList.remove('show'),1500);
+    });
   });
 
   return el;
@@ -4347,13 +5409,13 @@ function prefetchSiblingPages(){
     l.rel='prefetch';l.href=href;l.as='document';
     document.head.appendChild(l);
   });
-  if('requestIdleCallback' in window)requestIdleCallback(run,{timeout:1200});
-  else setTimeout(run,500);
+  if('requestIdleCallback' in window)requestIdleCallback(run,{timeout:2200});
+  else setTimeout(run,1400);
 }
 
 /* ---------- boot ---------- */
 (async()=>{
-  optimize();applyTheme();applyChrome();initAdaptiveVisualQuality();
+  optimize();applyTheme();applyChrome();initGlobalVisualPause();initAdaptiveVisualQuality();
 
   /* Use the welcome screen as a real warm-up window. */
   const warmPromise=warmStartupCache();
@@ -4374,6 +5436,7 @@ function prefetchSiblingPages(){
   ready=true;
   applyChrome();
   await paint();
+  playPagerRouteEntrance();
   preloadVisibleCovers();
   initReveal();
   initIdleSubscriptionPrompt();
