@@ -1,7 +1,7 @@
 {
   "schema": 1,
-  "revision": 1789133132730,
-  "publishedAt": "2026-09-11T13:25:32.730Z",
+  "revision": 1789133272587,
+  "publishedAt": "2026-09-11T13:27:52.587Z",
   "siteText": {
     "siteTitle": "SIGN WELL · 欣緯生醫",
     "metaDescription": "SIGN WELL · 欣緯生醫 — 臨床筆記、醫學推理與值得留下的知識。",
@@ -48,9 +48,9 @@
     "emptyCategory": "目前沒有這個分類的文章。",
     "notFoundTitle": "找不到文章",
     "notFoundBody": "這篇文章可能尚未發布或網址已改變。",
-    "homeEyebrow": "SIGN WELL BIOMED · 欣緯生醫",
-    "homeTitle1": "從臨床出發，",
-    "homeTitle2": "把值得留下的醫學寫清楚。",
+    "homeEyebrow": "SIGN WELL  欣緯生醫",
+    "homeTitle1": "和我醫起來",
+    "homeTitle2": "醫學白話文",
     "homeSubtitle": "以臨床推理、醫學教育與自費醫療觀察為核心的知識平台。從一個問題開始，整理成下一次真正用得上的答案。",
     "homeCardTitle": "醫學不只是答案，而是理解答案從哪裡來。",
     "homeCardBody": "把床邊問題、閱讀與思考整理成可回顧的知識，讓資訊回到臨床情境。",
@@ -58,49 +58,25 @@
     "dailyTitle": "每日新文章",
     "dailyDescription": "最新整理與近期發布",
     "topicsSubtitle": "依領域整理文章、臨床問題與延伸閱讀。",
-    "shareEyebrow": "分享我們",
-    "shareTitle": "把 SIGN WELL 分享給需要的人。",
+    "shareEyebrow": "支持我們",
+    "shareTitle": "分享SIGN WELL",
     "shareSubtitle": "複製網站連結，或使用 QR Code 讓另一台裝置快速開啟。"
   },
   "topics": [
     {
-      "id": "topic-1789132939821",
-      "name": "營養品科普",
-      "slug": "swmedical",
+      "id": "topic-1789108172491",
+      "name": "藥學測試",
+      "slug": "Med",
       "description": "",
       "order": 0,
       "active": true
     },
     {
-      "id": "topic-1789132972590",
-      "name": "減重醫學",
-      "slug": "nonfat",
-      "description": "",
+      "id": "topic-1789106146422-0",
+      "name": "Medical Notes",
+      "slug": "medical-notes",
+      "description": "瀏覽 Medical Notes 相關文章與延伸整理。",
       "order": 1,
-      "active": true
-    },
-    {
-      "id": "topic-1789133007315",
-      "name": "抗衰老醫學",
-      "slug": "抗衰老醫學",
-      "description": "",
-      "order": 2,
-      "active": true
-    },
-    {
-      "id": "topic-1789133021571",
-      "name": "醫美科普",
-      "slug": "醫美科普",
-      "description": "",
-      "order": 3,
-      "active": true
-    },
-    {
-      "id": "topic-1789133044924",
-      "name": "營養品科普",
-      "slug": "營養品科普",
-      "description": "",
-      "order": 4,
       "active": true
     }
   ]
