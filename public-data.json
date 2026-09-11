@@ -1,7 +1,7 @@
 {
   "schema": 1,
-  "revision": 1789131573866,
-  "publishedAt": "2026-09-11T12:59:33.866Z",
+  "revision": 1789133044925,
+  "publishedAt": "2026-09-11T13:24:04.925Z",
   "siteText": {
     "siteTitle": "SIGN WELL · 欣緯生醫",
     "metaDescription": "SIGN WELL · 欣緯生醫 — 臨床筆記、醫學推理與值得留下的知識。",
@@ -62,5 +62,46 @@
     "shareTitle": "把 SIGN WELL 分享給需要的人。",
     "shareSubtitle": "複製網站連結，或使用 QR Code 讓另一台裝置快速開啟。"
   },
-  "topics": []
+  "topics": [
+    {
+      "id": "topic-1789132939821",
+      "name": "營養品科普",
+      "slug": "swmedical",
+      "description": "",
+      "order": 0,
+      "active": true
+    },
+    {
+      "id": "topic-1789132972590",
+      "name": "減重醫學",
+      "slug": "nonfat",
+      "description": "",
+      "order": 1,
+      "active": true
+    },
+    {
+      "id": "topic-1789133007315",
+      "name": "抗衰老醫學",
+      "slug": "抗衰老醫學",
+      "description": "",
+      "order": 2,
+      "active": true
+    },
+    {
+      "id": "topic-1789133021571",
+      "name": "醫美科普",
+      "slug": "醫美科普",
+      "description": "",
+      "order": 3,
+      "active": true
+    },
+    {
+      "id": "topic-1789133044924",
+      "name": "營養品科普",
+      "slug": "營養品科普",
+      "description": "",
+      "order": 4,
+      "active": true
+    }
+  ]
 }
