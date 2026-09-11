@@ -46,7 +46,7 @@ window.SIGNWELL_SITE_TEXT = {
   "notFoundBody": "這篇文章可能尚未發布或網址已改變。",
   "homeEyebrow": "SIGN WELL  欣緯生醫",
   "homeTitle1": "和我醫起來",
-  "homeTitle2": "醫學白話文！",
+  "homeTitle2": "醫學白話文",
   "homeSubtitle": "以臨床推理、醫學教育與自費醫療觀察為核心的知識平台。從一個問題開始，整理成下一次真正用得上的答案。",
   "homeCardTitle": "醫學不只是答案，而是理解答案從哪裡來。",
   "homeCardBody": "把床邊問題、閱讀與思考整理成可回顧的知識，讓資訊回到臨床情境。",
