@@ -1,9 +1,9 @@
+// 參考用：不要覆蓋你已設定好的 analytics-config.js。
 window.SIGNWELL_ANALYTICS = {
   enabled: true,
-  endpoint: "https://script.google.com/d/10v8JSsR_twdA99i5yHhAIkKRT70it_t-PpirIAU8s6qq8FpYhJImB38O/edit?usp=sharing"
+  endpoint: "https://script.google.com/macros/s/YOUR_DEPLOYMENT_ID/exec"
 };
-
 window.SIGNWELL_NEWSLETTER = {
   enabled: true,
-  endpoint: "https://script.google.com/d/10v8JSsR_twdA99i5yHhAIkKRT70it_t-PpirIAU8s6qq8FpYhJImB38O/edit?usp=sharing"
+  endpoint: "https://script.google.com/macros/s/YOUR_DEPLOYMENT_ID/exec"
 };
