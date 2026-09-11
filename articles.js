@@ -1,9 +1,9 @@
 window.BLOG_ARTICLES = [
   {
-    "id": "a-1789098522230",
-    "title": "Test",
+    "id": "a-1789099269825",
+    "title": "測試0011",
     "subtitle": "",
-    "slug": "test",
+    "slug": "測試0011",
     "category": "Medical Notes",
     "type": "Article",
     "excerpt": "從這裡開始寫。",
