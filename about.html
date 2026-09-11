@@ -2588,72 +2588,98 @@ body.is-scrolled .brand-top{
 
 
 /* ============================================================
-   Public v16.6 · Full-page Gradient + Zoom Transition
+   Public v17.0 · Synchronized Pager / Page Transition
    ============================================================ */
 
-/* The transition belongs to the whole page, not to the bottom pager. */
+body{
+  --route-opacity:1;
+  --route-scale:1;
+  --route-chrome-opacity:1;
+  --route-veil:0;
+}
+
+/* Very light, translucent bridge. The pager sits above this veil. */
 body::before{
   content:"";
   position:fixed;
-  inset:-10vh -10vw;
+  inset:-5vh -5vw;
   z-index:8890;
   pointer-events:none;
-  opacity:0;
   visibility:hidden;
-  transform:scale(.94);
-  transform-origin:50% 48%;
+  opacity:var(--route-veil);
+  transform:scale(1.01);
   background:
-    radial-gradient(circle at 50% 46%,
-      rgba(255,255,255,.96) 0 7%,
-      rgba(193,232,253,.78) 20%,
-      rgba(119,194,238,.34) 42%,
-      rgba(230,247,255,.16) 62%,
-      transparent 80%),
+    radial-gradient(circle at 50% 48%,
+      rgba(255,255,255,.54) 0 9%,
+      rgba(220,243,255,.32) 25%,
+      rgba(172,219,247,.16) 48%,
+      rgba(245,251,255,.08) 68%,
+      transparent 82%),
     linear-gradient(155deg,
-      rgba(250,253,255,.74),
-      rgba(199,232,251,.50) 46%,
-      rgba(123,194,236,.22));
+      rgba(252,254,255,.20),
+      rgba(225,244,255,.15) 48%,
+      rgba(191,224,246,.11));
+  transition:
+    opacity .12s linear,
+    visibility 0s linear .15s;
 }
+body.page-route-gesture::before,
 body.page-route-fx::before{
   visibility:visible;
-  animation:pageGradientBloom .32s cubic-bezier(.18,.82,.22,1) both;
-}
-@keyframes pageGradientBloom{
-  0%{opacity:0;transform:scale(.92)}
-  50%{opacity:.94;transform:scale(1.025)}
-  100%{opacity:.64;transform:scale(1.07)}
+  transition-delay:0s;
 }
 
-/* Entire visible page gently zooms forward and fades. */
-body.page-route-fx .ambient,
-body.page-route-fx .grain,
+/* During a finger/mouse gesture the actual page responds immediately. */
+body.page-route-gesture #app,
+body.page-route-gesture .footer,
+body.page-route-fx #app,
+body.page-route-fx .footer{
+  opacity:var(--route-opacity);
+  transform:translate3d(0,0,0) scale(var(--route-scale));
+  transform-origin:50% 48%;
+  transition:
+    opacity .075s linear,
+    transform .115s cubic-bezier(.2,.72,.22,1);
+  will-change:opacity,transform;
+}
+
+/* Chrome fades but never changes transform, avoiding the old centered-brand jump. */
+body.page-route-gesture .brand-top,
+body.page-route-gesture .top-actions,
+body.page-route-gesture .totop,
 body.page-route-fx .brand-top,
 body.page-route-fx .top-actions,
-body.page-route-fx #app,
-body.page-route-fx .footer,
 body.page-route-fx .totop{
-  animation:pageRouteZoomOut .30s cubic-bezier(.2,.78,.25,1) both!important;
-  transform-origin:50% 52%;
-}
-@keyframes pageRouteZoomOut{
-  0%{
-    opacity:1;
-    transform:translate3d(0,0,0) scale(1);
-    filter:blur(0);
-  }
-  100%{
-    opacity:.18;
-    transform:translate3d(0,-3px,0) scale(1.028);
-    filter:blur(3px);
-  }
+  opacity:var(--route-chrome-opacity)!important;
+  transition:opacity .10s linear!important;
 }
 
-/* The bottom pager stays visually stable; it is only the trigger. */
+/* Keep the liquid pager fully readable while the page disappears behind it. */
+body.page-route-gesture .pager,
 body.page-route-fx .pager{
+  z-index:9005!important;
+  opacity:1!important;
   filter:none!important;
 }
 
-/* Destination page pops in as a whole. */
+/* Commit phase: quick old-page zoom-in + fade. Values are set by JS. */
+body.page-route-fx #app,
+body.page-route-fx .footer{
+  transition:
+    opacity .145s ease-out,
+    transform .155s cubic-bezier(.22,.76,.28,1);
+}
+body.page-route-fx .brand-top,
+body.page-route-fx .top-actions,
+body.page-route-fx .totop{
+  transition:opacity .13s ease-out!important;
+}
+body.page-route-fx::before{
+  transition:opacity .145s ease-out;
+}
+
+/* Cross-document destination is held very lightly until data is ready. */
+body.page-enter-pending::after,
 body.page-enter-fx::after{
   content:"";
   position:fixed;
@@ -2661,87 +2687,93 @@ body.page-enter-fx::after{
   z-index:8885;
   pointer-events:none;
   background:
-    radial-gradient(circle at 50% 45%,
-      rgba(255,255,255,.86),
-      rgba(168,220,250,.26) 34%,
-      rgba(115,190,235,.10) 58%,
+    radial-gradient(circle at 50% 47%,
+      rgba(255,255,255,.38),
+      rgba(205,236,253,.17) 34%,
+      rgba(153,207,239,.07) 58%,
       transparent 78%);
-  animation:pageEntryGlow .48s ease-out both;
 }
-body.page-enter-fx .ambient,
-body.page-enter-fx .grain,
+body.page-enter-pending::after{opacity:.22}
+body.page-enter-pending #app,
+body.page-enter-pending .footer{
+  opacity:.14;
+  transform:translate3d(0,0,0) scale(1.016);
+  transform-origin:50% 48%;
+}
+body.page-enter-pending .brand-top,
+body.page-enter-pending .top-actions,
+body.page-enter-pending .totop{
+  opacity:.34!important;
+}
+
+/* New page starts slightly zoomed-in and zooms OUT to its real position. */
+body.page-enter-fx::after{
+  animation:pageEntryVeil17 .27s ease-out both;
+}
+body.page-enter-fx #app,
+body.page-enter-fx .footer{
+  transform-origin:50% 48%;
+  animation:pageRouteEnter17 .285s cubic-bezier(.16,.84,.28,1) both!important;
+}
 body.page-enter-fx .brand-top,
 body.page-enter-fx .top-actions,
-body.page-enter-fx #app,
-body.page-enter-fx .footer,
 body.page-enter-fx .totop{
-  animation:pageRoutePopIn .46s cubic-bezier(.16,1,.3,1) both!important;
-  transform-origin:50% 52%;
+  animation:pageChromeEnter17 .24s ease-out both!important;
 }
-@keyframes pageRoutePopIn{
+
+@keyframes pageRouteEnter17{
   0%{
     opacity:.16;
-    transform:translate3d(0,10px,0) scale(.962);
-    filter:blur(5px);
+    transform:translate3d(0,2px,0) scale(1.016);
   }
-  62%{
-    opacity:1;
-    transform:translate3d(0,-1px,0) scale(1.008);
-    filter:blur(0);
+  58%{
+    opacity:.90;
+    transform:translate3d(0,0,0) scale(1.003);
   }
   100%{
     opacity:1;
     transform:translate3d(0,0,0) scale(1);
-    filter:none;
   }
 }
-@keyframes pageEntryGlow{
-  from{opacity:.72}
+@keyframes pageChromeEnter17{
+  from{opacity:.30}
+  to{opacity:1}
+}
+@keyframes pageEntryVeil17{
+  from{opacity:.30}
   to{opacity:0}
 }
 
-/* Safari/iPhone: keep the page-wide effect compositor-friendly. */
+/* No expensive blur during navigation on iPhone / Safari. */
 @media(hover:none) and (pointer:coarse){
-  body.page-route-fx .ambient,
-  body.page-route-fx .grain,
-  body.page-route-fx .brand-top,
-  body.page-route-fx .top-actions,
+  body.page-route-gesture #app,
   body.page-route-fx #app,
-  body.page-route-fx .footer,
-  body.page-route-fx .totop,
-  body.page-enter-fx .ambient,
-  body.page-enter-fx .grain,
-  body.page-enter-fx .brand-top,
-  body.page-enter-fx .top-actions,
-  body.page-enter-fx #app,
-  body.page-enter-fx .footer,
-  body.page-enter-fx .totop{
+  body.page-enter-pending #app,
+  body.page-enter-fx #app{
     filter:none!important;
   }
 }
+
+/* Respect reduced motion while keeping navigation immediate. */
 @media(prefers-reduced-motion:reduce){
+  body.page-route-gesture::before,
   body.page-route-fx::before,
+  body.page-enter-pending::after,
   body.page-enter-fx::after{
     display:none!important;
   }
-  body.page-route-fx .ambient,
-  body.page-route-fx .grain,
-  body.page-route-fx .brand-top,
-  body.page-route-fx .top-actions,
+  body.page-route-gesture #app,
+  body.page-route-gesture .footer,
   body.page-route-fx #app,
   body.page-route-fx .footer,
-  body.page-route-fx .totop,
-  body.page-enter-fx .ambient,
-  body.page-enter-fx .grain,
-  body.page-enter-fx .brand-top,
-  body.page-enter-fx .top-actions,
+  body.page-enter-pending #app,
+  body.page-enter-pending .footer,
   body.page-enter-fx #app,
-  body.page-enter-fx .footer,
-  body.page-enter-fx .totop{
+  body.page-enter-fx .footer{
     animation:none!important;
+    transition:none!important;
     opacity:1!important;
     transform:none!important;
-    filter:none!important;
   }
 }
 
@@ -3677,7 +3709,7 @@ function softRoute(url){
   if(!sameDocument(url))return false;
   try{
     history.pushState({signwell:true},'',url);
-    if(document.startViewTransition&&!reduceMotion()){
+    if(document.startViewTransition&&!reduceMotion()&&!document.body.classList.contains('page-route-fx')){
       document.startViewTransition(()=>render()).finished.catch(()=>{});
     }else{
       render();
@@ -3974,8 +4006,8 @@ function ensureNewsletterFlowUI(){
 
       <div class="nl-flow-stage nl-flow-success">
         <div class="nl-success-check">✓</div>
-        <h2 class="nl-flow-title">訂閱成功</h2>
-        <p class="nl-flow-copy">已收到你的訂閱申請。確認信會繼續在背景處理，稍後請留意收件匣。</p>
+        <h2 class="nl-flow-title">已訂閱</h2>
+        <p class="nl-flow-copy">你已完成 SIGN WELL Letter 訂閱。之後的新文章與電子報會寄到這個信箱。</p>
         <div class="nl-success-sub">SIGN WELL Letter · No spam. Just signal.</div>
         <button class="nl-success-close" type="button">完成</button>
       </div>
@@ -4073,6 +4105,48 @@ function startNewsletterBackgroundRequest(email,source='signwell-public'){
 }
 
 
+function runNewsletterOptimistic4s(email,source='signwell-public'){
+  /*
+   * Fixed UX contract:
+   * 0s  : "訂閱中"
+   * 4s  : "已訂閱" + confetti
+   * Apps Script continues independently in the background.
+   */
+  showNewsletterLoading(email);
+
+  const backgroundRequest=startNewsletterBackgroundRequest(email,source);
+
+  backgroundRequest
+    .then(result=>{
+      try{
+        localStorage.setItem('signwell-newsletter-last-result',JSON.stringify({
+          ok:true,
+          at:Date.now(),
+          status:result?.status||'active'
+        }));
+      }catch(_){}
+    })
+    .catch(err=>{
+      try{
+        localStorage.setItem('signwell-newsletter-last-result',JSON.stringify({
+          ok:false,
+          at:Date.now(),
+          error:String(err?.message||err||'unknown')
+        }));
+      }catch(_){}
+      console.warn('SIGN WELL newsletter background request:',err?.message||err);
+    });
+
+  return new Promise(resolve=>{
+    setTimeout(()=>{
+      showNewsletterOptimisticSuccess();
+      try{localStorage.setItem('signwell-newsletter-subscribed','1')}catch(_){}
+      resolve();
+    },4000);
+  });
+}
+
+
 
 
 let newsletterTermsAgreeCallback=null;
@@ -4104,10 +4178,10 @@ function ensureNewsletterTermsModal(){
         <p>你提供的 Email 僅用於電子報訂閱、確認訂閱、寄送內容、取消訂閱與必要的服務通知。我們不會因本服務主動公開你的 Email。</p>
 
         <h3>3. 訂閱確認與取消</h3>
-        <p>部分情況下，你可能需要透過確認信完成訂閱。每封正式電子報應提供取消訂閱方式；你可隨時停止接收後續電子報。</p>
+        <p>當你在網站完成條款同意並送出 Email 後，訂閱會直接生效，不需要另外點擊確認信。每封正式電子報都會提供取消訂閱方式。</p>
 
         <h3>4. 第三方基礎服務</h3>
-        <p>SIGN WELL 目前可能使用 Google Apps Script、Google Sheets、Gmail 或其他雲端服務處理訂閱資料、發送確認信與電子報。這些服務可能依其自身條款處理必要的技術資料。</p>
+        <p>SIGN WELL 目前可能使用 Google Apps Script、Google Sheets、Gmail 或其他雲端服務處理訂閱資料、寄送訂閱完成通知與電子報。這些服務可能依其自身條款處理必要的技術資料。</p>
 
         <h3>5. 醫療資訊聲明</h3>
         <p>SIGN WELL 電子報中的醫學與健康內容僅供教育與資訊整理，不構成個別醫療建議、診斷或治療，也不能取代正式臨床評估。</p>
@@ -4119,7 +4193,7 @@ function ensureNewsletterTermsModal(){
         <p>按下「我同意」代表你確認已閱讀並同意本電子報訂閱服務條款，並同意 SIGN WELL 依上述方式處理你的訂閱資料。</p>
 
         <div class="newsletter-terms-note">
-          你不需要滑到最底才能同意；只要按下「我同意」即可完成本次同意。若不同意，請按「取消」。
+          最終法律權歸 signwell.com@gmail.com 所有。
         </div>
       </div>
 
@@ -4222,6 +4296,7 @@ function validNewsletterEmail(email=''){
 async function subscribeNewsletter(){
   const emailEl=$('#newsletterEmail'),consent=$('#newsletterConsent'),
         btn=$('#newsletterSubmit'),status=$('#newsletterStatus'),success=$('#newsletterSuccess');
+
   if(!emailEl||!btn||!status||newsletterOptimisticBusy)return;
 
   const email=String(emailEl.value||'').trim().toLowerCase();
@@ -4235,11 +4310,21 @@ async function subscribeNewsletter(){
     emailEl.focus();
     return;
   }
+
+  /*
+   * If Subscribe is pressed before consent, the terms modal becomes the
+   * missing step. After "我同意", we check the box and automatically
+   * continue — no second click is required.
+   */
   if(consent&&!consent.checked){
-    status.textContent='請先同意接收 SIGN WELL 電子報。';
-    status.classList.add('error');
+    showNewsletterTermsModal(()=>{
+      consent.checked=true;
+      consent.dispatchEvent(new Event('change',{bubbles:true}));
+      requestAnimationFrame(()=>subscribeNewsletter());
+    });
     return;
   }
+
   if(!newsletterEnabled()){
     status.textContent='訂閱服務尚未啟用。網站介面已就緒，待 SIGN WELL Backend 連線後即可正式訂閱。';
     status.classList.add('error');
@@ -4252,56 +4337,22 @@ async function subscribeNewsletter(){
   btn.textContent='訂閱中…';
   status.textContent='';
 
-  showNewsletterLoading(email);
-
-  /*
-   * Start the real request immediately, but keep it fully detached from the
-   * visible 4-second UI. A slow Apps Script response can finish in background.
-   */
-  const backgroundRequest=startNewsletterBackgroundRequest(email,'signwell-public');
-
-  /* At 4 seconds, present optimistic success regardless of response timing. */
-  await sleep(4000);
-  showNewsletterOptimisticSuccess();
-
-  emailEl.value='';
-  if(consent)consent.checked=false;
-  status.textContent='';
-  success?.classList.remove('show');
-
   try{
-    localStorage.setItem('signwell-newsletter-subscribed','1');
-  }catch(_){}
+    /*
+     * The visible flow is fully controlled by one local timer.
+     * Backend latency can never block or cancel the 4-second success state.
+     */
+    await runNewsletterOptimistic4s(email,'signwell-public');
 
-  btn.disabled=false;
-  btn.textContent=old;
-  newsletterOptimisticBusy=false;
-
-  /*
-   * Do not turn a late timeout into a visible failure after success.
-   * Keep a console diagnostic for debugging. If the request succeeds later,
-   * no additional UI work is needed.
-   */
-  backgroundRequest
-    .then(result=>{
-      try{
-        localStorage.setItem('signwell-newsletter-last-result',JSON.stringify({
-          ok:true,
-          at:Date.now(),
-          status:result?.status||'accepted'
-        }));
-      }catch(_){}
-    })
-    .catch(err=>{
-      console.warn('SIGN WELL newsletter background request:',err?.message||err);
-      try{
-        localStorage.setItem('signwell-newsletter-last-result',JSON.stringify({
-          ok:false,
-          at:Date.now(),
-          error:String(err?.message||err||'unknown')
-        }));
-      }catch(_){}
-    });
+    emailEl.value='';
+    if(consent)consent.checked=false;
+    status.textContent='';
+    success?.classList.remove('show');
+  }finally{
+    btn.disabled=false;
+    btn.textContent=old;
+    newsletterOptimisticBusy=false;
+  }
 }
 function renderNewsletter(){
   app.innerHTML=`<div class="shell newsletter-wrap">
@@ -4421,33 +4472,148 @@ async function render(){
 
 /* ---------- liquid nav ---------- */
 
-const PAGE_ROUTE_FX_KEY='signwell-page-route-fx-v1';
+const PAGE_ROUTE_FX_KEY='signwell-page-route-fx-v2';
+let pagerRouteEntrancePending=false;
 
-function beginPagerRouteFX(){
+function setPagerRouteGesture(progress=0){
   if(reduceMotion())return;
+  const p=Math.max(0,Math.min(1,Number(progress)||0));
+  const fade=1-(p*.24);
+  const chrome=1-(p*.18);
+  const scale=1+(p*.010);
+  const veil=p*.22;
 
-  document.body.classList.remove('page-route-fx');
-  void document.body.offsetWidth;
-  document.body.classList.add('page-route-fx');
-
-  try{
-    sessionStorage.setItem(PAGE_ROUTE_FX_KEY,String(Date.now()));
-  }catch(_){}
+  document.body.style.setProperty('--route-opacity',fade.toFixed(3));
+  document.body.style.setProperty('--route-chrome-opacity',chrome.toFixed(3));
+  document.body.style.setProperty('--route-scale',scale.toFixed(4));
+  document.body.style.setProperty('--route-veil',veil.toFixed(3));
 }
 
-function playPagerRouteEntrance(){
+function beginPagerGestureFX(seed=.035){
+  if(reduceMotion())return;
+  document.body.classList.remove('page-enter-fx','page-enter-pending');
+  document.body.classList.add('page-route-gesture');
+  setPagerRouteGesture(seed);
+}
+
+function cancelPagerGestureFX(){
+  if(reduceMotion())return;
+  document.body.style.setProperty('--route-opacity','1');
+  document.body.style.setProperty('--route-chrome-opacity','1');
+  document.body.style.setProperty('--route-scale','1');
+  document.body.style.setProperty('--route-veil','0');
+
+  setTimeout(()=>{
+    if(!document.body.classList.contains('page-route-fx')){
+      document.body.classList.remove('page-route-gesture');
+    }
+  },130);
+}
+
+function beginPagerRouteFX({persist=true}={}){
+  if(reduceMotion())return;
+
+  document.body.classList.add('page-route-gesture');
+  document.body.classList.add('page-route-fx');
+
+  /* Final old-page state: light veil, quick zoom in, then hand off. */
+  document.body.style.setProperty('--route-opacity','.10');
+  document.body.style.setProperty('--route-chrome-opacity','.20');
+  document.body.style.setProperty('--route-scale','1.019');
+  document.body.style.setProperty('--route-veil','.36');
+
+  if(persist){
+    try{
+      sessionStorage.setItem(PAGE_ROUTE_FX_KEY,String(Date.now()));
+    }catch(_){}
+  }
+}
+
+function preparePagerRouteEntrance(){
+  if(reduceMotion())return false;
+
   let at=0;
   try{
     at=Number(sessionStorage.getItem(PAGE_ROUTE_FX_KEY)||0);
-    sessionStorage.removeItem(PAGE_ROUTE_FX_KEY);
   }catch(_){}
 
-  if(!at||Date.now()-at>3500||reduceMotion())return;
+  if(!at||Date.now()-at>3500)return false;
 
-  requestAnimationFrame(()=>{
-    document.body.classList.add('page-enter-fx');
-    setTimeout(()=>document.body.classList.remove('page-enter-fx'),540);
-  });
+  pagerRouteEntrancePending=true;
+  document.body.classList.add('page-enter-pending');
+  return true;
+}
+
+function playPagerRouteEntrance(){
+  if(reduceMotion())return;
+
+  let valid=pagerRouteEntrancePending;
+  if(!valid){
+    let at=0;
+    try{at=Number(sessionStorage.getItem(PAGE_ROUTE_FX_KEY)||0)}catch(_){}
+    valid=Boolean(at&&Date.now()-at<3500);
+  }
+
+  try{sessionStorage.removeItem(PAGE_ROUTE_FX_KEY)}catch(_){}
+  if(!valid)return;
+
+  pagerRouteEntrancePending=false;
+  document.body.classList.remove('page-enter-pending','page-route-gesture','page-route-fx');
+  document.body.style.removeProperty('--route-opacity');
+  document.body.style.removeProperty('--route-chrome-opacity');
+  document.body.style.removeProperty('--route-scale');
+  document.body.style.removeProperty('--route-veil');
+
+  void document.body.offsetWidth;
+  document.body.classList.add('page-enter-fx');
+  setTimeout(()=>document.body.classList.remove('page-enter-fx'),330);
+}
+
+function playPagerSoftRouteEntrance(){
+  if(reduceMotion()){
+    document.body.classList.remove('page-route-gesture','page-route-fx');
+    return;
+  }
+
+  document.body.classList.remove('page-route-gesture','page-route-fx');
+  document.body.style.removeProperty('--route-opacity');
+  document.body.style.removeProperty('--route-chrome-opacity');
+  document.body.style.removeProperty('--route-scale');
+  document.body.style.removeProperty('--route-veil');
+
+  void document.body.offsetWidth;
+  document.body.classList.add('page-enter-fx');
+  setTimeout(()=>document.body.classList.remove('page-enter-fx'),330);
+}
+
+function pagerPageURL(page){
+  if(page==='home')return pageUrl(PAGE_FILE.home);
+  if(page==='topics')return pageUrl(PAGE_FILE.topics);
+  if(page==='about')return pageUrl(PAGE_FILE.about);
+  if(page==='share')return pageUrl(PAGE_FILE.share);
+  if(page==='newsletter')return pageUrl(PAGE_FILE.newsletter);
+  if(page.startsWith('article/'))return pageUrl(PAGE_FILE.home,page);
+  if(page.startsWith('topic/'))return pageUrl(PAGE_FILE.topics,page);
+  return '';
+}
+
+function pagerWillStayInDocument(page){
+  const url=pagerPageURL(page);
+  return Boolean(url&&sameDocument(url));
+}
+
+function prefetchPagerPage(page){
+  const url=pagerPageURL(page);
+  if(!url||sameDocument(url))return;
+  try{
+    const abs=new URL(url,location.href).href;
+    if([...document.querySelectorAll('link[rel="prefetch"]')].some(x=>x.href===abs))return;
+    const l=document.createElement('link');
+    l.rel='prefetch';
+    l.href=abs;
+    l.as='document';
+    document.head.appendChild(l);
+  }catch(_){}
 }
 
 
@@ -4561,6 +4727,8 @@ const Slider=(()=>{
     target=clamp(target,0,LAST);
     clearPendingNavigation();
     highlight(target);
+
+    /* Thumb and old-page zoom/fade begin together. */
     settle(target*step);
 
     if(reduceMotion()){
@@ -4568,15 +4736,17 @@ const Slider=(()=>{
       return;
     }
 
-    /* v16.5: the page handoff begins immediately on tap or drag release.
-       The gradient bloom hides the cross-document seam while the thumb
-       finishes its elastic motion. */
-    beginPagerRouteFX();
+    const soft=pagerWillStayInDocument(page);
+    prefetchPagerPage(page);
+    beginPagerRouteFX({persist:!soft});
 
     const distance=Math.abs(target-from);
+
+    /* Fast enough to feel continuous, long enough for the thumb to visibly
+       arrive at its real slot before the document hand-off. */
     const wait=tapped
-      ? Math.min(230,135+distance*28)
-      : Math.min(210,115+distance*24);
+      ? Math.min(168,112+distance*14)
+      : Math.min(154,102+distance*13);
 
     rail.classList.add('nav-traveling');
     document.body.classList.add('pager-programmatic');
@@ -4586,6 +4756,13 @@ const Slider=(()=>{
       rail.classList.remove('nav-traveling');
       document.body.classList.remove('pager-programmatic');
       goto(page);
+
+      /* A hash/route that stays in this HTML document must explicitly
+         recover from the exit state; this fixes the old "page stays faded"
+         edge case on article → Home / topic → Topics. */
+      if(soft){
+        requestAnimationFrame(()=>requestAnimationFrame(playPagerSoftRouteEntrance));
+      }
     },wait);
   }
 
@@ -4614,6 +4791,12 @@ const Slider=(()=>{
     lastP=p;lastT=now;
     pos=band(p-grab);
     draw(Math.abs(vel)/1900);
+
+    /* Page opacity/zoom follows actual thumb displacement in real time. */
+    const routeProgress=Math.min(1,Math.abs(pos-startIndex*step)/Math.max(1,step));
+    setPagerRouteGesture(Math.max(.035,routeProgress));
+    const candidate=clamp(Math.round(pos/step),0,LAST);
+    prefetchPagerPage(items[candidate].dataset.page);
   }
 
   function queuePoint(e){
@@ -4628,6 +4811,7 @@ const Slider=(()=>{
     stop();
     refreshRailRect();
     dragging=true;travel=0;startIndex=index;vel=0;
+    beginPagerGestureFX(.035);
     document.body.classList.add('pager-dragging');
     rail.classList.add('grabbing');
     try{rail.setPointerCapture(e.pointerId)}catch(_){}
@@ -4635,6 +4819,9 @@ const Slider=(()=>{
     const half=(vert?size.h:size.w)/2;
     grab=Math.abs(p-pos)<=half?p-pos:0;
     lastP=p;lastT=e.timeStamp||performance.now();
+
+    const likely=clamp(Math.round(p/step),0,LAST);
+    prefetchPagerPage(items[likely].dataset.page);
   },{passive:true});
 
   rail.addEventListener('pointermove',e=>{
@@ -4662,6 +4849,7 @@ const Slider=(()=>{
     }else{
       highlight(target);
       settle(target*step);
+      cancelPagerGestureFX();
     }
   };
 
@@ -4673,6 +4861,7 @@ const Slider=(()=>{
     rail.classList.remove('grabbing');
     if(moveRAF){cancelAnimationFrame(moveRAF);moveRAF=0}
     settle(startIndex*step);
+    cancelPagerGestureFX();
   },{passive:true});
 
   rail.addEventListener('keydown',e=>{
@@ -5008,7 +5197,7 @@ function ensureIdleSubscribePrompt(){
         <input type="email" autocomplete="email" inputmode="email" placeholder="your@email.com" aria-label="Email" required>
         <button type="submit">訂閱 SIGN WELL</button>
       </form>
-      <div class="idle-subscribe-note">送出後會寄出確認信；你可以隨時取消訂閱。</div>
+      <div class="idle-subscribe-note">送出後訂閱即生效；你可以隨時取消訂閱。</div>
     </div>`;
   document.body.appendChild(el);
 
@@ -5036,19 +5225,13 @@ function ensureIdleSubscribePrompt(){
       button.textContent='訂閱中…';
       note.textContent='正在建立訂閱…';
 
-      const bg=startNewsletterBackgroundRequest(email,'signwell-idle-prompt');
+      await runNewsletterOptimistic4s(email,'signwell-idle-prompt');
 
-      /* Same optimistic UX as the full Newsletter page. */
-      await sleep(4000);
-      note.textContent='訂閱申請已送出 ✓ 請稍後留意確認信。';
-      button.textContent='已送出';
+      note.textContent='已訂閱 ✓ 之後會收到 SIGN WELL Letter。';
+      button.textContent='已訂閱';
       markIdleSubscribeHandled(true);
 
-      bg.catch(err=>{
-        console.warn('SIGN WELL idle newsletter background request:',err?.message||err);
-      });
-
-      setTimeout(()=>el.classList.remove('show'),1500);
+      setTimeout(()=>el.classList.remove('show'),900);
     });
   });
 
@@ -5225,6 +5408,7 @@ function prefetchSiblingPages(){
 /* ---------- boot ---------- */
 (async()=>{
   optimize();applyTheme();applyChrome();initGlobalVisualPause();initAdaptiveVisualQuality();
+  preparePagerRouteEntrance();
 
   /* Use the welcome screen as a real warm-up window. */
   const warmPromise=warmStartupCache();
