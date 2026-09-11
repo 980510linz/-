@@ -1,23 +1,5 @@
 [
   {
-    "id": "a-1789108177026",
-    "title": "Test med",
-    "slug": "test-med",
-    "excerpt": "從這裡開始寫。",
-    "category": "藥學測試",
-    "type": "文章",
-    "cover": "assets/uploads/2026/09/test-med-cover-1az2wb5.jpg",
-    "tags": [],
-    "publishedAt": "2026-09-11",
-    "updatedAt": "2026-09-11",
-    "featured": false,
-    "status": "Published",
-    "readingTime": 1,
-    "searchText": "從這裡開始寫。",
-    "revision": "smgjlo",
-    "file": "articles/test-med.json"
-  },
-  {
     "id": "a-1789106184653",
     "title": "2026 911 1:56測試",
     "slug": "2026-911-1-56測試",

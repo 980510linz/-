@@ -1,17 +1,17 @@
 [
   {
-    "id": "topic-1789106146422-0",
-    "name": "Medical Notes",
-    "slug": "medical-notes",
-    "description": "瀏覽 Medical Notes 相關文章與延伸整理。",
-    "order": 0,
-    "active": true
-  },
-  {
     "id": "topic-1789108172491",
     "name": "藥學測試",
     "slug": "Med",
     "description": "",
+    "order": 0,
+    "active": true
+  },
+  {
+    "id": "topic-1789106146422-0",
+    "name": "Medical Notes",
+    "slug": "medical-notes",
+    "description": "瀏覽 Medical Notes 相關文章與延伸整理。",
     "order": 1,
     "active": true
   }

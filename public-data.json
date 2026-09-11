@@ -1,7 +1,7 @@
 {
   "schema": 1,
-  "revision": 1789112318017,
-  "publishedAt": "2026-09-11T07:38:38.017Z",
+  "revision": 1789115848396,
+  "publishedAt": "2026-09-11T08:37:28.396Z",
   "siteText": {
     "siteTitle": "SIGN WELL · 欣緯生醫",
     "metaDescription": "SIGN WELL · 欣緯生醫 — 臨床筆記、醫學推理與值得留下的知識。",
@@ -58,24 +58,24 @@
     "dailyTitle": "每日新文章",
     "dailyDescription": "最新整理與近期發布",
     "topicsSubtitle": "依領域整理文章、臨床問題與延伸閱讀。",
-    "shareEyebrow": "分享我們",
-    "shareTitle": "支持 SIGN WELL 分享給別人",
+    "shareEyebrow": "支持我們",
+    "shareTitle": "分享SIGN WELL",
     "shareSubtitle": "複製網站連結，或使用 QR Code 讓另一台裝置快速開啟。"
   },
   "topics": [
-    {
-      "id": "topic-1789106146422-0",
-      "name": "Medical Notes",
-      "slug": "medical-notes",
-      "description": "瀏覽 Medical Notes 相關文章與延伸整理。",
-      "order": 0,
-      "active": true
-    },
     {
       "id": "topic-1789108172491",
       "name": "藥學測試",
       "slug": "Med",
       "description": "",
+      "order": 0,
+      "active": true
+    },
+    {
+      "id": "topic-1789106146422-0",
+      "name": "Medical Notes",
+      "slug": "medical-notes",
+      "description": "瀏覽 Medical Notes 相關文章與延伸整理。",
       "order": 1,
       "active": true
     }

@@ -54,7 +54,7 @@ window.SIGNWELL_SITE_TEXT = {
   "dailyTitle": "每日新文章",
   "dailyDescription": "最新整理與近期發布",
   "topicsSubtitle": "依領域整理文章、臨床問題與延伸閱讀。",
-  "shareEyebrow": "分享我們",
-  "shareTitle": "支持 SIGN WELL 分享給別人",
+  "shareEyebrow": "支持我們",
+  "shareTitle": "分享SIGN WELL",
   "shareSubtitle": "複製網站連結，或使用 QR Code 讓另一台裝置快速開啟。"
 };
