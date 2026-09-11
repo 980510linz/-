@@ -1,1 +1,38 @@
-window.BLOG_ARTICLES = [];
+window.BLOG_ARTICLES = [
+  {
+    "id": "a-1789133132641",
+    "title": "測試",
+    "subtitle": "",
+    "slug": "測試",
+    "category": "營養品科普",
+    "type": "文章",
+    "excerpt": "從這裡開始寫。",
+    "tags": [],
+    "cover": "",
+    "status": "Published",
+    "featured": false,
+    "publishedAt": "2026-09-11",
+    "updatedAt": "2026-09-11",
+    "content": "<p>從這裡開始寫。</p>",
+    "contentFormat": "html",
+    "references": []
+  },
+  {
+    "id": "a-1789133070607",
+    "title": "測試",
+    "subtitle": "",
+    "slug": "測試",
+    "category": "營養品科普",
+    "type": "文章",
+    "excerpt": "從這裡開始寫。",
+    "tags": [],
+    "cover": "",
+    "status": "Published",
+    "featured": false,
+    "publishedAt": "2026-09-11",
+    "updatedAt": "2026-09-11",
+    "content": "<p>從這裡開始寫。</p>",
+    "contentFormat": "html",
+    "references": []
+  }
+];
