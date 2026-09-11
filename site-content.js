@@ -45,7 +45,7 @@ window.SIGNWELL_SITE_TEXT = {
   "notFoundTitle": "找不到文章",
   "notFoundBody": "這篇文章可能尚未發布或網址已改變。",
   "homeEyebrow": "SIGN WELL  欣緯生醫",
-  "homeTitle1": "跟我醫起走",
+  "homeTitle1": "和我醫起來",
   "homeTitle2": "醫學白話文",
   "homeSubtitle": "以臨床推理、醫學教育與自費醫療觀察為核心的知識平台。從一個問題開始，整理成下一次真正用得上的答案。",
   "homeCardTitle": "醫學不只是答案，而是理解答案從哪裡來。",
@@ -54,7 +54,7 @@ window.SIGNWELL_SITE_TEXT = {
   "dailyTitle": "每日新文章",
   "dailyDescription": "最新整理與近期發布",
   "topicsSubtitle": "依領域整理文章、臨床問題與延伸閱讀。",
-  "shareEyebrow": "分享我們",
-  "shareTitle": "把 SIGN WELL 分享給需要的人。",
+  "shareEyebrow": "支持我們",
+  "shareTitle": "分享SIGN WELL",
   "shareSubtitle": "複製網站連結，或使用 QR Code 讓另一台裝置快速開啟。"
 };
