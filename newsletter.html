@@ -4192,7 +4192,7 @@ function ensureNewsletterFlowUI(){
 
       <div class="nl-flow-stage nl-flow-success">
         <div class="nl-success-check">✓</div>
-        <h2 class="nl-flow-title">已訂閱</h2>
+        <h2 class="nl-flow-title">訂閱成功</h2>
         <p class="nl-flow-copy">你已完成 SIGN WELL Letter 訂閱。之後的新文章與電子報會寄到這個信箱。</p>
         <div class="nl-success-sub">SIGN WELL Letter · No spam. Just signal.</div>
         <button class="nl-success-close" type="button">完成</button>
@@ -4291,48 +4291,6 @@ function startNewsletterBackgroundRequest(email,source='signwell-public'){
 }
 
 
-function runNewsletterOptimistic4s(email,source='signwell-public'){
-  /*
-   * Fixed UX contract:
-   * 0s  : "訂閱中"
-   * 4s  : "已訂閱" + confetti
-   * Apps Script continues independently in the background.
-   */
-  showNewsletterLoading(email);
-
-  const backgroundRequest=startNewsletterBackgroundRequest(email,source);
-
-  backgroundRequest
-    .then(result=>{
-      try{
-        localStorage.setItem('signwell-newsletter-last-result',JSON.stringify({
-          ok:true,
-          at:Date.now(),
-          status:result?.status||'active'
-        }));
-      }catch(_){}
-    })
-    .catch(err=>{
-      try{
-        localStorage.setItem('signwell-newsletter-last-result',JSON.stringify({
-          ok:false,
-          at:Date.now(),
-          error:String(err?.message||err||'unknown')
-        }));
-      }catch(_){}
-      console.warn('SIGN WELL newsletter background request:',err?.message||err);
-    });
-
-  return new Promise(resolve=>{
-    setTimeout(()=>{
-      showNewsletterOptimisticSuccess();
-      try{localStorage.setItem('signwell-newsletter-subscribed','1')}catch(_){}
-      resolve();
-    },4000);
-  });
-}
-
-
 
 
 let newsletterTermsAgreeCallback=null;
@@ -4379,7 +4337,7 @@ function ensureNewsletterTermsModal(){
         <p>按下「我同意」代表你確認已閱讀並同意本電子報訂閱服務條款，並同意 SIGN WELL 依上述方式處理你的訂閱資料。</p>
 
         <div class="newsletter-terms-note">
-          最終法律權歸 signwell.com@gmail.com 所有。
+          你不需要滑到最底才能同意；只要按下「我同意」即可完成本次同意。若不同意，請按「取消」。
         </div>
       </div>
 
@@ -4482,7 +4440,6 @@ function validNewsletterEmail(email=''){
 async function subscribeNewsletter(){
   const emailEl=$('#newsletterEmail'),consent=$('#newsletterConsent'),
         btn=$('#newsletterSubmit'),status=$('#newsletterStatus'),success=$('#newsletterSuccess');
-
   if(!emailEl||!btn||!status||newsletterOptimisticBusy)return;
 
   const email=String(emailEl.value||'').trim().toLowerCase();
@@ -4496,21 +4453,11 @@ async function subscribeNewsletter(){
     emailEl.focus();
     return;
   }
-
-  /*
-   * If Subscribe is pressed before consent, the terms modal becomes the
-   * missing step. After "我同意", we check the box and automatically
-   * continue — no second click is required.
-   */
   if(consent&&!consent.checked){
-    showNewsletterTermsModal(()=>{
-      consent.checked=true;
-      consent.dispatchEvent(new Event('change',{bubbles:true}));
-      requestAnimationFrame(()=>subscribeNewsletter());
-    });
+    status.textContent='請先同意接收 SIGN WELL 電子報。';
+    status.classList.add('error');
     return;
   }
-
   if(!newsletterEnabled()){
     status.textContent='訂閱服務尚未啟用。網站介面已就緒，待 SIGN WELL Backend 連線後即可正式訂閱。';
     status.classList.add('error');
@@ -4523,22 +4470,56 @@ async function subscribeNewsletter(){
   btn.textContent='訂閱中…';
   status.textContent='';
 
-  try{
-    /*
-     * The visible flow is fully controlled by one local timer.
-     * Backend latency can never block or cancel the 4-second success state.
-     */
-    await runNewsletterOptimistic4s(email,'signwell-public');
+  showNewsletterLoading(email);
 
-    emailEl.value='';
-    if(consent)consent.checked=false;
-    status.textContent='';
-    success?.classList.remove('show');
-  }finally{
-    btn.disabled=false;
-    btn.textContent=old;
-    newsletterOptimisticBusy=false;
-  }
+  /*
+   * Start the real request immediately, but keep it fully detached from the
+   * visible 4-second UI. A slow Apps Script response can finish in background.
+   */
+  const backgroundRequest=startNewsletterBackgroundRequest(email,'signwell-public');
+
+  /* At 4 seconds, present optimistic success regardless of response timing. */
+  await sleep(4000);
+  showNewsletterOptimisticSuccess();
+
+  emailEl.value='';
+  if(consent)consent.checked=false;
+  status.textContent='';
+  success?.classList.remove('show');
+
+  try{
+    localStorage.setItem('signwell-newsletter-subscribed','1');
+  }catch(_){}
+
+  btn.disabled=false;
+  btn.textContent=old;
+  newsletterOptimisticBusy=false;
+
+  /*
+   * Do not turn a late timeout into a visible failure after success.
+   * Keep a console diagnostic for debugging. If the request succeeds later,
+   * no additional UI work is needed.
+   */
+  backgroundRequest
+    .then(result=>{
+      try{
+        localStorage.setItem('signwell-newsletter-last-result',JSON.stringify({
+          ok:true,
+          at:Date.now(),
+          status:result?.status||'accepted'
+        }));
+      }catch(_){}
+    })
+    .catch(err=>{
+      console.warn('SIGN WELL newsletter background request:',err?.message||err);
+      try{
+        localStorage.setItem('signwell-newsletter-last-result',JSON.stringify({
+          ok:false,
+          at:Date.now(),
+          error:String(err?.message||err||'unknown')
+        }));
+      }catch(_){}
+    });
 }
 function renderNewsletter(){
   app.innerHTML=`<div class="shell newsletter-wrap">
@@ -5416,13 +5397,19 @@ function ensureIdleSubscribePrompt(){
       button.textContent='訂閱中…';
       note.textContent='正在建立訂閱…';
 
-      await runNewsletterOptimistic4s(email,'signwell-idle-prompt');
+      const bg=startNewsletterBackgroundRequest(email,'signwell-idle-prompt');
 
-      note.textContent='已訂閱 ✓ 之後會收到 SIGN WELL Letter。';
-      button.textContent='已訂閱';
+      /* Same optimistic UX as the full Newsletter page. */
+      await sleep(4000);
+      note.textContent='訂閱完成 ✓ 之後會收到 SIGN WELL Letter。';
+      button.textContent='已送出';
       markIdleSubscribeHandled(true);
 
-      setTimeout(()=>el.classList.remove('show'),900);
+      bg.catch(err=>{
+        console.warn('SIGN WELL idle newsletter background request:',err?.message||err);
+      });
+
+      setTimeout(()=>el.classList.remove('show'),1500);
     });
   });
 
