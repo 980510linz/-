@@ -5,336 +5,186 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="robots" content="noindex,nofollow,noarchive">
 <meta name="referrer" content="no-referrer">
-<title>取消電子報 · SIGN WELL</title>
+<title>電子報設定 · SIGN WELL</title>
 <script src="analytics-config.js"></script>
 <style>
 :root{
-  --ink:#173044;
-  --muted:#71899a;
-  --line:rgba(255,255,255,.70);
-  --glass:rgba(255,255,255,.34);
-  --accent:#4f9ac9;
-  --sans:"Microsoft JhengHei","微軟正黑體","PingFang TC","Noto Sans TC",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  --ink:#173044;--muted:#71899a;--line:rgba(255,255,255,.72);
   --serif:"Zen Old Mincho","Noto Serif TC","Songti TC","PMingLiU",serif;
+  --sans:"Microsoft JhengHei","微軟正黑體","PingFang TC","Noto Sans TC",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
 }
-*{box-sizing:border-box}
-html,body{min-height:100%;margin:0}
+*{box-sizing:border-box}html,body{min-height:100%;margin:0}
 body{
-  min-height:100dvh;
-  display:grid;
-  place-items:center;
-  overflow:hidden;
+  min-height:100dvh;display:grid;place-items:center;
   padding:max(22px,env(safe-area-inset-top)) 20px max(22px,env(safe-area-inset-bottom));
-  color:var(--ink);
-  font-family:var(--sans);
+  color:var(--ink);font-family:var(--sans);
   background:
-    radial-gradient(780px 470px at 4% -8%,rgba(255,255,255,.98),transparent 64%),
-    radial-gradient(660px 420px at 102% 108%,rgba(127,193,235,.20),transparent 68%),
+    radial-gradient(760px 460px at 4% -8%,rgba(255,255,255,.98),transparent 64%),
+    radial-gradient(680px 430px at 103% 108%,rgba(126,194,236,.19),transparent 68%),
     linear-gradient(155deg,#fafcfe,#eef5fa 48%,#e5eff7);
 }
 .ambient{position:fixed;inset:0;pointer-events:none;overflow:hidden}
-.orb{position:absolute;border-radius:50%;filter:blur(2px);opacity:.48}
-.o1{width:340px;height:340px;left:-130px;top:-110px;background:radial-gradient(circle,rgba(255,255,255,.95),rgba(179,222,248,.16) 58%,transparent 72%)}
-.o2{width:390px;height:390px;right:-150px;bottom:-170px;background:radial-gradient(circle,rgba(137,203,243,.27),rgba(255,255,255,.06) 62%,transparent 74%)}
+.orb{position:absolute;border-radius:50%;opacity:.44}
+.o1{width:350px;height:350px;left:-140px;top:-120px;background:radial-gradient(circle,rgba(255,255,255,.96),rgba(176,220,247,.17) 58%,transparent 72%)}
+.o2{width:400px;height:400px;right:-160px;bottom:-175px;background:radial-gradient(circle,rgba(136,203,242,.24),rgba(255,255,255,.06) 62%,transparent 74%)}
 .card{
-  width:min(520px,100%);
-  position:relative;
-  z-index:2;
-  padding:34px 30px 28px;
-  border:1px solid var(--line);
-  border-radius:30px;
-  background:
-    radial-gradient(280px 130px at 10% 0%,rgba(255,255,255,.78),transparent 72%),
-    linear-gradient(145deg,rgba(255,255,255,.42),rgba(224,242,254,.12));
-  -webkit-backdrop-filter:blur(20px) saturate(150%);
-  backdrop-filter:blur(20px) saturate(150%);
-  box-shadow:
-    0 30px 84px rgba(60,102,132,.12),
-    inset 0 1px 0 rgba(255,255,255,.92),
-    inset 0 -1px 0 rgba(95,151,188,.05);
-  text-align:center;
+  width:min(560px,100%);position:relative;z-index:2;padding:34px 30px 28px;border:1px solid var(--line);border-radius:31px;
+  background:radial-gradient(310px 150px at 10% 0%,rgba(255,255,255,.80),transparent 72%),linear-gradient(145deg,rgba(255,255,255,.43),rgba(224,242,254,.12));
+  -webkit-backdrop-filter:blur(20px) saturate(150%);backdrop-filter:blur(20px) saturate(150%);
+  box-shadow:0 30px 84px rgba(60,102,132,.12),inset 0 1px 0 rgba(255,255,255,.92);text-align:center;
 }
-.brand{
-  font:900 11px/1 var(--sans);
-  letter-spacing:.16em;
-  color:#5d7e94;
-  text-transform:uppercase;
-}
+.brand{font:900 11px/1 var(--sans);letter-spacing:.16em;color:#5d7e94}
 .icon{
-  width:62px;height:62px;
-  margin:24px auto 18px;
-  border-radius:22px;
-  display:grid;place-items:center;
-  color:#4b8db8;
-  background:linear-gradient(145deg,rgba(255,255,255,.80),rgba(207,234,251,.42));
-  border:1px solid rgba(255,255,255,.88);
-  box-shadow:0 14px 34px rgba(71,128,166,.12),inset 0 1px 0 #fff;
+  width:64px;height:64px;margin:23px auto 18px;border-radius:22px;display:grid;place-items:center;color:#4b8db8;
+  background:linear-gradient(145deg,rgba(255,255,255,.82),rgba(207,234,251,.42));border:1px solid rgba(255,255,255,.90);
+  box-shadow:0 14px 34px rgba(71,128,166,.10),inset 0 1px 0 #fff
 }
-.icon svg{width:27px;height:27px}
-h1{
-  margin:0;
-  font-family:var(--serif);
-  font-size:clamp(28px,7vw,42px);
-  line-height:1.22;
-  font-weight:900;
-  letter-spacing:.02em;
+.icon svg{width:28px;height:28px}
+h1{margin:0;font-family:var(--serif);font-size:clamp(28px,7vw,42px);line-height:1.2;font-weight:900}
+.copy{margin:13px auto 0;max-width:430px;color:var(--muted);font-size:14px;line-height:1.85;font-weight:700}
+.keep-box{margin:22px 0 0;padding:17px;text-align:left;border-radius:20px;background:rgba(255,255,255,.30);border:1px solid rgba(255,255,255,.68);box-shadow:inset 0 1px 0 rgba(255,255,255,.78)}
+.keep-box strong{display:block;color:#496c83;font-size:12px}.keep-box ul{margin:9px 0 0;padding-left:18px;color:#7a909f;font-size:11px;line-height:1.75;font-weight:700}
+.actions{display:grid;grid-template-columns:1.2fr 1fr;gap:10px;margin-top:22px}
+button,a{
+  min-height:46px;padding:0 17px;border-radius:16px;border:1px solid rgba(255,255,255,.82);
+  font:850 13px/1 var(--sans);text-decoration:none;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;
+  transition:transform .16s cubic-bezier(.16,1,.3,1),box-shadow .16s ease,background .16s ease
 }
-p{
-  margin:14px auto 0;
-  max-width:390px;
-  color:var(--muted);
-  font-size:14px;
-  line-height:1.85;
-  font-weight:700;
+button:active,a:active{transform:scale(.975)}
+.primary{color:#fff;background:linear-gradient(145deg,#5ba9d8,#407fa8);box-shadow:0 10px 24px rgba(63,126,168,.15),inset 0 1px 0 rgba(255,255,255,.28)}
+.secondary{color:#54768b;background:rgba(255,255,255,.30)}.danger-soft{color:#8b6666;background:rgba(255,247,247,.42)}
+.hidden{display:none!important}.reason-panel{margin-top:22px;text-align:left}.reason-title{color:#59778b;font-size:11px;font-weight:900;margin-bottom:10px}
+.reason-list{display:grid;gap:8px}
+.reason-option{
+  display:flex;align-items:center;gap:10px;min-height:46px;padding:11px 13px;border-radius:16px;
+  background:rgba(255,255,255,.30);border:1px solid rgba(255,255,255,.68);color:#667f90;font-size:11px;font-weight:800;cursor:pointer
 }
-.email{
-  display:none;
-  margin:15px auto 0;
-  width:max-content;
-  max-width:100%;
-  padding:8px 12px;
-  border-radius:999px;
-  color:#55778d;
-  background:rgba(255,255,255,.42);
-  border:1px solid rgba(255,255,255,.72);
-  font-size:12px;
-  font-weight:800;
+.reason-option input{accent-color:#5b9dca}
+.reason-option:has(input:checked){color:#416d89;background:rgba(226,245,255,.58);border-color:rgba(133,194,230,.38);box-shadow:0 6px 18px rgba(72,128,166,.07),inset 0 1px 0 #fff}
+textarea{
+  width:100%;min-height:82px;margin-top:10px;padding:12px 13px;resize:vertical;border-radius:16px;border:1px solid rgba(255,255,255,.72);outline:0;
+  background:rgba(255,255,255,.34);color:#526f82;font:700 11px/1.7 var(--sans)
 }
+textarea:focus{box-shadow:0 0 0 4px rgba(92,160,204,.08)}
+.skip{margin:10px auto 0;display:block;min-height:auto;padding:4px 8px;border:0;background:transparent;color:#9aa9b2;font-size:10px}
+.email{display:none;margin:15px auto 0;width:max-content;max-width:100%;padding:8px 12px;border-radius:999px;color:#55778d;background:rgba(255,255,255,.42);border:1px solid rgba(255,255,255,.72);font-size:12px;font-weight:800}
 .email.show{display:block}
-.actions{
-  display:flex;
-  justify-content:center;
-  flex-wrap:wrap;
-  gap:10px;
-  margin-top:25px;
-}
-a,button{
-  min-height:44px;
-  padding:0 17px;
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;
-  border-radius:15px;
-  border:1px solid rgba(255,255,255,.80);
-  font-family:var(--sans);
-  font-size:13px;
-  font-weight:850;
-  text-decoration:none;
-  cursor:pointer;
-  transition:transform .16s cubic-bezier(.16,1,.3,1),background .16s ease,box-shadow .16s ease;
-}
-a:active,button:active{transform:scale(.975)}
-.primary{
-  color:#fff;
-  background:linear-gradient(145deg,#5ba9d8,#407fa8);
-  box-shadow:0 10px 24px rgba(63,126,168,.16),inset 0 1px 0 rgba(255,255,255,.28);
-}
-.secondary{
-  color:#496d84;
-  background:rgba(255,255,255,.32);
-}
-.spinner{
-  width:22px;height:22px;
-  border-radius:50%;
-  border:2px solid rgba(83,143,182,.17);
-  border-top-color:#5a9ec9;
-  animation:spin .8s linear infinite;
-}
+.spinner{width:22px;height:22px;border-radius:50%;border:2px solid rgba(83,143,182,.17);border-top-color:#5a9ec9;animation:spin .8s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
-[data-state="success"] .spinner,
-[data-state="error"] .spinner,
-[data-state="preview"] .spinner{display:none}
-[data-state="success"] .icon{color:#3d9b76}
-[data-state="error"] .icon{color:#a96b6b}
-.note{
-  margin-top:22px;
-  padding-top:18px;
-  border-top:1px solid rgba(130,167,192,.16);
-  color:#9aabb6;
-  font-size:10.5px;
-  line-height:1.7;
-  font-weight:700;
-}
-@media(max-width:620px){
-  body{overflow:auto}
-  .card{padding:30px 20px 24px;border-radius:26px}
-  .o1,.o2{opacity:.34}
-}
-@media(pointer:coarse){
-  .card{-webkit-backdrop-filter:blur(10px) saturate(130%);backdrop-filter:blur(10px) saturate(130%)}
-}
-@media(prefers-reduced-motion:reduce){
-  .spinner{animation:none}
-  a,button{transition:none}
-}
+.note{margin-top:20px;padding-top:17px;border-top:1px solid rgba(130,167,192,.16);color:#9aabb6;font-size:10px;line-height:1.7;font-weight:700}
+@media(max-width:620px){body{place-items:start center;padding-top:max(34px,env(safe-area-inset-top))}.card{padding:29px 20px 23px;border-radius:27px}.actions{grid-template-columns:1fr}.o1,.o2{opacity:.32}}
+@media(pointer:coarse){.card{-webkit-backdrop-filter:blur(10px) saturate(130%);backdrop-filter:blur(10px) saturate(130%)}}
+@media(prefers-reduced-motion:reduce){.spinner{animation:none}button,a{transition:none}}
 </style>
 </head>
-<body data-state="loading">
+<body>
 <div class="ambient" aria-hidden="true"><i class="orb o1"></i><i class="orb o2"></i></div>
-
 <main class="card" role="main" aria-live="polite">
   <div class="brand">SIGN WELL · 欣緯生醫</div>
   <div class="icon" id="statusIcon">
-    <div class="spinner" aria-hidden="true"></div>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6.8 12 12l8-5.2"/><rect x="3" y="5" width="18" height="14" rx="3"/></svg>
   </div>
-  <h1 id="title">正在取消訂閱</h1>
-  <p id="copy">正在同步你的電子報設定。完成後，這個信箱就不會再收到 SIGN WELL Letter。</p>
-  <div class="email" id="email"></div>
-
-  <div class="actions">
-    <a class="primary" id="homeBtn" href="index.html">回到 SIGN WELL</a>
-    <a class="secondary" id="resubBtn" href="newsletter.html">重新訂閱</a>
-  </div>
-
-  <div class="note">這個頁面不會出現在網站導覽中。取消訂閱只會停止 SIGN WELL 電子報，不會影響網站瀏覽。</div>
+  <section id="retentionStep">
+    <h1>確定要離開嗎？</h1>
+    <p class="copy">你可以繼續保留 SIGN WELL Letter。只有有值得寄出的內容時，我們才希望出現在你的收件匣。</p>
+    <div class="keep-box">
+      <strong>保留訂閱，你仍會收到</strong>
+      <ul><li>新文章與重要醫學整理</li><li>SIGN WELL Letter 的主題精選</li><li>可隨時再次從任何電子報底部取消</li></ul>
+    </div>
+    <div class="actions">
+      <button type="button" class="primary" id="keepBtn">繼續訂閱</button>
+      <button type="button" class="secondary" id="continueCancelBtn">仍要取消</button>
+    </div>
+  </section>
+  <section id="reasonStep" class="hidden">
+    <h1>在離開之前</h1>
+    <p class="copy">如果願意，告訴我們原因。這不會影響你取消訂閱，也可以直接跳過。</p>
+    <div class="reason-panel">
+      <div class="reason-title">取消訂閱原因</div>
+      <div class="reason-list">
+        <label class="reason-option"><input type="radio" name="reason" value="too-frequent">寄送太頻繁</label>
+        <label class="reason-option"><input type="radio" name="reason" value="not-relevant">內容與我的需求不符</label>
+        <label class="reason-option"><input type="radio" name="reason" value="temporary">暫時不想收到</label>
+        <label class="reason-option"><input type="radio" name="reason" value="web-only">我比較想直接在網站閱讀</label>
+        <label class="reason-option"><input type="radio" name="reason" value="other">其他</label>
+      </div>
+      <textarea id="reasonNote" maxlength="240" placeholder="其他想告訴 SIGN WELL 的內容（選填）"></textarea>
+    </div>
+    <div class="actions">
+      <button type="button" class="secondary" id="backBtn">返回</button>
+      <button type="button" class="danger-soft" id="unsubscribeBtn">確認取消訂閱</button>
+    </div>
+    <button type="button" class="skip" id="skipBtn">不填原因，直接取消</button>
+  </section>
+  <section id="resultStep" class="hidden">
+    <h1 id="resultTitle">正在同步</h1>
+    <p class="copy" id="resultCopy">正在更新你的電子報設定。</p>
+    <div class="email" id="email"></div>
+    <div class="actions">
+      <a class="primary" href="index.html">回到 SIGN WELL</a>
+      <a class="secondary" href="newsletter.html">重新訂閱</a>
+    </div>
+  </section>
+  <div class="note">這是隱藏設定頁，不會出現在網站導覽。取消訂閱只會停止電子報，不影響網站瀏覽。</div>
 </main>
-
 <script>
 const FALLBACK_ENDPOINT='https://script.google.com/macros/s/AKfycbzmZXZSepxCD1jbfpjMxsnvn0nRl-xEpeXdJoTO-TZL6Z5Zk7T-OsVGpTkIxWaCh-Y/exec';
-
+const params=new URLSearchParams(location.search);
+const token=params.get('t')||'';
 function endpoint(){
   const cfg=window.SIGNWELL_NEWSLETTER||window.SIGNWELL_ANALYTICS||{};
   const url=String(cfg.endpoint||FALLBACK_ENDPOINT).trim();
   return /^https:\/\/script\.google\.com\/macros\/s\//i.test(url)?url:FALLBACK_ENDPOINT;
 }
-
 function gasBridge(action,payload={},timeoutMs=45000){
   return new Promise((resolve,reject)=>{
     const requestId='swu_'+Date.now().toString(36)+'_'+Math.random().toString(36).slice(2);
     const frameName='swuframe_'+requestId;
-
     const iframe=document.createElement('iframe');
-    iframe.name=frameName;
-    iframe.title='SIGN WELL Backend';
-    iframe.tabIndex=-1;
-    iframe.setAttribute('aria-hidden','true');
-    Object.assign(iframe.style,{
-      position:'fixed',width:'1px',height:'1px',opacity:'0',
-      pointerEvents:'none',left:'-9999px',top:'-9999px'
-    });
-
+    iframe.name=frameName;iframe.tabIndex=-1;iframe.setAttribute('aria-hidden','true');
+    Object.assign(iframe.style,{position:'fixed',width:'1px',height:'1px',opacity:'0',pointerEvents:'none',left:'-9999px',top:'-9999px'});
     const form=document.createElement('form');
-    form.method='POST';
-    form.action=endpoint();
-    form.target=frameName;
-    form.style.display='none';
-
-    const add=(name,value)=>{
-      const i=document.createElement('input');
-      i.type='hidden';
-      i.name=name;
-      i.value=String(value??'');
-      form.appendChild(i);
-    };
-
-    add('transport','iframe');
-    add('requestId',requestId);
-    add('returnOrigin',location.origin);
-    add('action',action);
-    add('payload',JSON.stringify(payload||{}));
-
+    form.method='POST';form.action=endpoint();form.target=frameName;form.style.display='none';
+    const add=(name,value)=>{const i=document.createElement('input');i.type='hidden';i.name=name;i.value=String(value??'');form.appendChild(i)};
+    add('transport','iframe');add('requestId',requestId);add('returnOrigin',location.origin);add('action',action);add('payload',JSON.stringify(payload||{}));
     let timer=0;
-    const cleanup=()=>{
-      clearTimeout(timer);
-      window.removeEventListener('message',onMessage);
-      form.remove();
-      setTimeout(()=>iframe.remove(),40);
-    };
-
-    const onMessage=e=>{
-      const d=e.data;
-      if(!d||d.source!=='SIGNWELL_GAS'||d.requestId!==requestId)return;
-      cleanup();
-      d.ok?resolve(d.data||{}):reject(new Error(d.error||'SIGN WELL Backend error'));
-    };
-
+    const cleanup=()=>{clearTimeout(timer);window.removeEventListener('message',onMessage);form.remove();setTimeout(()=>iframe.remove(),40)};
+    const onMessage=e=>{const d=e.data;if(!d||d.source!=='SIGNWELL_GAS'||d.requestId!==requestId)return;cleanup();d.ok?resolve(d.data||{}):reject(new Error(d.error||'SIGN WELL Backend error'))};
     window.addEventListener('message',onMessage);
-    timer=setTimeout(()=>{
-      cleanup();
-      reject(new Error('取消訂閱同步逾時，請稍後重新開啟郵件中的連結。'));
-    },timeoutMs);
-
-    document.body.append(iframe,form);
-    form.submit();
+    timer=setTimeout(()=>{cleanup();reject(new Error('取消訂閱同步逾時，請稍後再試。'))},timeoutMs);
+    document.body.append(iframe,form);form.submit();
   });
 }
-
-function setState(state,title,copy,email=''){
-  document.body.dataset.state=state;
-  document.getElementById('title').textContent=title;
-  document.getElementById('copy').textContent=copy;
-
-  const emailEl=document.getElementById('email');
-  if(email){
-    emailEl.textContent=email;
-    emailEl.classList.add('show');
-  }else{
-    emailEl.textContent='';
-    emailEl.classList.remove('show');
-  }
-
+function showOnly(id){['retentionStep','reasonStep','resultStep'].forEach(x=>document.getElementById(x).classList.toggle('hidden',x!==id))}
+function setResult(title,copy,email='',kind='success'){
+  showOnly('resultStep');document.getElementById('resultTitle').textContent=title;document.getElementById('resultCopy').textContent=copy;
+  const em=document.getElementById('email');if(email){em.textContent=email;em.classList.add('show')}else{em.classList.remove('show')}
   const icon=document.getElementById('statusIcon');
-  if(state==='success'){
-    icon.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>';
-  }else if(state==='error'){
-    icon.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" aria-hidden="true"><path d="M12 8v5"/><path d="M12 17h.01"/><circle cx="12" cy="12" r="9"/></svg>';
-  }else if(state==='preview'){
-    icon.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6S2 12 2 12Z"/><circle cx="12" cy="12" r="2.5"/></svg>';
-  }
+  if(kind==='loading')icon.innerHTML='<div class="spinner" aria-hidden="true"></div>';
+  else if(kind==='error')icon.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1"><circle cx="12" cy="12" r="9"/><path d="M12 8v5"/><path d="M12 17h.01"/></svg>';
+  else icon.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M20 6 9 17l-5-5"/></svg>';
 }
-
-(async()=>{
-  const params=new URLSearchParams(location.search);
-  const token=params.get('t')||'';
-
-  if(params.get('preview')==='1'){
-    setState(
-      'preview',
-      '取消訂閱頁面',
-      '這是電子報預覽／測試連結，不會變更任何人的訂閱狀態。'
-    );
-    return;
-  }
-
-  if(!token){
-    setState(
-      'error',
-      '連結無效',
-      '這個取消訂閱連結缺少必要憑證。請從你收到的 SIGN WELL 電子報底部重新開啟「取消訂閱」。'
-    );
-    return;
-  }
-
+async function unsubscribe(reason='skipped'){
+  if(!token){setResult('連結無效','這個取消訂閱連結缺少必要憑證。','','error');return}
+  setResult('正在取消訂閱','正在同步你的設定，完成後就不會再收到 SIGN WELL Letter。','','loading');
   try{
-    const result=await gasBridge('newsletter.unsubscribe',{token});
-
+    const note=reason==='skipped'?'':String(document.getElementById('reasonNote')?.value||'').trim();
+    const result=await gasBridge('newsletter.unsubscribe',{token,reason,note});
     try{
       localStorage.removeItem('signwell-newsletter-subscribed');
-      localStorage.setItem('signwell-newsletter-last-result',JSON.stringify({
-        ok:true,
-        at:Date.now(),
-        status:'unsubscribed'
-      }));
+      localStorage.setItem('signwell-newsletter-last-result',JSON.stringify({ok:true,at:Date.now(),status:'unsubscribed'}));
     }catch(_){}
-
-    try{
-      history.replaceState(null,'',location.pathname);
-    }catch(_){}
-
-    setState(
-      'success',
-      '已取消訂閱',
-      result.message||'已同步完成。之後不會再寄送 SIGN WELL 電子報到這個信箱。',
-      result.emailMasked||''
-    );
-  }catch(err){
-    setState(
-      'error',
-      '無法完成取消訂閱',
-      String(err?.message||err||'系統暫時無法同步，請稍後再試。')
-    );
-  }
-})();
+    try{history.replaceState(null,'',location.pathname)}catch(_){}
+    setResult('已取消訂閱',result.message||'已同步完成。之後不會再寄送 SIGN WELL 電子報到這個信箱。',result.emailMasked||'','success');
+  }catch(err){setResult('無法完成取消訂閱',String(err?.message||err||'系統暫時無法同步，請稍後再試。'),'','error')}
+}
+document.getElementById('keepBtn').onclick=()=>setResult('已保留訂閱','你的訂閱沒有任何變更。下一封值得讀的內容，我們再見。','','success');
+document.getElementById('continueCancelBtn').onclick=()=>showOnly('reasonStep');
+document.getElementById('backBtn').onclick=()=>showOnly('retentionStep');
+document.getElementById('unsubscribeBtn').onclick=()=>unsubscribe(document.querySelector('input[name="reason"]:checked')?.value||'skipped');
+document.getElementById('skipBtn').onclick=()=>unsubscribe('skipped');
+if(params.get('preview')==='1')setResult('取消訂閱設定頁','這是電子報預覽／測試連結，不會變更任何人的訂閱狀態。','','success');
+else if(!token)setResult('連結無效','請從你收到的 SIGN WELL 電子報底部重新開啟「取消訂閱」。','','error');
 </script>
 </body>
 </html>
