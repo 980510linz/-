@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#eef7ff" id="themeColorMeta">
+<meta name="theme-color" content="#f5f8fb" id="themeColorMeta">
 <meta name="color-scheme" content="light dark">
 <meta name="description" content="SIGN WELL · 欣緯生醫 — 臨床筆記、主題探討與醫學知識整理。">
 <meta property="og:type" content="website">
@@ -3622,7 +3622,7 @@ body.dark .topic-card:hover .topic-count{
 
 
 /* ============================================================
-   Public v17.9 · Stability + Performance
+   Public v18.2 · Stability + Performance
    ============================================================ */
 
 /* Dark mode highlight readability: v17.8 was too aggressive for inline
@@ -3709,6 +3709,328 @@ html.sw-lowfx .cursor-glow{
     translate:0!important;
     filter:none!important;
   }
+}
+
+
+/* ============================================================
+   Public v18.2 · Overall Performance / UX / Accessibility
+   ============================================================ */
+html,body{
+  overscroll-behavior-x:none;
+}
+h1,h2,h3{
+  text-wrap:balance;
+  overflow-wrap:anywhere;
+}
+p,li,figcaption{
+  overflow-wrap:break-word;
+}
+body.sw-page-hidden .orb,
+body.visual-paused .orb{
+  animation-play-state:paused!important;
+}
+
+/* Better touch ergonomics without changing desktop density. */
+@media (max-width:700px), (pointer:coarse){
+  button,
+  .pillbtn,
+  .softbtn,
+  .cta,
+  .pager button,
+  .top-actions button{
+    min-height:44px;
+    touch-action:manipulation;
+  }
+  input,select,textarea{
+    font-size:16px!important;
+  }
+  .article-body{
+    overflow-wrap:anywhere;
+  }
+}
+
+/* Explicit high-contrast fallback. */
+@media (prefers-contrast:more){
+  body{--muted:#516779}
+  body.dark{--muted:#d0dde6!important}
+  .glass,.lightcard{
+    border-color:rgba(97,133,162,.34)!important;
+  }
+}
+
+/* Printing articles should be clean, white and ink-friendly. */
+@media print{
+  body{background:#fff!important;color:#111!important}
+  .ambient,.grain,.cursor-glow,.brand-top,.top-actions,.pager,
+  .reading-progress,.to-top,.article-actions,.toc,.footer,
+  #welcomeSplash,#idleSubscribePrompt{display:none!important}
+  #app,.article-view,.article-layout,.article-body{
+    display:block!important;width:auto!important;max-width:none!important;
+    margin:0!important;padding:0!important;box-shadow:none!important;
+  }
+  .article-body{color:#111!important}
+  .article-body a{color:#111!important;text-decoration:underline!important}
+}
+
+
+/* ============================================================
+   Public v18.2 · Apple Pastel Material + Spring Slider
+   Palette: soft pink / soft green / soft blue / white
+   ============================================================ */
+:root{
+  --sw-pink:#f6dfe6;
+  --sw-pink-2:#faedf1;
+  --sw-green:#dff0e8;
+  --sw-green-2:#eef8f3;
+  --sw-blue:#dfeeff;
+  --sw-blue-2:#eef6ff;
+  --sw-white:#fbfdff;
+
+  --sky:#82b6f2;
+  --sky-deep:#4e8fd8;
+  --sky2:#cfe4fb;
+  --sky3:#f3f8fe;
+
+  --ink:#172334;
+  --muted:#748497;
+  --bg:#f5f8fb;
+
+  --glass-tint-a:rgba(255,255,255,.78);
+  --glass-tint-b:rgba(247,251,255,.48);
+  --glass-rim:rgba(255,255,255,.98);
+  --glass-rim-soft:rgba(209,225,239,.54);
+  --glass-blur:24px;
+  --glass-sat:155%;
+
+  --shadow-soft:0 2px 7px rgba(61,84,110,.045);
+  --shadow-lift:
+    0 18px 48px rgba(63,96,126,.105),
+    0 4px 14px rgba(63,96,126,.045);
+  --shadow-hover:
+    0 24px 62px rgba(63,96,126,.14),
+    0 6px 18px rgba(63,96,126,.06);
+
+  --apple-spring:cubic-bezier(.22,1.32,.36,1);
+  --apple-soft:cubic-bezier(.2,.8,.2,1);
+}
+
+body{
+  background:
+    radial-gradient(68rem 46rem at -10% 2%,rgba(246,223,230,.68),transparent 56%),
+    radial-gradient(58rem 46rem at 106% 2%,rgba(223,238,255,.92),transparent 58%),
+    radial-gradient(58rem 44rem at 8% 102%,rgba(223,240,232,.72),transparent 56%),
+    radial-gradient(56rem 48rem at 96% 94%,rgba(238,246,255,.90),transparent 58%),
+    linear-gradient(155deg,#fbfdff 0%,#f5f8fb 48%,#eff5f9 100%) !important;
+  background-attachment:fixed;
+}
+
+.ambient{
+  filter:blur(90px) saturate(118%)!important;
+  opacity:.72!important;
+}
+.orb.a{
+  background:radial-gradient(circle,rgba(188,218,252,.48),transparent 68%)!important;
+}
+.orb.b{
+  background:radial-gradient(circle,rgba(247,218,227,.42),transparent 68%)!important;
+}
+.orb.c{
+  background:radial-gradient(circle,rgba(208,236,223,.36),transparent 68%)!important;
+}
+.orb.d{
+  background:radial-gradient(circle,rgba(219,233,252,.34),transparent 70%)!important;
+}
+.grain{opacity:.10!important}
+
+.glass,
+.lightcard{
+  background:
+    linear-gradient(145deg,rgba(255,255,255,.80),rgba(247,251,255,.46))!important;
+  border-color:rgba(255,255,255,.88)!important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.98),
+    inset 0 -1px 0 rgba(121,151,176,.055),
+    var(--shadow-lift)!important;
+  backdrop-filter:blur(24px) saturate(150%)!important;
+  -webkit-backdrop-filter:blur(24px) saturate(150%)!important;
+}
+
+.glass::before{
+  background:
+    linear-gradient(
+      150deg,
+      rgba(255,255,255,1) 0%,
+      rgba(222,238,253,.68) 32%,
+      rgba(247,224,231,.30) 57%,
+      rgba(224,241,233,.28) 76%,
+      rgba(255,255,255,.96) 100%
+    )!important;
+}
+
+/* Apple-like controls: quiet surface, hairline border, compact spring. */
+.pillbtn,
+.softbtn,
+.backlink,
+.newsletter-submit,
+.share-copy,
+.top-actions button,
+.search-close,
+.to-top{
+  background:rgba(255,255,255,.62)!important;
+  border-color:rgba(255,255,255,.92)!important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.98),
+    0 8px 22px rgba(64,94,122,.08)!important;
+  backdrop-filter:blur(18px) saturate(145%)!important;
+  -webkit-backdrop-filter:blur(18px) saturate(145%)!important;
+  transition:
+    scale .22s var(--apple-spring),
+    transform .28s var(--apple-soft),
+    box-shadow .28s ease,
+    background .28s ease!important;
+}
+.pillbtn:active,
+.softbtn:active,
+.backlink:active,
+.newsletter-submit:active,
+.share-copy:active,
+.top-actions button:active{
+  scale:.965;
+}
+
+.article-card,
+.topic-card,
+.person-card,
+.share-card,
+.newsletter-card,
+.about-manifesto,
+.hero-card{
+  border-color:rgba(255,255,255,.90)!important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.98),
+    0 18px 48px rgba(63,92,119,.085)!important;
+}
+
+/* Pink and green are accents, never competing at the same visual weight. */
+.kicker,
+.newsletter-kicker,
+.topic-no{
+  color:#6796c8!important;
+}
+.badge,
+.chip{
+  background:rgba(223,240,232,.52)!important;
+  border-color:rgba(255,255,255,.84)!important;
+}
+.article-card:nth-child(4n+1)::after,
+.topic-card:nth-child(4n+1)::after{
+  background:radial-gradient(circle,rgba(246,223,230,.22),transparent 70%)!important;
+}
+.article-card:nth-child(4n+3)::after,
+.topic-card:nth-child(4n+3)::after{
+  background:radial-gradient(circle,rgba(223,240,232,.20),transparent 70%)!important;
+}
+
+/* ------------------------------------------------------------
+   Liquid slider micro-interaction
+   Instagram / Threads inspired: the lens gently grows while moving,
+   then springs back without disturbing its translation.
+   Individual CSS `scale` is independent from JS `transform`.
+   ------------------------------------------------------------ */
+.pager-thumb{
+  scale:1;
+  will-change:transform,scale!important;
+  transition:
+    scale .38s var(--apple-spring),
+    box-shadow .28s ease!important;
+}
+body.pager-dragging .pager-thumb{
+  scale:1.068;
+  transition:
+    scale .145s cubic-bezier(.2,.9,.3,1),
+    box-shadow .18s ease!important;
+  box-shadow:
+    inset 0 1px 1px rgba(255,255,255,.98),
+    inset 0 -10px 22px -14px rgba(111,164,210,.36),
+    0 15px 30px rgba(67,112,150,.18),
+    0 1px 4px rgba(67,112,150,.11)!important;
+}
+body.pager-programmatic .pager-thumb,
+.pager.nav-traveling .pager-thumb{
+  scale:1.045;
+  transition:
+    scale .18s cubic-bezier(.2,.9,.3,1),
+    box-shadow .22s ease!important;
+}
+.pager-thumb{
+  background:
+    radial-gradient(120% 100% at 26% 0%,rgba(255,255,255,.98),rgba(255,255,255,.34) 44%,transparent 72%),
+    linear-gradient(155deg,rgba(249,252,255,.86),rgba(225,239,253,.42))!important;
+}
+.pager::before{
+  background:
+    conic-gradient(
+      from var(--rim,140deg) at 50% 50%,
+      rgba(255,255,255,.98),
+      rgba(208,231,252,.44) 22%,
+      rgba(247,221,229,.38) 42%,
+      rgba(223,240,232,.34) 64%,
+      rgba(255,255,255,.98)
+    )!important;
+}
+.pager{
+  background:
+    linear-gradient(152deg,rgba(255,255,255,.48),rgba(249,252,255,.16) 48%,rgba(255,255,255,.34))!important;
+  border:1px solid rgba(255,255,255,.62);
+  box-shadow:
+    0 20px 46px rgba(61,94,124,.13),
+    inset 0 1px 1px rgba(255,255,255,.92),
+    inset 0 -1px 0 rgba(112,150,181,.055)!important;
+}
+
+@media(max-width:700px),(pointer:coarse){
+  body{
+    background-attachment:scroll!important;
+    background:
+      radial-gradient(36rem 28rem at -8% 0%,rgba(246,223,230,.58),transparent 56%),
+      radial-gradient(34rem 30rem at 108% 4%,rgba(223,238,255,.84),transparent 60%),
+      radial-gradient(34rem 30rem at 4% 98%,rgba(223,240,232,.54),transparent 58%),
+      linear-gradient(160deg,#fbfdff,#f4f8fb 52%,#eef4f8)!important;
+  }
+
+  .glass,
+  .lightcard{
+    backdrop-filter:blur(17px) saturate(142%)!important;
+    -webkit-backdrop-filter:blur(17px) saturate(142%)!important;
+  }
+
+  /* slightly less enlargement on compact phones */
+  body.pager-dragging .pager-thumb{scale:1.055}
+  body.pager-programmatic .pager-thumb,
+  .pager.nav-traveling .pager-thumb{scale:1.036}
+}
+
+@media(prefers-reduced-motion:reduce){
+  .pager-thumb{scale:1!important;transition:none!important}
+}
+
+/* Dark mode remains readable, but uses an Apple graphite/blue material. */
+body.dark{
+  --ink:#f4f7fb!important;
+  --muted:#b9c7d4!important;
+  background:
+    radial-gradient(58rem 42rem at -8% 0%,rgba(72,83,112,.38),transparent 58%),
+    radial-gradient(54rem 42rem at 108% 4%,rgba(64,103,146,.38),transparent 60%),
+    radial-gradient(48rem 40rem at 4% 100%,rgba(66,104,92,.23),transparent 58%),
+    linear-gradient(155deg,#121821,#16202b 52%,#111923)!important;
+}
+body.dark .glass,
+body.dark .lightcard{
+  background:linear-gradient(145deg,rgba(38,49,63,.74),rgba(25,35,48,.56))!important;
+  border-color:rgba(255,255,255,.12)!important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.12),
+    0 18px 48px rgba(0,0,0,.24)!important;
 }
 
 </style>
@@ -6069,6 +6391,98 @@ function prefetchSiblingPages(){
   else setTimeout(run,1400);
 }
 
+
+/* ---------- v18.1 network + navigation governor ---------- */
+let swBootArticlesFromCache=false;
+let swBootBundleFromCache=false;
+let swNetworkSweepAt=0;
+let swNetworkSweepPromise=null;
+
+const swLoadArticlesBase=loadArticles;
+loadArticles=async function(){
+  swBootArticlesFromCache=Array.isArray(readSessionJSON(SW_ARTICLES_CACHE));
+  return swLoadArticlesBase();
+};
+
+const swLoadPublicBundleBase=loadPublicBundle;
+loadPublicBundle=async function(){
+  swBootBundleFromCache=validBundle(readSessionJSON(SW_BUNDLE_CACHE));
+  if(swBootBundleFromCache){
+    readCachedPublicBundle();
+    return true;
+  }
+  return swLoadPublicBundleBase();
+};
+
+const swRevalidatePublicDataBase=revalidatePublicData;
+revalidatePublicData=async function(force=false){
+  if(navigator.onLine===false)return false;
+
+  const now=Date.now();
+  const gap=force?4000:12000;
+  if(!force && now-swNetworkSweepAt<gap)return false;
+  if(swNetworkSweepPromise)return swNetworkSweepPromise;
+
+  swNetworkSweepAt=now;
+  swNetworkSweepPromise=Promise.resolve(swRevalidatePublicDataBase(force))
+    .finally(()=>{swNetworkSweepPromise=null});
+  return swNetworkSweepPromise;
+};
+
+schedulePublicRevalidate=function(delay=180,force=false){
+  setTimeout(()=>revalidatePublicData(force).catch(()=>{}),delay);
+};
+
+/* Prefetch only adjacent pages, and never consume bandwidth when the user
+   has asked for data saving or is on a very slow connection. */
+prefetchSiblingPages=function(){
+  const connection=navigator.connection||navigator.mozConnection||navigator.webkitConnection;
+  const slow=connection?.saveData || /(^|-)2g$|slow-2g/i.test(String(connection?.effectiveType||''));
+  if(slow || document.hidden)return;
+
+  const files=['index.html','topics.html','about.html','share.html','newsletter.html'];
+  const current=(location.pathname.split('/').pop()||'index.html').toLowerCase();
+  const i=Math.max(0,files.indexOf(current));
+  const coarse=matchMedia('(pointer:coarse)').matches;
+
+  let targets=[];
+  if(i+1<files.length)targets.push(files[i+1]);
+  if(!coarse && i-1>=0)targets.push(files[i-1]);
+  targets=[...new Set(targets)].filter(x=>x!==current);
+
+  const addOne=(href,delay=0)=>{
+    setTimeout(()=>{
+      if(document.hidden)return;
+      const abs=new URL(href,location.href).href;
+      if([...document.querySelectorAll('link[rel="prefetch"]')].some(x=>x.href===abs))return;
+      const l=document.createElement('link');
+      l.rel='prefetch';
+      l.href=href;
+      l.as='document';
+      document.head.appendChild(l);
+    },delay);
+  };
+
+  const run=()=>targets.forEach((href,n)=>addOne(href,n*240));
+  if('requestIdleCallback' in window)requestIdleCallback(run,{timeout:2400});
+  else setTimeout(run,1500);
+};
+
+function hardenRenderedArticleMedia(){
+  document.querySelectorAll('.article-body img').forEach(img=>{
+    img.loading='lazy';
+    img.decoding='async';
+    try{img.fetchPriority='low'}catch(_){}
+
+    if(img.closest('.sw-source-figure')){
+      const drop=()=>img.closest('.sw-source-figure')?.remove();
+      img.addEventListener('error',drop,{once:true});
+      if(img.complete && !img.naturalWidth)drop();
+    }
+  });
+}
+
+
 /* ---------- boot ---------- */
 (async()=>{
   optimize();applyTheme();applyChrome();initGlobalVisualPause();initAdaptiveVisualQuality();
@@ -6099,7 +6513,7 @@ function prefetchSiblingPages(){
   initIdleSubscriptionPrompt();
 
   warmPromise.catch(()=>{});
-  schedulePublicRevalidate(220);
+  schedulePublicRevalidate((!swBootArticlesFromCache&&!swBootBundleFromCache)?12000:260);
 })();
 })();
 
