@@ -1,7 +1,7 @@
 {
   "schema": 1,
-  "revision": 1789199820508,
-  "publishedAt": "2026-09-12T07:57:00.508Z",
+  "revision": 1789204762178,
+  "publishedAt": "2026-09-12T09:19:22.179Z",
   "siteText": {
     "siteTitle": "SIGN WELL · 欣緯生醫",
     "metaDescription": "SIGN WELL · 欣緯生醫 — 臨床筆記、醫學推理與值得留下的知識。",
@@ -106,6 +106,14 @@
       "slug": "營養品科普",
       "description": "",
       "order": 4,
+      "active": true
+    },
+    {
+      "id": "topic-1789204762177",
+      "name": "時事探討",
+      "slug": "signwellnownews",
+      "description": "",
+      "order": 5,
       "active": true
     }
   ],
