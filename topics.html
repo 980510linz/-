@@ -11,6 +11,8 @@
 <meta property="og:title" content="SIGN WELL · 欣緯生醫">
 <meta property="og:description" content="臨床筆記、醫學推理，以及值得留下的知識。">
 <meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://raw.githubusercontent.com" crossorigin>
+<link rel="preconnect" href="https://script.google.com">
 <title>SIGN WELL · 欣緯生醫</title>
 <style>
 /* ============================================================
@@ -3409,6 +3411,306 @@ body.dark.home-glass-focus .home-next-stage .article-card{
   }
 }
 
+
+/* ============================================================
+   Public v17.8 · Mobile Centering + Dark Contrast
+   ============================================================ */
+
+/* Dark mode: lift both primary and secondary text contrast.
+   A number of older components use hard-coded light-mode blue/gray text,
+   so changing --muted alone is not enough. */
+body.dark{
+  --ink:#f4f8fb!important;
+  --muted:#b8c8d4!important;
+}
+
+body.dark{
+  color:var(--ink)!important;
+}
+
+body.dark :is(
+  .brand-copy span,
+  .hero-sub,
+  .hero-card p,
+  .hero-card .tiny,
+  .section-head p,
+  .article-card p,
+  .meta,
+  .page-hero p,
+  .topic-no,
+  .topic-card p,
+  .topic-count,
+  .backlink,
+  .article-meta,
+  .article-actions,
+  .toc-title,
+  .toc button,
+  .footer,
+  .search-title span,
+  .search-kbd,
+  .search-meta,
+  .search-section-label,
+  .search-result span,
+  .search-empty,
+  .newsletter-kicker,
+  .newsletter-lead,
+  .newsletter-consent,
+  .newsletter-status,
+  .newsletter-note,
+  .about-manifesto p,
+  .about-team-head p,
+  .about-team-head > span,
+  .about-value span,
+  .person-kicker,
+  .person-role,
+  .person-bio,
+  .person-history,
+  .person-tag,
+  .idle-subscribe-copy,
+  .idle-subscribe-note,
+  .nl-flow-copy,
+  .nl-flow-email,
+  .nl-success-sub,
+  .newsletter-terms-kicker,
+  .newsletter-terms-body,
+  .newsletter-terms-note
+){
+  color:#b8c8d4!important;
+}
+
+body.dark :is(
+  .article-card h3,
+  .topic-card h3,
+  .about-value b,
+  .person-name,
+  .idle-subscribe-title,
+  .nl-flow-title,
+  .newsletter-terms-title,
+  .newsletter-terms-body h3
+){
+  color:#edf5fa!important;
+}
+
+body.dark .article-body{
+  color:#e7f0f6!important;
+}
+body.dark .article-body :is(p,li,dd,dt){
+  color:#e3edf4;
+}
+body.dark .article-body :is(strong,b){
+  color:#ffffff;
+}
+body.dark .article-body mark,
+body.dark .article-body span[style*="background-color"],
+body.dark .article-body span[style*="background:"]{
+  color:#f8fbfd!important;
+}
+body.dark .search-input input{
+  color:#eef6fb!important;
+}
+body.dark .search-input input::placeholder,
+body.dark .newsletter-form input::placeholder{
+  color:#9fb2c1!important;
+}
+body.dark .newsletter-success{
+  color:#b9ded0!important;
+}
+body.dark .newsletter-status.success{
+  color:#9bd1bc!important;
+}
+body.dark .newsletter-status.error{
+  color:#f2a8b1!important;
+}
+body.dark .share-url input{
+  color:#edf5fa!important;
+}
+body.dark .backlink:hover,
+body.dark .topic-card:hover .topic-count{
+  color:#d7ebf9!important;
+}
+
+/* Mobile centering:
+   older rules left #app at 28px while right remained 14px, which shifts
+   the whole public canvas off visual center on phones. */
+@media(max-width:700px){
+  :root{
+    --sw-mobile-gutter:16px;
+  }
+
+  html,body{
+    width:100%;
+    max-width:100%;
+    overflow-x:hidden;
+  }
+
+  #app{
+    width:100%!important;
+    max-width:100%!important;
+    margin-left:auto!important;
+    margin-right:auto!important;
+    padding-left:max(var(--sw-mobile-gutter),env(safe-area-inset-left))!important;
+    padding-right:max(var(--sw-mobile-gutter),env(safe-area-inset-right))!important;
+  }
+
+  .shell,
+  .home-scroll-scene,
+  .hero,
+  .page-hero,
+  .section,
+  .article-view,
+  .share-wrap,
+  .newsletter-wrap,
+  .about-wrap,
+  .home-next-stage{
+    width:100%!important;
+    max-width:100%!important;
+    margin-left:auto!important;
+    margin-right:auto!important;
+  }
+
+  .article-grid,
+  .topic-grid,
+  .share-card,
+  .newsletter-card,
+  .people-grid{
+    margin-left:auto!important;
+    margin-right:auto!important;
+  }
+
+  .footer{
+    width:calc(100% - (var(--sw-mobile-gutter) * 2))!important;
+    margin-left:auto!important;
+    margin-right:auto!important;
+  }
+
+  /* Header and bottom pager stay mathematically centered to viewport. */
+  .brand-top{
+    left:50%!important;
+    right:auto!important;
+    transform:translate3d(-50%,0,0)!important;
+  }
+  .brand-top:hover{
+    transform:translate3d(-50%,-1px,0)!important;
+  }
+  .pager{
+    left:50%!important;
+    right:auto!important;
+    transform:translateX(-50%)!important;
+  }
+
+  /* Prevent a wide child from making the content appear offset. */
+  .hero > *,
+  .section > *,
+  .article-view > *,
+  .page-hero > *{
+    min-width:0;
+    max-width:100%;
+  }
+
+  .share-card,
+  .newsletter-card{
+    width:100%!important;
+  }
+}
+
+/* Slightly larger visual gutter on very narrow iPhones without asymmetry. */
+@media(max-width:390px){
+  :root{
+    --sw-mobile-gutter:14px;
+  }
+}
+
+
+/* ============================================================
+   Public v17.9 · Stability + Performance
+   ============================================================ */
+
+/* Dark mode highlight readability: v17.8 was too aggressive for inline
+   highlighted spans. Marks get an intentional high-contrast palette. */
+body.dark .article-body mark{
+  color:#17212d!important;
+  background:
+    linear-gradient(transparent 36%,rgba(255,225,101,.92) 36% 91%,transparent 91%)!important;
+}
+body.dark .article-body span[style*="background-color"],
+body.dark .article-body span[style*="background:"]{
+  color:inherit!important;
+}
+
+/* Hidden tabs should not keep animating the four ambient lights. */
+body.sw-page-hidden .orb{
+  animation-play-state:paused!important;
+}
+
+/* Keep the visual identity but reduce iOS compositing cost. */
+@media(max-width:700px), (pointer:coarse){
+  body{
+    background-attachment:scroll!important;
+  }
+  .ambient{
+    filter:blur(52px) saturate(126%)!important;
+    opacity:.78!important;
+  }
+  .orb.d{
+    opacity:.36!important;
+  }
+  .grain{
+    opacity:.13!important;
+  }
+  .glass,
+  .lightcard{
+    backdrop-filter:blur(15px) saturate(145%)!important;
+    -webkit-backdrop-filter:blur(15px) saturate(145%)!important;
+  }
+  button,
+  a,
+  input,
+  label{
+    touch-action:manipulation;
+  }
+}
+
+/* Automatic low-fx for save-data / low-memory devices. */
+html.sw-lowfx .ambient{
+  filter:blur(38px) saturate(118%)!important;
+  opacity:.70!important;
+}
+html.sw-lowfx .orb.c,
+html.sw-lowfx .orb.d{
+  animation:none!important;
+}
+html.sw-lowfx .cursor-glow{
+  display:none!important;
+}
+
+/* Last-resort center guard: no public page can exceed the mobile viewport. */
+@media(max-width:700px){
+  #app,
+  #app > *,
+  .shell,
+  .section,
+  .article-view,
+  .page-hero{
+    min-width:0!important;
+  }
+  img,
+  video,
+  iframe{
+    max-width:100%;
+  }
+}
+
+/* Reduced-motion means readable immediately, not "animation but slower". */
+@media(prefers-reduced-motion:reduce){
+  .orb{animation:none!important}
+  [class*="reveal"]{
+    opacity:1!important;
+    transform:none!important;
+    translate:0!important;
+    filter:none!important;
+  }
+}
+
 </style>
 </head>
 <body class="boot-preparing" data-page="topics">
@@ -5806,5 +6108,22 @@ window.addEventListener('pagehide',()=>{
 },{passive:true});
 
 </script>
+
+<script id="swPublicStabilityRuntime">
+(() => {
+  const root=document.documentElement;
+  const lowMemory=(Number(navigator.deviceMemory||8)<=4);
+  const lowCPU=(Number(navigator.hardwareConcurrency||8)<=4);
+  const saveData=Boolean(navigator.connection&&navigator.connection.saveData);
+  if(lowMemory||lowCPU||saveData)root.classList.add('sw-lowfx');
+
+  const syncVisibility=()=>{
+    document.body?.classList.toggle('sw-page-hidden',document.hidden);
+  };
+  document.addEventListener('visibilitychange',syncVisibility,{passive:true});
+  syncVisibility();
+})();
+</script>
+
 </body>
 </html>
