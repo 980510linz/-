@@ -49,7 +49,7 @@ window.SIGNWELL_SITE_TEXT = {
   "emptyCategory": "目前沒有這個分類的文章。",
   "notFoundTitle": "找不到文章",
   "notFoundBody": "這篇文章可能尚未發布或網址已改變。",
-  "homeEyebrow": "SIGN WELL BIOMED · 欣緯生醫",
+  "homeEyebrow": "SIGN WELL · 欣緯生醫",
   "homeTitle1": "和我醫起",
   "homeTitle2": "醫學白話文",
   "homeSubtitle": "以醫學教育與自費醫療觀察為核心的知識平台。從一個問題開始，整理成下一次真正用得上的答案。",
