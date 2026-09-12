@@ -1,7 +1,7 @@
 {
   "schema": 1,
-  "revision": 1789237092269,
-  "publishedAt": "2026-09-12T18:18:12.269Z",
+  "revision": 1789237151515,
+  "publishedAt": "2026-09-12T18:19:11.515Z",
   "siteText": {
     "siteTitle": "SIGN WELL · 欣緯生醫",
     "metaDescription": "SIGN WELL · 欣緯生醫 — 臨床筆記、醫學推理與值得留下的知識。",
@@ -123,7 +123,7 @@
       "name": "林哲愷",
       "role": "美學專家",
       "bio": "網站設計者，和林哲緯一同經營欣緯生醫，跑步不揪？",
-      "photo": "",
+      "photo": "assets/uploads/2026/09/person-person-1789182720866-hhno7-portrait-tweky6.jpg",
       "expertise": [
         "美學領域，資工領域"
       ],
