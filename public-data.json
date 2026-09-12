@@ -1,7 +1,7 @@
 {
   "schema": 1,
-  "revision": 1789195677224,
-  "publishedAt": "2026-09-12T06:47:57.224Z",
+  "revision": 1789199820508,
+  "publishedAt": "2026-09-12T07:57:00.508Z",
   "siteText": {
     "siteTitle": "SIGN WELL · 欣緯生醫",
     "metaDescription": "SIGN WELL · 欣緯生醫 — 臨床筆記、醫學推理與值得留下的知識。",
@@ -41,7 +41,7 @@
     "aboutFormatValue": "筆記 · 深度整理",
     "aboutPrincipleLabel": "原則",
     "aboutPrincipleValue": "清楚勝過複雜",
-    "aboutDisclaimer": "本站內容僅供醫學教育與資訊整理，不構成個別醫療建議，也不能取代正式臨床評估與專業診療。",
+    "aboutDisclaimer": "本站內容僅供醫學資訊整理與探討，不構成個別醫療建議，也不能取代正式臨床評估與專業診療。",
     "aboutManifestoTitle": "把複雜的醫學，整理成真正能被理解與使用的知識。",
     "aboutManifestoBody": "我們重視推理、脈絡與長期可回顧性，而不只是快速堆疊資訊。",
     "aboutPeopleEyebrow": "PEOPLE",
@@ -129,6 +129,28 @@
         "APCS 大賽研習"
       ],
       "order": 0,
+      "active": true
+    },
+    {
+      "id": "person-1789199763956-gtryg",
+      "name": "林哲緯",
+      "role": "醫療專家",
+      "bio": "喜歡跑步，新緯生醫公同創辦人",
+      "photo": "",
+      "expertise": [
+        "醫療專家"
+      ],
+      "education": [
+        "建國中學第二名畢業",
+        "中國醫藥大學 醫學系",
+        "新加坡國立大學 研習"
+      ],
+      "experience": [
+        "2026 美容醫學會參加",
+        "APCS 參加",
+        "TOEIC 金色證書"
+      ],
+      "order": 1,
       "active": true
     }
   ]

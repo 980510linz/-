@@ -37,7 +37,7 @@ window.SIGNWELL_SITE_TEXT = {
   "aboutFormatValue": "筆記 · 深度整理",
   "aboutPrincipleLabel": "原則",
   "aboutPrincipleValue": "清楚勝過複雜",
-  "aboutDisclaimer": "本站內容僅供醫學教育與資訊整理，不構成個別醫療建議，也不能取代正式臨床評估與專業診療。",
+  "aboutDisclaimer": "本站內容僅供醫學資訊整理與探討，不構成個別醫療建議，也不能取代正式臨床評估與專業診療。",
   "aboutManifestoTitle": "把複雜的醫學，整理成真正能被理解與使用的知識。",
   "aboutManifestoBody": "我們重視推理、脈絡與長期可回顧性，而不只是快速堆疊資訊。",
   "aboutPeopleEyebrow": "PEOPLE",
