@@ -1,7 +1,7 @@
 {
   "schema": 1,
-  "revision": 1789237211855,
-  "publishedAt": "2026-09-12T18:20:11.855Z",
+  "revision": 1789237305983,
+  "publishedAt": "2026-09-12T18:21:45.983Z",
   "siteText": {
     "siteTitle": "SIGN WELL · 欣緯生醫",
     "metaDescription": "SIGN WELL · 欣緯生醫 — 臨床筆記、醫學推理與值得留下的知識。",
@@ -44,9 +44,9 @@
     "aboutDisclaimer": "本站內容僅供醫學資訊整理與探討，不構成個別醫療建議，也不能取代正式臨床評估與專業診療。",
     "aboutManifestoTitle": "把複雜的醫學，整理成真正能被理解與使用的知識。",
     "aboutManifestoBody": "我們重視推理、脈絡與長期可回顧性，而不只是快速堆疊資訊。",
-    "aboutPeopleEyebrow": "PEOPLE",
-    "aboutPeopleTitle": "我們是誰",
-    "aboutPeopleSubtitle": "以不同背景與專長，共同整理值得留下的醫學與健康知識。",
+    "aboutPeopleEyebrow": "關於我們",
+    "aboutPeopleTitle": "創辦人",
+    "aboutPeopleSubtitle": "以不同背景與專長，共同創建醫學與健康與美學",
     "footerTagline": "臨床筆記、醫學推理，以及值得留下的知識。",
     "footerDisclaimer": "本網站內容僅供醫學教育與資訊整理，不構成個別醫療建議；實際診療應依臨床情境與專業醫療評估。",
     "searchPlaceholder": "搜尋文章、主題、關鍵字…",
@@ -132,7 +132,7 @@
         "英國 Cambridg 劍橋大學Consumer Behaviour and Marketing Strategy研習"
       ],
       "experience": [
-        "奧林匹克參加",
+        "奧林匹克 大賽研習",
         "Cardif InsurHack 大賽研習",
         "APCS 大賽研習"
       ],
