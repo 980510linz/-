@@ -8,13 +8,14 @@
     "type": "文章",
     "cover": "",
     "tags": [],
+    "publisherId": "",
     "publishedAt": "2026-09-11",
     "updatedAt": "2026-09-11",
     "featured": false,
     "status": "Published",
     "readingTime": 1,
     "searchText": "從這裡開始寫。",
-    "revision": "rew1fc",
+    "revision": "3tdowv",
     "file": "articles/article-1789137659559.json"
   },
   {
@@ -26,13 +27,14 @@
     "type": "文章",
     "cover": "",
     "tags": [],
+    "publisherId": "",
     "publishedAt": "2026-09-10",
     "updatedAt": "2026-09-11",
     "featured": false,
     "status": "Published",
     "readingTime": 1,
     "searchText": "從這裡開始寫。",
-    "revision": "2q2pa1",
+    "revision": "10eceui",
     "file": "articles/ㄗ.json"
   },
   {
@@ -44,13 +46,14 @@
     "type": "文章",
     "cover": "",
     "tags": [],
+    "publisherId": "",
     "publishedAt": "2026-09-11",
     "updatedAt": "2026-09-11",
     "featured": false,
     "status": "Published",
     "readingTime": 1,
     "searchText": "從這裡開始寫。",
-    "revision": "1k69pw8",
+    "revision": "1wpqpvj",
     "file": "articles/ㄕ說.json"
   },
   {
@@ -62,13 +65,14 @@
     "type": "文章",
     "cover": "",
     "tags": [],
+    "publisherId": "",
     "publishedAt": "2026-09-11",
     "updatedAt": "2026-09-11",
     "featured": false,
     "status": "Published",
     "readingTime": 1,
     "searchText": "從這裡開始寫。",
-    "revision": "1at5f02",
+    "revision": "1g7am0h",
     "file": "articles/測試.json"
   },
   {
@@ -80,13 +84,14 @@
     "type": "文章",
     "cover": "",
     "tags": [],
+    "publisherId": "",
     "publishedAt": "2026-09-11",
     "updatedAt": "2026-09-11",
     "featured": false,
     "status": "Published",
     "readingTime": 1,
     "searchText": "從這裡開始寫。",
-    "revision": "1at5f02",
+    "revision": "1g7am0h",
     "file": "articles/測試.json"
   }
 ]
