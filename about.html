@@ -3081,6 +3081,334 @@ body.newsletter-terms-open{
   .newsletter-terms-agree::after{animation:none!important}
 }
 
+
+/* ============================================================
+   Public v17.2 · Ultra Smooth Pager Motion
+   ============================================================ */
+
+/* The thumb is compositor-only; no filter/shape deformation while moving. */
+.pager-thumb{
+  will-change:transform;
+  transition:none!important;
+  filter:none!important;
+  transform-origin:50% 50%;
+  backface-visibility:hidden;
+  -webkit-backface-visibility:hidden;
+}
+.pager.nav-traveling .pager-thumb,
+.pager.grabbing .pager-thumb{
+  filter:none!important;
+}
+
+/* Avoid extra icon spring competing with the thumb motion. */
+body.pager-dragging .nav-item,
+body.pager-programmatic .nav-item{
+  transition:color .16s ease,opacity .16s ease!important;
+}
+body.pager-dragging .nav-item svg,
+body.pager-programmatic .nav-item svg{
+  transition:none!important;
+}
+
+/* Keep the rail optically stable while only the lens moves. */
+body.pager-dragging .pager,
+body.pager-programmatic .pager{
+  transform:translateY(-50%) translateZ(0);
+}
+
+/* Mobile: disable paint-heavy rim updates during motion. */
+@media(hover:none) and (pointer:coarse){
+  body.pager-dragging .pager::before,
+  body.pager-programmatic .pager::before{
+    opacity:.86;
+  }
+}
+
+
+/* ============================================================
+   Public v17.4 · UX / Smoothness / UI Polish
+   ============================================================ */
+:root{
+  --sw-ease:cubic-bezier(.16,1,.3,1);
+}
+
+/* Stable viewport and less visual jumping. */
+html{scrollbar-gutter:stable}
+body{
+  overscroll-behavior-y:none;
+  -webkit-tap-highlight-color:transparent;
+}
+
+/* Main content transition stays compositor-only. */
+#app{
+  transform:translateZ(0);
+  backface-visibility:hidden;
+  -webkit-backface-visibility:hidden;
+}
+
+/* Cards: slightly cleaner hierarchy and stronger touch readability. */
+.card,.topic-card,.article-card,.share-card,.newsletter-card{
+  border-color:rgba(255,255,255,.74)!important;
+  box-shadow:
+    0 18px 46px rgba(48,88,118,.075),
+    0 3px 11px rgba(48,88,118,.035),
+    inset 0 1px 0 rgba(255,255,255,.88)!important;
+}
+
+/* Buttons: smoother, less rubbery. */
+button,.softbtn,.cta,.chip{
+  touch-action:manipulation;
+  transition:
+    transform .16s var(--sw-ease),
+    opacity .16s ease,
+    background-color .18s ease,
+    border-color .18s ease,
+    box-shadow .18s ease!important;
+}
+button:active,.softbtn:active,.cta:active{
+  transform:scale(.975)!important;
+}
+
+/* Images decode into place with less pop. */
+img{
+  content-visibility:auto;
+  transform:translateZ(0);
+}
+
+/* Better anchor positioning under sticky UI. */
+[id]{scroll-margin-top:84px}
+
+/* Mobile: keep glass but reduce expensive blur stack. */
+@media(max-width:900px),(pointer:coarse){
+  .glass,.card,.topic-card,.article-card,.share-card,.newsletter-card{
+    -webkit-backdrop-filter:blur(8px) saturate(128%)!important;
+    backdrop-filter:blur(8px) saturate(128%)!important;
+  }
+  .orb.c{display:none!important}
+}
+
+/* Long grids/sections paint only when near viewport. */
+.article-grid,.topic-grid,.about-section,.share-section,.newsletter-section{
+  content-visibility:auto;
+  contain-intrinsic-size:auto 700px;
+}
+
+/* Touch devices: avoid hover transforms. */
+@media(hover:none),(pointer:coarse){
+  .card:hover,.topic-card:hover,.article-card:hover,.share-card:hover{
+    transform:none!important;
+  }
+}
+
+/* Reduced motion. */
+@media(prefers-reduced-motion:reduce){
+  button,.softbtn,.cta,.chip,#app{
+    transition:none!important;
+  }
+}
+
+
+/* ============================================================
+   Public v17.5 · Glass-first Home
+   No waves · no home ripples · more transparent material
+   ============================================================ */
+
+/* Home scene is now air / glass, not water. */
+body.home-glass-focus{
+  --home-glass-a:rgba(255,255,255,.26);
+  --home-glass-b:rgba(226,244,255,.075);
+  --home-glass-border:rgba(255,255,255,.62);
+  --home-glass-shadow:0 24px 74px rgba(70,116,150,.075),
+                      inset 0 1px 0 rgba(255,255,255,.84),
+                      inset 0 -1px 0 rgba(108,166,203,.06);
+}
+
+body.home-glass-focus .home-scroll-scene{
+  min-height:calc(100dvh - 92px);
+  padding-bottom:86px;
+  overflow:clip;
+  isolation:isolate;
+}
+
+/* Replace the former water bridge with two static refractive light panes. */
+body.home-glass-focus .home-scroll-scene::before{
+  content:"";
+  position:absolute;
+  z-index:0;
+  right:-7%;
+  top:12%;
+  width:min(520px,48vw);
+  height:min(390px,38vw);
+  border-radius:48px;
+  transform:rotate(-8deg) skewX(-3deg);
+  pointer-events:none;
+  background:
+    linear-gradient(145deg,
+      rgba(255,255,255,.24),
+      rgba(208,235,252,.075) 46%,
+      rgba(255,255,255,.025) 78%);
+  border:1px solid rgba(255,255,255,.32);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.58),
+    0 40px 100px rgba(80,138,176,.045);
+  opacity:.72;
+  -webkit-backdrop-filter:blur(4px) saturate(130%);
+  backdrop-filter:blur(4px) saturate(130%);
+}
+
+body.home-glass-focus .home-scroll-scene::after{
+  content:"";
+  position:absolute;
+  z-index:0;
+  left:8%;
+  bottom:70px;
+  width:min(680px,58vw);
+  height:118px;
+  border-radius:34px;
+  transform:rotate(4deg);
+  pointer-events:none;
+  background:
+    linear-gradient(110deg,
+      rgba(255,255,255,.14),
+      rgba(176,219,247,.055) 48%,
+      rgba(255,255,255,.015));
+  border:1px solid rgba(255,255,255,.24);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.46);
+  opacity:.54;
+}
+
+/* Hero glass becomes visibly more transparent. */
+body.home-glass-focus .home-hero-card.glass{
+  background:
+    radial-gradient(340px 180px at 18% 0%,rgba(255,255,255,.48),transparent 68%),
+    linear-gradient(145deg,var(--home-glass-a),var(--home-glass-b))!important;
+  border:1px solid var(--home-glass-border)!important;
+  box-shadow:var(--home-glass-shadow)!important;
+  -webkit-backdrop-filter:blur(18px) saturate(150%) brightness(1.035)!important;
+  backdrop-filter:blur(18px) saturate(150%) brightness(1.035)!important;
+}
+
+body.home-glass-focus .home-hero-card.glass::before{
+  background:
+    linear-gradient(150deg,
+      rgba(255,255,255,.92) 0%,
+      rgba(255,255,255,.24) 31%,
+      rgba(255,255,255,.045) 58%,
+      rgba(255,255,255,.70) 100%)!important;
+}
+
+/* Refraction instead of ocean motion. */
+body.home-glass-focus .home-hero-card::after{
+  opacity:.42!important;
+  background:
+    radial-gradient(380px circle at var(--px,50%) var(--py,20%),
+      rgba(255,255,255,.58),
+      rgba(222,244,255,.11) 44%,
+      transparent 66%)!important;
+}
+
+/* Latest-article cards also become airier on the home page only. */
+body.home-glass-focus .home-next-stage .article-card{
+  background:
+    radial-gradient(210px 100px at 12% 0%,rgba(255,255,255,.42),transparent 70%),
+    linear-gradient(145deg,rgba(255,255,255,.27),rgba(230,246,255,.075))!important;
+  border-color:rgba(255,255,255,.56)!important;
+  box-shadow:
+    0 18px 48px rgba(62,110,145,.065),
+    inset 0 1px 0 rgba(255,255,255,.74)!important;
+}
+
+body.home-glass-focus .scroll-cue{
+  background:rgba(255,255,255,.11);
+  border:1px solid rgba(255,255,255,.26);
+  -webkit-backdrop-filter:blur(8px) saturate(125%);
+  backdrop-filter:blur(8px) saturate(125%);
+}
+body.home-glass-focus .scroll-cue:hover{
+  background:rgba(255,255,255,.19);
+}
+
+/* Old water layer is fully retired. */
+body.home-glass-focus .home-wave-stage,
+body.home-glass-focus .home-wave,
+body.home-glass-focus .home-foam{
+  display:none!important;
+}
+
+/* Keep the next section floating naturally into view. */
+body.home-glass-focus .home-next-stage{
+  position:relative;
+  z-index:2;
+}
+
+/* No press-ripple visual on the home page. */
+body.home-glass-focus .ripple{
+  display:none!important;
+}
+
+/* Dark mode keeps the same transparent hierarchy. */
+body.dark.home-glass-focus{
+  --home-glass-a:rgba(38,55,69,.28);
+  --home-glass-b:rgba(17,35,49,.11);
+  --home-glass-border:rgba(175,216,244,.20);
+  --home-glass-shadow:0 28px 74px rgba(0,0,0,.18),
+                      inset 0 1px 0 rgba(255,255,255,.09),
+                      inset 0 -1px 0 rgba(0,0,0,.14);
+}
+body.dark.home-glass-focus .home-next-stage .article-card{
+  background:
+    radial-gradient(210px 100px at 12% 0%,rgba(255,255,255,.08),transparent 70%),
+    linear-gradient(145deg,rgba(28,45,58,.28),rgba(15,31,43,.10))!important;
+  border-color:rgba(169,209,236,.12)!important;
+}
+
+/* iPhone / touch: maintain transparency without expensive huge blur. */
+@media(hover:none) and (pointer:coarse){
+  body.home-glass-focus .home-scroll-scene::before,
+  body.home-glass-focus .home-scroll-scene::after{
+    -webkit-backdrop-filter:none!important;
+    backdrop-filter:none!important;
+  }
+  body.home-glass-focus .home-hero-card.glass{
+    background:
+      radial-gradient(260px 140px at 15% 0%,rgba(255,255,255,.44),transparent 70%),
+      linear-gradient(145deg,rgba(255,255,255,.31),rgba(226,244,255,.09))!important;
+    -webkit-backdrop-filter:blur(8px) saturate(128%)!important;
+    backdrop-filter:blur(8px) saturate(128%)!important;
+  }
+  body.home-glass-focus .home-next-stage .article-card{
+    background:linear-gradient(145deg,rgba(255,255,255,.34),rgba(232,247,255,.10))!important;
+  }
+}
+
+@media(max-width:700px){
+  body.home-glass-focus .home-scroll-scene{
+    padding-bottom:58px;
+  }
+  body.home-glass-focus .home-scroll-scene::before{
+    width:72vw;
+    height:46vw;
+    right:-28%;
+    top:16%;
+    border-radius:34px;
+    opacity:.44;
+  }
+  body.home-glass-focus .home-scroll-scene::after{
+    width:76vw;
+    height:82px;
+    left:-16%;
+    bottom:48px;
+    opacity:.38;
+  }
+}
+
+@media(prefers-reduced-motion:reduce){
+  body.home-glass-focus .home-scroll-scene::before,
+  body.home-glass-focus .home-scroll-scene::after{
+    transform:none!important;
+  }
+}
+
 </style>
 </head>
 <body class="boot-preparing" data-page="about">
@@ -3909,7 +4237,6 @@ function renderShare(){
       else await copyText(url);
     }catch(e){if(e?.name!=='AbortError')showToast('這個瀏覽器不支援系統分享，連結已可手動複製')}
   };
-  $('#refreshQr').onclick=()=>makeQR(url);
   makeQR(url);initReveal();
 }
 
@@ -4006,7 +4333,7 @@ function ensureNewsletterFlowUI(){
 
       <div class="nl-flow-stage nl-flow-success">
         <div class="nl-success-check">✓</div>
-        <h2 class="nl-flow-title">訂閱成功</h2>
+        <h2 class="nl-flow-title">已訂閱</h2>
         <p class="nl-flow-copy">你已完成 SIGN WELL Letter 訂閱。之後的新文章與電子報會寄到這個信箱。</p>
         <div class="nl-success-sub">SIGN WELL Letter · No spam. Just signal.</div>
         <button class="nl-success-close" type="button">完成</button>
@@ -4105,6 +4432,48 @@ function startNewsletterBackgroundRequest(email,source='signwell-public'){
 }
 
 
+function runNewsletterOptimistic4s(email,source='signwell-public'){
+  /*
+   * Fixed UX contract:
+   * 0s  : "訂閱中"
+   * 4s  : "已訂閱" + confetti
+   * Apps Script continues independently in the background.
+   */
+  showNewsletterLoading(email);
+
+  const backgroundRequest=startNewsletterBackgroundRequest(email,source);
+
+  backgroundRequest
+    .then(result=>{
+      try{
+        localStorage.setItem('signwell-newsletter-last-result',JSON.stringify({
+          ok:true,
+          at:Date.now(),
+          status:result?.status||'active'
+        }));
+      }catch(_){}
+    })
+    .catch(err=>{
+      try{
+        localStorage.setItem('signwell-newsletter-last-result',JSON.stringify({
+          ok:false,
+          at:Date.now(),
+          error:String(err?.message||err||'unknown')
+        }));
+      }catch(_){}
+      console.warn('SIGN WELL newsletter background request:',err?.message||err);
+    });
+
+  return new Promise(resolve=>{
+    setTimeout(()=>{
+      showNewsletterOptimisticSuccess();
+      try{localStorage.setItem('signwell-newsletter-subscribed','1')}catch(_){}
+      resolve();
+    },4000);
+  });
+}
+
+
 
 
 let newsletterTermsAgreeCallback=null;
@@ -4151,7 +4520,7 @@ function ensureNewsletterTermsModal(){
         <p>按下「我同意」代表你確認已閱讀並同意本電子報訂閱服務條款，並同意 SIGN WELL 依上述方式處理你的訂閱資料。</p>
 
         <div class="newsletter-terms-note">
-          你不需要滑到最底才能同意；只要按下「我同意」即可完成本次同意。若不同意，請按「取消」。
+          最終法律權歸 signwell.com@gmail.com 所有。
         </div>
       </div>
 
@@ -4254,6 +4623,7 @@ function validNewsletterEmail(email=''){
 async function subscribeNewsletter(){
   const emailEl=$('#newsletterEmail'),consent=$('#newsletterConsent'),
         btn=$('#newsletterSubmit'),status=$('#newsletterStatus'),success=$('#newsletterSuccess');
+
   if(!emailEl||!btn||!status||newsletterOptimisticBusy)return;
 
   const email=String(emailEl.value||'').trim().toLowerCase();
@@ -4267,11 +4637,21 @@ async function subscribeNewsletter(){
     emailEl.focus();
     return;
   }
+
+  /*
+   * If Subscribe is pressed before consent, the terms modal becomes the
+   * missing step. After "我同意", we check the box and automatically
+   * continue — no second click is required.
+   */
   if(consent&&!consent.checked){
-    status.textContent='請先同意接收 SIGN WELL 電子報。';
-    status.classList.add('error');
+    showNewsletterTermsModal(()=>{
+      consent.checked=true;
+      consent.dispatchEvent(new Event('change',{bubbles:true}));
+      requestAnimationFrame(()=>subscribeNewsletter());
+    });
     return;
   }
+
   if(!newsletterEnabled()){
     status.textContent='訂閱服務尚未啟用。網站介面已就緒，待 SIGN WELL Backend 連線後即可正式訂閱。';
     status.classList.add('error');
@@ -4284,56 +4664,22 @@ async function subscribeNewsletter(){
   btn.textContent='訂閱中…';
   status.textContent='';
 
-  showNewsletterLoading(email);
-
-  /*
-   * Start the real request immediately, but keep it fully detached from the
-   * visible 4-second UI. A slow Apps Script response can finish in background.
-   */
-  const backgroundRequest=startNewsletterBackgroundRequest(email,'signwell-public');
-
-  /* At 4 seconds, present optimistic success regardless of response timing. */
-  await sleep(4000);
-  showNewsletterOptimisticSuccess();
-
-  emailEl.value='';
-  if(consent)consent.checked=false;
-  status.textContent='';
-  success?.classList.remove('show');
-
   try{
-    localStorage.setItem('signwell-newsletter-subscribed','1');
-  }catch(_){}
+    /*
+     * The visible flow is fully controlled by one local timer.
+     * Backend latency can never block or cancel the 4-second success state.
+     */
+    await runNewsletterOptimistic4s(email,'signwell-public');
 
-  btn.disabled=false;
-  btn.textContent=old;
-  newsletterOptimisticBusy=false;
-
-  /*
-   * Do not turn a late timeout into a visible failure after success.
-   * Keep a console diagnostic for debugging. If the request succeeds later,
-   * no additional UI work is needed.
-   */
-  backgroundRequest
-    .then(result=>{
-      try{
-        localStorage.setItem('signwell-newsletter-last-result',JSON.stringify({
-          ok:true,
-          at:Date.now(),
-          status:result?.status||'accepted'
-        }));
-      }catch(_){}
-    })
-    .catch(err=>{
-      console.warn('SIGN WELL newsletter background request:',err?.message||err);
-      try{
-        localStorage.setItem('signwell-newsletter-last-result',JSON.stringify({
-          ok:false,
-          at:Date.now(),
-          error:String(err?.message||err||'unknown')
-        }));
-      }catch(_){}
-    });
+    emailEl.value='';
+    if(consent)consent.checked=false;
+    status.textContent='';
+    success?.classList.remove('show');
+  }finally{
+    btn.disabled=false;
+    btn.textContent=old;
+    newsletterOptimisticBusy=false;
+  }
 }
 function renderNewsletter(){
   app.innerHTML=`<div class="shell newsletter-wrap">
@@ -4390,7 +4736,7 @@ async function renderArticle(slug){
       </div>
       <div class="article-actions"><button class="pillbtn" id="shareArticle">${escapeHTML(t('shareLabel'))}</button><button class="pillbtn" id="copyArticle">${iconSvg('copy')}${escapeHTML(t('copyLinkLabel'))}</button></div>
     </header>
-    ${a.cover?`<div class="article-cover"><img src="${escapeHTML(a.cover)}" alt="" decoding="async"></div>`:defaultCoverMarkup(a,true)}
+    ${a.cover?`<div class="article-cover"><img loading="lazy" decoding="async" src="${escapeHTML(a.cover)}" alt="" decoding="async"></div>`:defaultCoverMarkup(a,true)}
     <div class="article-layout">
       <div class="article-body">${html}</div>
       ${heads.length?`<aside class="toc"><div class="toc-title">${escapeHTML(t('tocTitle'))}</div>${heads.map(h=>`<button data-toc="${escapeHTML(h.id)}">${escapeHTML(h.text)}</button>`).join('')}</aside>`:''}
@@ -4639,16 +4985,16 @@ const Slider=(()=>{
   }
 
   function draw(stretch=0,forceDecor=false){
-    const s=clamp(stretch,0,.22),along=1+s,cross=1-s*.34;
+    /* v17.2: translation only.
+       Removing velocity-based scale/stretch eliminates the visible wobble
+       that made the liquid slider feel like it was "jumping". */
     thumb.style.transform=vert
-      ? `translate3d(0,${pos}px,0) scale3d(${cross},${along},1)`
-      : `translate3d(${pos}px,0,0) scale3d(${along},${cross},1)`;
+      ? `translate3d(0,${pos.toFixed(3)}px,0)`
+      : `translate3d(${pos.toFixed(3)}px,0,0)`;
 
-    /* On iPhone these paint-only decorations are intentionally frozen while dragging.
-       The thumb motion stays on the compositor. */
     if(!coarse || forceDecor || !dragging){
-      thumb.style.setProperty('--spec',clamp(-vel/150,-5,5)+'px');
-      if(!coarse){
+      thumb.style.setProperty('--spec','0px');
+      if(!coarse && !dragging && !anim){
         rail.style.setProperty('--rim',(140+(pos/(step*LAST||1))*180)+'deg');
       }
     }
@@ -4671,28 +5017,55 @@ const Slider=(()=>{
     rail.setAttribute('aria-valuetext',items[i].querySelector('span')?.textContent||'');
   }
 
-  function spring(ts){
-    if(!spring.last)spring.last=ts;
-    const dt=Math.min(.025,Math.max(.008,(ts-spring.last)/1000));
-    spring.last=ts;
-    const k=250,c=30;
-    vel+=(-k*(pos-goal)-c*vel)*dt;
-    pos+=vel*dt;
-    draw(Math.abs(vel)/1800);
-    if(Math.abs(pos-goal)<.18&&Math.abs(vel)<3){
-      pos=goal;vel=0;draw(0,true);
-      anim=0;spring.last=0;
+  let tweenFrom=0,tweenStart=0,tweenDuration=160,tweenPrev=0,tweenPrevTs=0;
+
+  function easePager(t){
+    /* Smooth, quick, non-overshooting ease. */
+    return 1-Math.pow(1-t,3);
+  }
+
+  function tween(ts){
+    if(!tweenStart){
+      tweenStart=ts;
+      tweenPrev=pos;
+      tweenPrevTs=ts;
+    }
+
+    const t=clamp((ts-tweenStart)/Math.max(1,tweenDuration),0,1);
+    const next=tweenFrom+(goal-tweenFrom)*easePager(t);
+    const dt=Math.max(1,ts-tweenPrevTs);
+
+    vel=(next-tweenPrev)/dt*1000;
+    pos=next;
+    tweenPrev=next;
+    tweenPrevTs=ts;
+    draw(0);
+
+    if(t>=1){
+      pos=goal;
+      vel=0;
+      draw(0,true);
+      anim=0;
+      tweenStart=0;
+      tweenPrevTs=0;
       return;
     }
-    anim=raf(spring);
+    anim=raf(tween);
   }
-  function settle(to){
-    goal=to;
-    if(!anim){spring.last=0;anim=raf(spring)}
+
+  function settle(to,duration=160){
+    stop();
+    goal=clamp(to,0,LIMIT());
+    tweenFrom=pos;
+    tweenDuration=clamp(duration,110,220);
+    tweenStart=0;
+    anim=raf(tween);
   }
+
   function stop(){
     if(anim){cancelAnimationFrame(anim);anim=0}
-    spring.last=0;
+    tweenStart=0;
+    tweenPrevTs=0;
   }
 
   function clearPendingNavigation(){
@@ -4710,7 +5083,7 @@ const Slider=(()=>{
     highlight(target);
 
     /* Thumb and old-page zoom/fade begin together. */
-    settle(target*step);
+    settle(target*step,tapped?138:150);
 
     if(reduceMotion()){
       goto(page);
@@ -4726,8 +5099,8 @@ const Slider=(()=>{
     /* Fast enough to feel continuous, long enough for the thumb to visibly
        arrive at its real slot before the document hand-off. */
     const wait=tapped
-      ? Math.min(168,112+distance*14)
-      : Math.min(154,102+distance*13);
+      ? Math.min(176,142+distance*10)
+      : Math.min(182,150+distance*9);
 
     rail.classList.add('nav-traveling');
     document.body.classList.add('pager-programmatic');
@@ -4754,10 +5127,9 @@ const Slider=(()=>{
   }
   const LIMIT=()=>step*LAST;
   function band(p){
-    const max=LIMIT();
-    if(p<0)return p*.22;
-    if(p>max)return max+(p-max)*.22;
-    return p;
+    /* v17.2: hard clamp. Rubber-band overshoot looked like the whole slider
+       was still drifting after the user's finger stopped. */
+    return clamp(p,0,LIMIT());
   }
 
   function processPoint(pt){
@@ -4770,13 +5142,21 @@ const Slider=(()=>{
     const instant=(p-lastP)/dt*1000;
     vel=vel*.55+instant*.45;
     lastP=p;lastT=now;
-    pos=band(p-grab);
-    draw(Math.abs(vel)/1900);
+    const desired=band(p-grab);
 
-    /* Page opacity/zoom follows actual thumb displacement in real time. */
+    /* Position low-pass: suppress 120 Hz micro-jitter while keeping the lens
+       visually under the finger. Coarse pointers get a slightly softer blend. */
+    const follow=coarse?.52:.64;
+    pos+=(desired-pos)*follow;
+    if(Math.abs(desired-pos)<.18)pos=desired;
+
+    draw(0);
+
+    /* Page fade/zoom follows the smoothed lens position too, so both layers
+       feel like one continuous gesture rather than two competing animations. */
     const routeProgress=Math.min(1,Math.abs(pos-startIndex*step)/Math.max(1,step));
-    setPagerRouteGesture(Math.max(.035,routeProgress));
-    const candidate=clamp(Math.round(pos/step),0,LAST);
+    setPagerRouteGesture(Math.max(.028,routeProgress));
+    const candidate=clamp(Math.round(desired/step),0,LAST);
     prefetchPagerPage(items[candidate].dataset.page);
   }
 
@@ -4822,14 +5202,14 @@ const Slider=(()=>{
 
     const tapped=travel<7;
     const p=trackClient(e.clientX,e.clientY);
-    const projected=tapped?p:pos+vel*.065;
+    const projected=tapped?p:pos+vel*.028;
     const target=clamp(Math.round(projected/step),0,LAST);
 
     if(target!==startIndex||routeIndex(route())!==target){
       animateToRoute(target,items[target].dataset.page,{tapped,from:startIndex});
     }else{
       highlight(target);
-      settle(target*step);
+      settle(target*step,125);
       cancelPagerGestureFX();
     }
   };
@@ -4841,7 +5221,7 @@ const Slider=(()=>{
     document.body.classList.remove('pager-dragging');
     rail.classList.remove('grabbing');
     if(moveRAF){cancelAnimationFrame(moveRAF);moveRAF=0}
-    settle(startIndex*step);
+    settle(startIndex*step,125);
     cancelPagerGestureFX();
   },{passive:true});
 
@@ -5206,19 +5586,13 @@ function ensureIdleSubscribePrompt(){
       button.textContent='訂閱中…';
       note.textContent='正在建立訂閱…';
 
-      const bg=startNewsletterBackgroundRequest(email,'signwell-idle-prompt');
+      await runNewsletterOptimistic4s(email,'signwell-idle-prompt');
 
-      /* Same optimistic UX as the full Newsletter page. */
-      await sleep(4000);
-      note.textContent='訂閱完成 ✓ 之後會收到 SIGN WELL Letter。';
-      button.textContent='已送出';
+      note.textContent='已訂閱 ✓ 之後會收到 SIGN WELL Letter。';
+      button.textContent='已訂閱';
       markIdleSubscribeHandled(true);
 
-      bg.catch(err=>{
-        console.warn('SIGN WELL idle newsletter background request:',err?.message||err);
-      });
-
-      setTimeout(()=>el.classList.remove('show'),1500);
+      setTimeout(()=>el.classList.remove('show'),900);
     });
   });
 
@@ -5425,6 +5799,11 @@ function prefetchSiblingPages(){
   schedulePublicRevalidate(220);
 })();
 })();
+
+window.addEventListener('pagehide',()=>{
+  document.body.classList.add('visual-paused');
+},{passive:true});
+
 </script>
 </body>
 </html>
