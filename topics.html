@@ -3523,6 +3523,7 @@ function signwellPublicGasBridge(action,payload={},timeoutMs=22000){
     };
     add('transport','iframe');
     add('requestId',requestId);
+    add('returnOrigin',location.origin);
     add('action',action);
     add('payload',JSON.stringify(payload||{}));
 
