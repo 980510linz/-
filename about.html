@@ -4033,6 +4033,163 @@ body.dark .lightcard{
     0 18px 48px rgba(0,0,0,.24)!important;
 }
 
+
+/* ============================================================
+   SIGN WELL Public · Blue / White primary + Pink secondary
+   2026-09-12 visual refresh
+   ============================================================ */
+:root{
+  --sw-primary:#7fb8ff;
+  --sw-primary-deep:#4b8fdc;
+  --sw-primary-soft:#eaf4ff;
+  --sw-white:#fbfdff;
+  --sw-pink:#f3d8e6;
+  --sw-pink-soft:#fdf0f6;
+  --sky:#7fb8ff !important;
+  --sky-deep:#4b8fdc !important;
+  --sky2:#d9ebff !important;
+  --sky3:#f4f9ff !important;
+  --ink:#162538 !important;
+  --muted:#708195 !important;
+  --bg:#f6faff !important;
+  --glass-tint-a:rgba(255,255,255,.84) !important;
+  --glass-tint-b:rgba(241,247,255,.56) !important;
+  --glass-rim:rgba(255,255,255,.99) !important;
+  --glass-rim-soft:rgba(214,229,246,.58) !important;
+  --glass-blur:26px !important;
+  --glass-sat:158% !important;
+  --shadow-soft:0 2px 8px rgba(76,112,148,.05) !important;
+  --shadow-lift:0 22px 56px rgba(76,112,148,.12),0 6px 18px rgba(76,112,148,.05) !important;
+  --shadow-hover:0 28px 72px rgba(76,112,148,.16),0 10px 24px rgba(76,112,148,.08) !important;
+}
+body{
+  background:
+    radial-gradient(66rem 46rem at -8% 0%, rgba(255,255,255,.95), transparent 58%),
+    radial-gradient(62rem 48rem at 104% 0%, rgba(219,235,255,.96), transparent 56%),
+    radial-gradient(52rem 42rem at 12% 102%, rgba(243,216,230,.54), transparent 58%),
+    radial-gradient(48rem 40rem at 96% 92%, rgba(226,240,255,.70), transparent 56%),
+    linear-gradient(158deg,#fcfeff 0%,#f6faff 44%,#eff5fd 100%) !important;
+  background-attachment:fixed;
+}
+.ambient{filter:blur(96px) saturate(122%) !important;opacity:.82 !important;}
+.orb.a{background:radial-gradient(circle,rgba(171,208,255,.58),transparent 68%) !important}
+.orb.b{background:radial-gradient(circle,rgba(255,255,255,.94),transparent 68%) !important}
+.orb.c{background:radial-gradient(circle,rgba(243,216,230,.42),transparent 68%) !important}
+.orb.d{background:radial-gradient(circle,rgba(192,220,255,.36),transparent 70%) !important}
+.grain{opacity:.09 !important}
+.cursor-glow{background:radial-gradient(circle,rgba(174,212,255,.42),rgba(243,216,230,.12) 42%,transparent 72%) !important;}
+.glass,
+.lightcard,
+.hero-card,
+.article-card,
+.topic-card,
+.person-card,
+.share-card,
+.newsletter-card,
+.about-manifesto,
+.about-value,
+.about-team-card,
+.article-view,
+.article-cover,
+.article-layout,
+.toc,
+.search-panel,
+.idle-subscribe-card,
+.newsletter-flow-card,
+.newsletter-terms-card,
+.share-sheet,
+.footer,
+.page-card{
+  background:linear-gradient(145deg,rgba(255,255,255,.82),rgba(244,249,255,.54)) !important;
+  border-color:rgba(255,255,255,.88) !important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.98), inset 0 -1px 0 rgba(112,145,178,.05), 0 22px 56px rgba(68,104,140,.10) !important;
+  backdrop-filter:blur(24px) saturate(150%) !important;
+  -webkit-backdrop-filter:blur(24px) saturate(150%) !important;
+}
+.glass::before,
+.lightcard::before{background:linear-gradient(150deg,rgba(255,255,255,1) 0%,rgba(219,235,255,.68) 34%,rgba(243,216,230,.30) 62%,rgba(255,255,255,.98) 100%) !important;}
+.brand-mark,
+.iconbtn,
+.pillbtn,
+.softbtn,
+.backlink,
+.newsletter-submit,
+.share-copy,
+.search-close,
+.to-top,
+.top-actions button,
+.newsletter-terms-actions button,
+.newsletter-terms-close,
+.idle-subscribe-close,
+.idle-subscribe-form button,
+.newsletter-flow-card .nl-flow-progress i{
+  border-color:rgba(255,255,255,.92) !important;
+  background:linear-gradient(150deg,rgba(255,255,255,.86),rgba(240,247,255,.58)) !important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.98),0 10px 24px rgba(68,104,140,.09) !important;
+}
+.newsletter-submit,
+.idle-subscribe-form button,
+.newsletter-terms-agree,
+.generate-btn,
+.share-copy.primary,
+.pillbtn.primary{
+  background:linear-gradient(145deg,#6ea8ef,#4f8fdb 70%,#f1dae6 130%) !important;
+  color:#fff !important;
+  border-color:transparent !important;
+  box-shadow:0 14px 30px rgba(79,143,219,.18), inset 0 1px 0 rgba(255,255,255,.26) !important;
+}
+.kicker,.newsletter-kicker,.topic-no,.article-publisher-copy small,.brand-copy span{color:#6792bb !important;}
+.hero h1,.page-hero h1,.article-view h1,.newsletter-card h1,.idle-subscribe-title,.nl-flow-title,.about-manifesto h2,.about-team-head h2,.article-card h3,.topic-card h3,.person-name{color:#173049 !important;}
+.newsletter-wrap{position:relative;isolation:isolate;}
+.newsletter-wrap::before,.newsletter-wrap::after{content:"";position:absolute;pointer-events:none;border-radius:999px;filter:blur(14px);z-index:0;}
+.newsletter-wrap::before{width:min(42vw,420px);height:min(42vw,420px);top:6%;right:-6%;background:radial-gradient(circle,rgba(214,231,255,.95),rgba(214,231,255,0) 66%);}
+.newsletter-wrap::after{width:min(34vw,340px);height:min(34vw,340px);left:-4%;bottom:2%;background:radial-gradient(circle,rgba(243,216,230,.78),rgba(243,216,230,0) 68%);}
+.newsletter-card{position:relative;z-index:1;overflow:hidden;padding:40px 34px 32px !important;border-radius:34px !important;background:radial-gradient(460px 220px at 0% 0%,rgba(255,255,255,.94),transparent 74%), radial-gradient(320px 220px at 100% 0%,rgba(223,236,255,.52),transparent 72%), linear-gradient(150deg,rgba(255,255,255,.80),rgba(244,249,255,.56)) !important;}
+.newsletter-card::after{content:"" !important;position:absolute !important;inset:auto -5% -18% auto !important;width:260px !important;height:260px !important;border-radius:50% !important;background:radial-gradient(circle,rgba(243,216,230,.42),rgba(243,216,230,0) 68%) !important;opacity:1 !important;animation:none !important;transform:none !important;}
+.newsletter-signal-orbit,.newsletter-signal-lines{display:none !important;}
+.newsletter-kicker,.newsletter-card h1,.newsletter-lead,.newsletter-form,.newsletter-consent,.newsletter-status,.newsletter-success,.newsletter-note{position:relative;z-index:2;}
+.newsletter-kicker{display:inline-flex;align-items:center;gap:10px;min-height:34px;padding:0 14px;border-radius:999px;background:rgba(255,255,255,.62);border:1px solid rgba(255,255,255,.86);box-shadow:inset 0 1px 0 rgba(255,255,255,.98),0 10px 22px rgba(68,104,140,.08);}
+.newsletter-kicker i{width:9px;height:9px;border-radius:50%;background:linear-gradient(180deg,#78b1f5,#f2d9e6);box-shadow:0 0 0 6px rgba(127,184,255,.12);}
+.newsletter-card h1{font-size:clamp(44px,6vw,68px) !important;line-height:1.02 !important;letter-spacing:-.055em !important;margin-top:18px !important;}
+.newsletter-lead{max-width:640px;color:#6c7f92 !important;}
+.newsletter-form{margin-top:22px !important;padding:10px !important;border-radius:26px !important;background:rgba(255,255,255,.58) !important;border:1px solid rgba(255,255,255,.84) !important;box-shadow:inset 0 1px 0 rgba(255,255,255,.98),0 14px 34px rgba(68,104,140,.08) !important;backdrop-filter:blur(24px) saturate(150%) !important;-webkit-backdrop-filter:blur(24px) saturate(150%) !important;}
+.newsletter-form input{min-height:60px;padding:0 18px !important;border-radius:18px !important;background:rgba(255,255,255,.56) !important;}
+.newsletter-submit{min-height:60px;padding:0 22px !important;border-radius:20px !important;}
+.newsletter-consent,.newsletter-note,.newsletter-success,.newsletter-status{background:rgba(255,255,255,.44);border:1px solid rgba(255,255,255,.78);box-shadow:inset 0 1px 0 rgba(255,255,255,.96);}
+.newsletter-consent{padding:16px 18px !important;border-radius:20px !important;margin-top:16px !important;}
+.newsletter-status,.newsletter-note{border-radius:16px;padding:12px 14px;}
+.newsletter-success{border-radius:22px !important;padding:16px 18px !important;}
+.idle-subscribe-card,.newsletter-flow-card,.newsletter-terms-card{background:radial-gradient(280px 180px at 0% 0%,rgba(255,255,255,.96),transparent 72%), linear-gradient(150deg,rgba(255,255,255,.82),rgba(244,249,255,.58)) !important;border:1px solid rgba(255,255,255,.88) !important;box-shadow:0 26px 64px rgba(68,104,140,.14), inset 0 1px 0 rgba(255,255,255,.98) !important;}
+.idle-subscribe-title,.nl-flow-title{color:#173049 !important}
+.idle-subscribe-copy,.nl-flow-copy,.nl-flow-email,.idle-subscribe-note{color:#6f8193 !important}
+.idle-subscribe-form input{min-height:50px;border-radius:17px !important;background:rgba(255,255,255,.62) !important;}
+.idle-subscribe-form button{min-height:50px;border-radius:17px !important;}
+.newsletter-flow-card::before{background:linear-gradient(135deg,rgba(255,255,255,.96),rgba(216,232,251,.54),rgba(243,216,230,.28)) !important;}
+.nl-flow-orbit,.nl-flow-orbit.second,.nl-flow-core{border-color:rgba(255,255,255,.84) !important;background:linear-gradient(145deg,rgba(255,255,255,.76),rgba(232,243,255,.48)) !important;}
+.newsletter-terms-body,.newsletter-terms-note{color:#6f8193 !important}
+.newsletter-terms-title{color:#173049 !important}
+@media(max-width:700px){.newsletter-card{padding:30px 20px 24px !important;border-radius:28px !important;}.newsletter-card h1{font-size:42px !important;}.newsletter-form{border-radius:22px !important;}}
+
+
+/* ============================================================
+   Public v18.4 · Apple Dream Glass + Gesture-Coupled Page Swipe
+   Blue / white primary, powder-pink secondary
+   ============================================================ */
+:root{--route-x:0px;--route-enter-x:0px;--sw-blue-ice:#eaf4ff;--sw-blue-glass:rgba(216,235,255,.62);--sw-pink-glass:rgba(246,220,233,.34);--sw-apple-shadow:0 26px 70px rgba(61,96,131,.12),0 7px 20px rgba(61,96,131,.05)}
+body{background:radial-gradient(72rem 52rem at -11% -5%,rgba(255,255,255,.98),transparent 58%),radial-gradient(64rem 48rem at 105% 0%,rgba(210,232,255,.92),transparent 58%),radial-gradient(48rem 36rem at 10% 105%,rgba(246,220,233,.46),transparent 61%),linear-gradient(158deg,#fdfeff 0%,#f6faff 50%,#eef5fc 100%)!important}
+.ambient{opacity:.68!important;filter:blur(104px) saturate(112%)!important}.orb.a{background:radial-gradient(circle,rgba(160,205,255,.54),transparent 69%)!important}.orb.b{background:radial-gradient(circle,rgba(238,247,255,.92),transparent 70%)!important}.orb.c{background:radial-gradient(circle,rgba(246,220,233,.34),transparent 70%)!important}.orb.d{opacity:.28!important}.grain{opacity:.065!important}
+.glass,.lightcard,.article-card,.topic-card,.hero-card,.person-card,.share-card,.newsletter-card,.about-manifesto,.about-value,.toc,.search-panel,.idle-subscribe-card,.newsletter-flow-card,.newsletter-terms-card{background:radial-gradient(140% 120% at 16% -18%,rgba(255,255,255,.94),transparent 46%),linear-gradient(148deg,rgba(255,255,255,.76),rgba(239,247,255,.48))!important;border-color:rgba(255,255,255,.92)!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.99),inset 0 -1px 0 rgba(93,132,167,.045),var(--sw-apple-shadow)!important;backdrop-filter:blur(27px) saturate(146%)!important;-webkit-backdrop-filter:blur(27px) saturate(146%)!important}
+.article-card:nth-child(5n+2)::after,.topic-card:nth-child(5n+2)::after,.newsletter-card::after,.idle-subscribe-card::after{background:radial-gradient(circle,rgba(246,220,233,.28),transparent 72%)!important}
+.pager{background:linear-gradient(155deg,rgba(255,255,255,.35),rgba(235,245,255,.12) 48%,rgba(255,255,255,.24))!important;border:1px solid rgba(255,255,255,.76)!important;box-shadow:0 22px 56px rgba(65,104,140,.16),inset 0 1px 1px rgba(255,255,255,.88),inset 0 -1px 1px rgba(175,206,234,.18)!important;backdrop-filter:blur(28px) saturate(170%) brightness(1.045)!important;-webkit-backdrop-filter:blur(28px) saturate(170%) brightness(1.045)!important}
+.pager-thumb{background:radial-gradient(125% 110% at 26% -8%,rgba(255,255,255,.98),rgba(255,255,255,.30) 46%,transparent 72%),linear-gradient(155deg,rgba(248,252,255,.82),rgba(214,234,255,.34) 70%,rgba(246,220,233,.20))!important;box-shadow:inset 0 1px 1px rgba(255,255,255,.99),inset 0 -10px 20px -14px rgba(97,151,203,.30),0 13px 28px rgba(65,110,150,.16),0 1px 4px rgba(65,110,150,.10)!important}body.pager-dragging .pager-thumb{scale:1.064!important}
+body.page-route-gesture #app,body.page-route-gesture .footer,body.page-route-fx #app,body.page-route-fx .footer{transform:translate3d(var(--route-x),0,0) scale(var(--route-scale))!important;transform-origin:50% 48%;will-change:transform,opacity}
+body.page-enter-fx #app,body.page-enter-fx .footer{animation:swPageSlideIn184 .285s cubic-bezier(.18,.86,.22,1) both!important}
+@keyframes swPageSlideIn184{0%{opacity:.36;transform:translate3d(var(--route-enter-x),0,0) scale(.994)}62%{opacity:.95;transform:translate3d(calc(var(--route-enter-x) * .10),0,0) scale(.999)}100%{opacity:1;transform:translate3d(0,0,0) scale(1)}}
+body.page-route-fx::before{background:linear-gradient(90deg,rgba(246,220,233,.10),rgba(255,255,255,.26),rgba(213,234,255,.22))!important}
+body.pager-dragging .lightcard::after,body.pager-dragging .sheen-layer,body.pager-dragging .cursor-glow{opacity:0!important}body.pager-dragging .article-card,body.pager-dragging .topic-card,body.pager-dragging .hero-card{transition:none!important}
+@media(max-width:700px),(pointer:coarse){body.page-route-gesture #app,body.page-route-fx #app{contain:paint}.ambient{filter:blur(58px) saturate(116%)!important;opacity:.66!important}.glass,.lightcard{backdrop-filter:blur(17px) saturate(138%)!important;-webkit-backdrop-filter:blur(17px) saturate(138%)!important}}
+@media(prefers-reduced-motion:reduce){body.page-route-gesture #app,body.page-route-fx #app,body.page-enter-fx #app{transform:none!important;animation:none!important}}
+
 </style>
 
 <style id="signwell-typography-20260912">
@@ -4078,6 +4235,351 @@ code,pre,kbd,samp,.search-kbd,.content-area{
   font-family:var(--sw-font-main)!important;
 }
 </style>
+<style id="signwell-uiux-v19">
+/* SIGN WELL Public · UI/UX refinement v19 · 2026-09-13 */
+:root{
+  --sw-blue:#78b5f7;
+  --sw-blue-deep:#4d8fd6;
+  --sw-blue-pale:#eaf4ff;
+  --sw-pink:#f2d7e5;
+  --sw-pink-pale:#fdf2f7;
+  --sw-glass:rgba(255,255,255,.66);
+  --sw-glass-strong:rgba(255,255,255,.80);
+  --sw-line:rgba(255,255,255,.88);
+  --sw-shadow:0 18px 54px rgba(55,94,132,.10),0 3px 12px rgba(55,94,132,.05);
+  --sw-shadow-hover:0 28px 72px rgba(55,94,132,.15),0 8px 24px rgba(55,94,132,.07);
+  --sw-ease:cubic-bezier(.16,1,.3,1);
+  --sw-spring:cubic-bezier(.22,1.35,.38,1);
+}
+html{background:#f5f9fe}
+body{
+  background:
+    radial-gradient(56rem 40rem at -8% -4%,rgba(255,255,255,.96),transparent 62%),
+    radial-gradient(54rem 38rem at 108% 8%,rgba(212,232,255,.84),transparent 64%),
+    radial-gradient(38rem 30rem at 10% 105%,rgba(242,215,229,.45),transparent 66%),
+    linear-gradient(155deg,#fcfeff 0%,#f5f9fe 52%,#edf4fc 100%)!important;
+}
+body::before{
+  content:"";position:fixed;inset:0;z-index:-5;pointer-events:none;
+  background:
+    radial-gradient(24rem 24rem at 78% 18%,rgba(255,255,255,.55),transparent 70%),
+    radial-gradient(20rem 20rem at 20% 74%,rgba(217,235,255,.34),transparent 72%);
+}
+.ambient{opacity:.72!important;filter:blur(88px) saturate(118%)!important}
+.orb.a{background:radial-gradient(circle,rgba(134,190,250,.42),transparent 68%)!important}
+.orb.b{background:radial-gradient(circle,rgba(219,236,255,.58),transparent 68%)!important}
+.orb.c{background:radial-gradient(circle,rgba(242,215,229,.32),transparent 68%)!important}
+.orb.d{background:radial-gradient(circle,rgba(178,213,250,.28),transparent 70%)!important}
+.grain{opacity:.055!important}
+
+/* cleaner Apple-like glass */
+.glass,.hero-card,.article-card,.topic-card,.person-card,.share-card,.newsletter-card,
+.about-manifesto,.about-value,.about-team-card,.toc,.searchbox,.idle-subscribe-card,
+.newsletter-flow-card,.newsletter-terms-card,.share-sheet{
+  border:1px solid rgba(255,255,255,.82)!important;
+  background:linear-gradient(145deg,rgba(255,255,255,.72),rgba(242,248,255,.46))!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.98),inset 0 -1px 0 rgba(110,146,182,.045),var(--sw-shadow)!important;
+  backdrop-filter:blur(22px) saturate(148%)!important;
+  -webkit-backdrop-filter:blur(22px) saturate(148%)!important;
+}
+.glass::before{opacity:.88}
+.lightcard::after{opacity:.34!important;transition:opacity .28s ease!important}
+.lightcard:hover::after{opacity:.62!important}
+
+/* cards: smaller motion, better hierarchy */
+.article-card,.topic-card,.person-card,.about-value,.about-team-card{
+  transform:translateZ(0);
+  transition:transform .42s var(--sw-ease),box-shadow .42s var(--sw-ease),border-color .32s ease,background .32s ease!important;
+  contain:layout paint style;
+}
+@media (hover:hover) and (pointer:fine){
+  .article-card:hover,.topic-card:hover,.person-card:hover,.about-value:hover,.about-team-card:hover{
+    transform:translate3d(0,-4px,0)!important;
+    box-shadow:var(--sw-shadow-hover)!important;
+    border-color:rgba(255,255,255,.96)!important;
+  }
+}
+
+/* buttons and controls */
+button,.pillbtn,.softbtn,.iconbtn,.backlink,.newsletter-submit,.share-copy{
+  transition:transform .26s var(--sw-spring),box-shadow .3s var(--sw-ease),background .3s ease,border-color .3s ease,opacity .2s ease!important;
+  -webkit-font-smoothing:antialiased;
+}
+button:active,.pillbtn:active,.softbtn:active,.iconbtn:active,.backlink:active,.newsletter-submit:active,.share-copy:active{
+  transform:scale(.965)!important;
+}
+:focus-visible{outline:3px solid rgba(77,143,214,.20)!important;outline-offset:3px!important;box-shadow:0 0 0 1px rgba(77,143,214,.52)!important}
+input,textarea,select{transition:border-color .22s ease,box-shadow .22s ease,background .22s ease!important}
+input:focus,textarea:focus,select:focus{border-color:rgba(77,143,214,.34)!important;box-shadow:0 0 0 4px rgba(77,143,214,.08),inset 0 1px 0 rgba(255,255,255,.9)!important}
+
+/* bottom liquid pager */
+.pager{
+  border:1px solid rgba(255,255,255,.84)!important;
+  background:linear-gradient(155deg,rgba(255,255,255,.46),rgba(228,240,253,.17) 48%,rgba(255,255,255,.31))!important;
+  box-shadow:0 20px 52px rgba(54,94,132,.14),0 3px 12px rgba(54,94,132,.05),inset 0 1px 1px rgba(255,255,255,.92),inset 0 -1px 1px rgba(155,193,228,.16)!important;
+  backdrop-filter:blur(24px) saturate(160%) brightness(1.035)!important;
+  -webkit-backdrop-filter:blur(24px) saturate(160%) brightness(1.035)!important;
+}
+.pager-thumb{
+  background:radial-gradient(120% 110% at 25% -6%,rgba(255,255,255,.98),rgba(255,255,255,.28) 47%,transparent 72%),linear-gradient(155deg,rgba(250,253,255,.84),rgba(212,233,255,.34) 70%,rgba(242,215,229,.17))!important;
+  box-shadow:inset 0 1px 1px rgba(255,255,255,.99),inset 0 -10px 18px -14px rgba(88,146,200,.27),0 12px 26px rgba(55,98,138,.14),0 1px 4px rgba(55,98,138,.09)!important;
+}
+.nav-item{font-weight:760!important;letter-spacing:.015em!important}
+.nav-item.active{color:#244f73!important}
+body.pager-dragging .pager-thumb{scale:1.06!important}
+body.pager-programmatic .pager-thumb,.pager.nav-traveling .pager-thumb{scale:1.035!important}
+
+/* page gesture: make the moving screen feel like a physical sheet */
+#app{transform:translateZ(0);backface-visibility:hidden;will-change:auto}
+body.page-route-gesture #app,body.page-route-fx #app{will-change:transform,opacity}
+body.page-route-gesture .brand-top,body.page-route-fx .brand-top,
+body.page-route-gesture .top-actions,body.page-route-fx .top-actions{will-change:transform,opacity}
+
+/* reading surface */
+.article-body{max-width:70ch!important;line-height:1.95!important;letter-spacing:.005em}
+.article-body p{margin-bottom:1.24em}
+.article-body h2{scroll-margin-top:96px}
+.article-body img,.article-cover img{box-shadow:0 18px 50px rgba(49,83,117,.09)}
+.toc{border-radius:22px!important}
+
+/* Newsletter polish */
+.newsletter-card{border-radius:36px!important;overflow:hidden}
+.newsletter-card h1{letter-spacing:-.05em!important}
+.newsletter-form{border:1px solid rgba(255,255,255,.84)!important;background:rgba(255,255,255,.54)!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.98),0 12px 30px rgba(60,100,140,.07)!important}
+.newsletter-consent,.newsletter-note{color:#718396!important}
+
+/* UX: avoid painting far-below content until close to viewport */
+.article-card,.topic-card,.about-value,.about-team-card{content-visibility:auto;contain-intrinsic-size:280px}
+
+/* darker theme stays readable but keeps the blue/pink optical tint */
+body.dark{
+  --sw-line:rgba(196,222,245,.12);
+  background:radial-gradient(56rem 44rem at 100% 0%,rgba(42,78,110,.24),transparent 62%),radial-gradient(42rem 32rem at 4% 100%,rgba(90,49,72,.12),transparent 68%),linear-gradient(155deg,#111a23,#15232e 50%,#111c25)!important;
+}
+body.dark .glass,body.dark .article-card,body.dark .topic-card,body.dark .newsletter-card{
+  background:linear-gradient(145deg,rgba(34,52,68,.68),rgba(20,35,48,.48))!important;
+  border-color:rgba(192,220,244,.10)!important;
+  box-shadow:inset 0 1px 0 rgba(205,230,250,.08),0 22px 54px rgba(0,0,0,.18)!important;
+}
+
+/* performance while finger is moving */
+body.pager-dragging .ambient,body.page-route-gesture .ambient{filter:blur(64px) saturate(105%)!important;opacity:.58!important}
+body.pager-dragging .cursor-glow,body.page-route-gesture .cursor-glow,
+body.pager-dragging .sheen-layer,body.page-route-gesture .sheen-layer,
+body.pager-dragging .lightcard::after,body.page-route-gesture .lightcard::after{opacity:0!important;animation:none!important}
+body.pager-dragging .glass,body.page-route-gesture .glass{backdrop-filter:blur(15px) saturate(130%)!important;-webkit-backdrop-filter:blur(15px) saturate(130%)!important}
+body.pager-dragging .article-card,body.page-route-gesture .article-card,
+body.pager-dragging .topic-card,body.page-route-gesture .topic-card{box-shadow:inset 0 1px 0 rgba(255,255,255,.92),0 8px 24px rgba(55,94,132,.07)!important}
+
+/* mobile Safari: preserve visual richness without fixed-background jank */
+@media(max-width:760px){
+  body{background-attachment:scroll!important}
+  body::before{position:absolute}
+  .ambient{filter:blur(72px) saturate(112%)!important;opacity:.64!important}
+  .glass,.hero-card,.article-card,.topic-card,.person-card,.share-card,.newsletter-card,
+  .about-manifesto,.about-value,.about-team-card,.toc,.searchbox,.idle-subscribe-card,
+  .newsletter-flow-card,.newsletter-terms-card,.share-sheet{
+    backdrop-filter:blur(18px) saturate(140%)!important;
+    -webkit-backdrop-filter:blur(18px) saturate(140%)!important;
+  }
+  .article-card,.topic-card,.person-card,.about-value,.about-team-card{transform:none!important}
+  button,.pillbtn,.softbtn,.iconbtn,.backlink,.newsletter-submit,.share-copy{min-height:44px}
+  .pager{backdrop-filter:blur(20px) saturate(150%)!important;-webkit-backdrop-filter:blur(20px) saturate(150%)!important}
+  .newsletter-card{border-radius:30px!important}
+}
+@media(max-width:430px){
+  .grain{display:none!important}
+  .cursor-glow{display:none!important}
+  .ambient{opacity:.56!important}
+}
+@media(prefers-reduced-motion:reduce){
+  .article-card,.topic-card,.person-card,.about-value,.about-team-card,button,.pager-thumb{transition:none!important}
+  .ambient .orb{animation:none!important}
+}
+body.lite .article-card,body.lite .topic-card,body.lite .newsletter-card{backdrop-filter:none!important;-webkit-backdrop-filter:none!important;background:rgba(250,253,255,.90)!important}
+</style>
+
+<style id="signwell-glass-v20">
+/* SIGN WELL Public · Optical Liquid Glass v20 · 2026-09-13 */
+:root{
+  --sw-glass-blue:rgba(153,205,255,.22);
+  --sw-glass-pink:rgba(244,207,228,.16);
+  --sw-glass-white:rgba(255,255,255,.78);
+  --sw-glass-edge:rgba(255,255,255,.96);
+  --sw-glass-depth:0 28px 70px rgba(50,91,132,.12),0 8px 22px rgba(50,91,132,.055);
+  --sw-glass-depth-hover:0 36px 92px rgba(50,91,132,.16),0 10px 28px rgba(50,91,132,.07);
+}
+
+/* Optical material: transparent body + blue/pink chromatic refraction. */
+body:not(.lite) .glass,
+body:not(.lite) .hero-card,
+body:not(.lite) .article-card,
+body:not(.lite) .topic-card,
+body:not(.lite) .person-card,
+body:not(.lite) .share-card,
+body:not(.lite) .newsletter-card,
+body:not(.lite) .about-manifesto,
+body:not(.lite) .about-value,
+body:not(.lite) .about-team-card,
+body:not(.lite) .toc,
+body:not(.lite) .searchbox,
+body:not(.lite) .idle-subscribe-card,
+body:not(.lite) .newsletter-flow-card,
+body:not(.lite) .newsletter-terms-card,
+body:not(.lite) .share-sheet{
+  background:
+    radial-gradient(135% 100% at 8% -14%,rgba(255,255,255,.96) 0%,rgba(255,255,255,.46) 28%,transparent 56%),
+    radial-gradient(72% 60% at 102% 3%,var(--sw-glass-blue),transparent 68%),
+    radial-gradient(62% 58% at -6% 103%,var(--sw-glass-pink),transparent 72%),
+    linear-gradient(148deg,rgba(255,255,255,.60),rgba(241,248,255,.34))!important;
+  border:1px solid rgba(255,255,255,.86)!important;
+  box-shadow:
+    inset 0 1.2px 0 var(--sw-glass-edge),
+    inset 1px 0 0 rgba(255,255,255,.46),
+    inset 0 -1px 0 rgba(105,148,188,.075),
+    inset -1px 0 0 rgba(244,207,228,.055),
+    var(--sw-glass-depth)!important;
+  backdrop-filter:blur(26px) saturate(168%) brightness(1.025)!important;
+  -webkit-backdrop-filter:blur(26px) saturate(168%) brightness(1.025)!important;
+}
+
+/* Stronger refracted rim without adding an extra DOM layer. */
+body:not(.lite) .glass::before{
+  opacity:1!important;
+  background:linear-gradient(145deg,
+    rgba(255,255,255,1) 0%,
+    rgba(255,255,255,.68) 18%,
+    rgba(174,216,255,.48) 40%,
+    rgba(246,211,230,.30) 64%,
+    rgba(255,255,255,.82) 84%,
+    rgba(255,255,255,1) 100%)!important;
+}
+body:not(.lite) .lightcard::after{
+  background:
+    radial-gradient(430px circle at var(--px,50%) var(--py,18%),rgba(255,255,255,.88),rgba(255,255,255,.16) 34%,rgba(174,216,255,.08) 51%,transparent 68%)!important;
+  mix-blend-mode:screen;
+  opacity:.42!important;
+}
+@media(hover:hover) and (pointer:fine){
+  body:not(.lite) .article-card:hover,
+  body:not(.lite) .topic-card:hover,
+  body:not(.lite) .person-card:hover,
+  body:not(.lite) .about-value:hover,
+  body:not(.lite) .about-team-card:hover{
+    box-shadow:
+      inset 0 1.2px 0 #fff,
+      inset 0 -1px 0 rgba(105,148,188,.08),
+      var(--sw-glass-depth-hover)!important;
+  }
+  body:not(.lite) .lightcard:hover::after{opacity:.72!important}
+}
+
+/* Glass buttons and inputs behave like thinner material. */
+body:not(.lite) .iconbtn,
+body:not(.lite) .pillbtn,
+body:not(.lite) .softbtn,
+body:not(.lite) .backlink,
+body:not(.lite) .share-copy,
+body:not(.lite) .newsletter-form,
+body:not(.lite) .newsletter-consent,
+body:not(.lite) .newsletter-note{
+  background:
+    radial-gradient(120% 100% at 12% -25%,rgba(255,255,255,.94),transparent 54%),
+    linear-gradient(145deg,rgba(255,255,255,.60),rgba(233,244,255,.32))!important;
+  border-color:rgba(255,255,255,.88)!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.98),inset 0 -1px 0 rgba(104,147,187,.07),0 10px 24px rgba(52,91,128,.07)!important;
+  backdrop-filter:blur(18px) saturate(158%)!important;
+  -webkit-backdrop-filter:blur(18px) saturate(158%)!important;
+}
+body:not(.lite) input,
+body:not(.lite) textarea,
+body:not(.lite) select{
+  background:linear-gradient(145deg,rgba(255,255,255,.68),rgba(245,250,255,.48))!important;
+  border-color:rgba(255,255,255,.84)!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.98),inset 0 -1px 0 rgba(90,132,170,.05)!important;
+}
+
+/* Main navigation is the thickest glass on Public. */
+body:not(.lite) .pager{
+  background:
+    radial-gradient(120% 85% at 18% -8%,rgba(255,255,255,.98),transparent 56%),
+    radial-gradient(90% 70% at 105% 42%,rgba(164,210,255,.26),transparent 68%),
+    radial-gradient(80% 55% at -10% 100%,rgba(245,211,230,.17),transparent 70%),
+    linear-gradient(155deg,rgba(255,255,255,.43),rgba(222,239,255,.15) 48%,rgba(255,255,255,.27))!important;
+  border:1px solid rgba(255,255,255,.92)!important;
+  box-shadow:0 24px 64px rgba(49,89,128,.15),0 4px 14px rgba(49,89,128,.06),inset 0 1.3px 1px rgba(255,255,255,.98),inset 0 -1.2px 1px rgba(127,175,219,.15)!important;
+  backdrop-filter:blur(30px) saturate(180%) brightness(1.045)!important;
+  -webkit-backdrop-filter:blur(30px) saturate(180%) brightness(1.045)!important;
+}
+body:not(.lite) .pager-thumb{
+  background:
+    radial-gradient(120% 105% at 24% -10%,rgba(255,255,255,1),rgba(255,255,255,.48) 33%,transparent 64%),
+    radial-gradient(80% 70% at 105% 40%,rgba(155,205,255,.25),transparent 70%),
+    linear-gradient(155deg,rgba(255,255,255,.76),rgba(208,231,254,.28) 68%,rgba(244,208,228,.16))!important;
+  box-shadow:inset 0 1.2px 1px rgba(255,255,255,1),inset 0 -12px 20px -15px rgba(74,138,198,.34),0 14px 30px rgba(51,95,137,.16),0 2px 5px rgba(51,95,137,.09)!important;
+}
+
+/* Fixed chrome gets a subtle glass wafer when content scrolls beneath it. */
+body.is-scrolled .brand-top,
+body:not(.lite) .top-actions .iconbtn{
+  background:linear-gradient(145deg,rgba(255,255,255,.66),rgba(235,246,255,.34))!important;
+  border:1px solid rgba(255,255,255,.82)!important;
+  backdrop-filter:blur(20px) saturate(160%)!important;
+  -webkit-backdrop-filter:blur(20px) saturate(160%)!important;
+}
+
+/* During gesture: reduce optical stack first, not the animation. */
+body.pager-dragging .glass,
+body.page-route-gesture .glass,
+body.page-route-fx .glass{
+  backdrop-filter:blur(13px) saturate(128%)!important;
+  -webkit-backdrop-filter:blur(13px) saturate(128%)!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.94),0 8px 24px rgba(50,91,132,.07)!important;
+}
+body.pager-dragging .lightcard::after,
+body.page-route-gesture .lightcard::after,
+body.page-route-fx .lightcard::after{opacity:0!important}
+
+/* Dark material. */
+body.dark:not(.lite) .glass,
+body.dark:not(.lite) .article-card,
+body.dark:not(.lite) .topic-card,
+body.dark:not(.lite) .newsletter-card{
+  background:
+    radial-gradient(120% 95% at 8% -12%,rgba(202,226,246,.12),transparent 54%),
+    radial-gradient(70% 55% at 100% 0%,rgba(72,135,188,.10),transparent 68%),
+    linear-gradient(145deg,rgba(36,55,71,.60),rgba(18,34,47,.42))!important;
+  border-color:rgba(197,224,246,.13)!important;
+  box-shadow:inset 0 1px 0 rgba(218,237,251,.10),inset 0 -1px 0 rgba(0,0,0,.08),0 24px 62px rgba(0,0,0,.20)!important;
+}
+
+/* iOS / coarse pointers: maintain refraction, lower realtime blur cost. */
+@media(max-width:760px),(pointer:coarse){
+  body:not(.lite) .glass,
+  body:not(.lite) .hero-card,
+  body:not(.lite) .article-card,
+  body:not(.lite) .topic-card,
+  body:not(.lite) .person-card,
+  body:not(.lite) .share-card,
+  body:not(.lite) .newsletter-card,
+  body:not(.lite) .about-manifesto,
+  body:not(.lite) .about-value,
+  body:not(.lite) .about-team-card,
+  body:not(.lite) .toc,
+  body:not(.lite) .searchbox{
+    backdrop-filter:blur(18px) saturate(148%)!important;
+    -webkit-backdrop-filter:blur(18px) saturate(148%)!important;
+  }
+  body:not(.lite) .pager{backdrop-filter:blur(21px) saturate(158%)!important;-webkit-backdrop-filter:blur(21px) saturate(158%)!important}
+}
+@media(max-width:430px){
+  body:not(.lite) .lightcard::after{opacity:.20!important}
+}
+@media(prefers-reduced-motion:reduce){
+  .lightcard::after,.sheen-layer{transition:none!important;animation:none!important}
+}
+</style>
+
 </head>
 <body class="boot-preparing" data-page="about">
 <div id="welcomeSplash" aria-hidden="true"><div class="splash-word">欣緯生醫<small>SIGN WELL BIOMED</small></div><div class="splash-line"></div></div>
@@ -4680,7 +5182,12 @@ function route(){
   const h=(location.hash||'').replace(/^#/,'');
   if(h.startsWith('article/'))return{page:'article',slug:decodeURIComponent(h.slice(8))};
   if(h.startsWith('topic/'))return{page:'topicDetail',slug:decodeURIComponent(h.slice(6))};
-  return{page:document.body.dataset.page||'home'};
+  const file=(location.pathname.split('/').pop()||'index.html').toLowerCase();
+  if(file==='topics.html')return{page:'topics'};
+  if(file==='about.html')return{page:'about'};
+  if(file==='share.html')return{page:'share'};
+  if(file==='newsletter.html')return{page:'newsletter'};
+  return{page:'home'};
 }
 function routeIndex(r){return r.page==='topics'||r.page==='topicDetail'?1:r.page==='about'?2:r.page==='share'?3:r.page==='newsletter'?4:0}
 /* canonical cross-page links + fast internal routing */
@@ -4714,6 +5221,20 @@ function softRoute(url){
     return true;
   }catch(_){return false}
 }
+function isPrimaryPublicPage(page){
+  return page==='home'||page==='topics'||page==='about'||page==='share'||page==='newsletter';
+}
+function softPrimaryRoute(url,page){
+  if(!isPrimaryPublicPage(page))return false;
+  try{
+    const u=new URL(url,location.href);
+    if(u.origin!==location.origin)return false;
+    history.pushState({signwell:true,page},'',u.href);
+    document.body.dataset.page=page;
+    render();
+    return true;
+  }catch(_){return false}
+}
 function goto(page){
   let url='';
   if(page==='home')url=pageUrl(PAGE_FILE.home);
@@ -4724,8 +5245,8 @@ function goto(page){
   else if(page.startsWith('article/'))url=pageUrl(PAGE_FILE.home,page);
   else if(page.startsWith('topic/'))url=pageUrl(PAGE_FILE.topics,page);
   else return;
-
   markInternalNav();
+  if(softPrimaryRoute(url,page))return;
   if(softRoute(url))return;
   document.body.classList.add('page-switching');
   location.assign(url);
@@ -5471,18 +5992,22 @@ async function render(){
 const PAGE_ROUTE_FX_KEY='signwell-page-route-fx-v2';
 let pagerRouteEntrancePending=false;
 
-function setPagerRouteGesture(progress=0){
+function setPagerRouteGesture(progress=0,direction=0){
   if(reduceMotion())return;
   const p=Math.max(0,Math.min(1,Number(progress)||0));
-  const fade=1-(p*.24);
-  const chrome=1-(p*.18);
-  const scale=1+(p*.010);
-  const veil=p*.22;
-
+  const dir=Math.sign(Number(direction)||0);
+  const fade=1-(p*.14);
+  const chrome=1-(p*.10);
+  const scale=1-(p*.006);
+  const veil=p*.16;
+  const maxShift=Math.min(innerWidth*.235,190);
+  const x=(-dir*p*maxShift);
   document.body.style.setProperty('--route-opacity',fade.toFixed(3));
   document.body.style.setProperty('--route-chrome-opacity',chrome.toFixed(3));
   document.body.style.setProperty('--route-scale',scale.toFixed(4));
   document.body.style.setProperty('--route-veil',veil.toFixed(3));
+  document.body.style.setProperty('--route-x',x.toFixed(2)+'px');
+  if(dir)document.body.style.setProperty('--route-enter-x',(dir*Math.min(innerWidth*.16,138)).toFixed(2)+'px');
 }
 
 function beginPagerGestureFX(seed=.035){
@@ -5498,6 +6023,7 @@ function cancelPagerGestureFX(){
   document.body.style.setProperty('--route-chrome-opacity','1');
   document.body.style.setProperty('--route-scale','1');
   document.body.style.setProperty('--route-veil','0');
+  document.body.style.setProperty('--route-x','0px');
 
   setTimeout(()=>{
     if(!document.body.classList.contains('page-route-fx')){
@@ -5506,17 +6032,18 @@ function cancelPagerGestureFX(){
   },130);
 }
 
-function beginPagerRouteFX({persist=true}={}){
+function beginPagerRouteFX({persist=true,direction=0}={}){
   if(reduceMotion())return;
-
   document.body.classList.add('page-route-gesture');
   document.body.classList.add('page-route-fx');
-
-  /* Final old-page state: light veil, quick zoom in, then hand off. */
-  document.body.style.setProperty('--route-opacity','.10');
-  document.body.style.setProperty('--route-chrome-opacity','.20');
-  document.body.style.setProperty('--route-scale','1.019');
-  document.body.style.setProperty('--route-veil','.36');
+  const dir=Math.sign(Number(direction)||0);
+  const shift=Math.min(innerWidth*.20,170);
+  document.body.style.setProperty('--route-opacity','.16');
+  document.body.style.setProperty('--route-chrome-opacity','.32');
+  document.body.style.setProperty('--route-scale','.992');
+  document.body.style.setProperty('--route-veil','.24');
+  document.body.style.setProperty('--route-x',(-dir*shift).toFixed(2)+'px');
+  document.body.style.setProperty('--route-enter-x',(dir*Math.min(innerWidth*.16,138)).toFixed(2)+'px');
 
   if(persist){
     try{
@@ -5559,6 +6086,7 @@ function playPagerRouteEntrance(){
   document.body.style.removeProperty('--route-chrome-opacity');
   document.body.style.removeProperty('--route-scale');
   document.body.style.removeProperty('--route-veil');
+  document.body.style.removeProperty('--route-x');
 
   void document.body.offsetWidth;
   document.body.classList.add('page-enter-fx');
@@ -5576,6 +6104,7 @@ function playPagerSoftRouteEntrance(){
   document.body.style.removeProperty('--route-chrome-opacity');
   document.body.style.removeProperty('--route-scale');
   document.body.style.removeProperty('--route-veil');
+  document.body.style.removeProperty('--route-x');
 
   void document.body.offsetWidth;
   document.body.classList.add('page-enter-fx');
@@ -5595,7 +6124,9 @@ function pagerPageURL(page){
 
 function pagerWillStayInDocument(page){
   const url=pagerPageURL(page);
-  return Boolean(url&&sameDocument(url));
+  if(!url)return false;
+  if(isPrimaryPublicPage(page))return true;
+  return sameDocument(url);
 }
 
 function prefetchPagerPage(page){
@@ -5761,7 +6292,8 @@ const Slider=(()=>{
 
     const soft=pagerWillStayInDocument(page);
     prefetchPagerPage(page);
-    beginPagerRouteFX({persist:!soft});
+    const direction=Math.sign(target-from);
+    beginPagerRouteFX({persist:!soft,direction});
 
     const distance=Math.abs(target-from);
 
@@ -5823,8 +6355,9 @@ const Slider=(()=>{
 
     /* Page fade/zoom follows the smoothed lens position too, so both layers
        feel like one continuous gesture rather than two competing animations. */
-    const routeProgress=Math.min(1,Math.abs(pos-startIndex*step)/Math.max(1,step));
-    setPagerRouteGesture(Math.max(.028,routeProgress));
+    const routeDelta=pos-startIndex*step;
+    const routeProgress=Math.min(1,Math.abs(routeDelta)/Math.max(1,step));
+    setPagerRouteGesture(Math.max(.028,routeProgress),Math.sign(routeDelta));
     const candidate=clamp(Math.round(desired/step),0,LAST);
     prefetchPagerPage(items[candidate].dataset.page);
   }
