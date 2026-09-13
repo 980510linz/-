@@ -35,7 +35,7 @@ window.SIGNWELL_SITE_TEXT = {
   "aboutFocusValue": "醫學白話文",
   "aboutFormatLabel": "＃傳達理念",
   "aboutFormatValue": "衛教不說教",
-  "aboutPrincipleLabel": "＃目的",
+  "aboutPrincipleLabel": "＃創辦目的",
   "aboutPrincipleValue": "普及民眾醫療知識",
   "aboutDisclaimer": "本站內容僅供醫學資訊整理與探討，不構成個別醫療建議，也不能取代正式臨床評估與專業診療。",
   "aboutManifestoTitle": "把複雜的醫學，整理成真正能被理解與使用的知識。",
