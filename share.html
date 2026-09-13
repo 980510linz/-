@@ -2,7 +2,7 @@
 <html lang="zh-Hant">
 <head>
 <meta charset="utf-8">
-<meta name="signwell-release" content="23.9.0">
+<meta name="signwell-release" content="23.9.10">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="robots" content="noindex,nofollow,noarchive,nosnippet,noimageindex,max-snippet:0,max-image-preview:none,max-video-preview:0">
 <meta name="googlebot" content="noindex,nofollow,noarchive,nosnippet,noimageindex,max-snippet:0,max-image-preview:none,max-video-preview:0">
@@ -4626,13 +4626,239 @@ body.dark .ambient{opacity:.84!important;filter:blur(82px) saturate(122%)!import
 <link rel="apple-touch-icon" href="assets/signwell-app-icon-192.png">
 <meta property="og:image" content="https://980510linz.github.io/-/assets/signwell-share.png">
 <meta name="twitter:image" content="https://980510linz.github.io/-/assets/signwell-share.png">
-<link rel="stylesheet" href="assets/signwell-reader.css?build=23.9.0">
+<link rel="stylesheet" href="assets/signwell-reader.css?build=23.9.8">
 <link rel="stylesheet" href="assets/signwell-contrast.css?build=23.9.0">
-<link rel="stylesheet" href="assets/signwell-uiux.css?build=23.9.0">
+<link rel="stylesheet" href="assets/signwell-uiux.css?build=23.9.8">
 <link rel="stylesheet" href="assets/signwell-dialogs.css?build=23.9.1">
 <meta name="signwell-public-ui" content="23.9.0">
+
+<style id="sw-v23-9-9-hotfix">
+/* SIGN WELL Public v23.9.9 · search + topic + IG dock hotfix */
+.search-input{
+  background:rgba(255,255,255,.58)!important;
+  border:1px solid rgba(255,255,255,.88)!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.96),0 8px 22px rgba(75,122,158,.06)!important;
+}
+.search-input:focus-within{
+  border-color:rgba(156,188,214,.62)!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.96),0 10px 24px rgba(75,122,158,.08)!important;
+}
+.search-input input,
+.search-input input:focus{outline:none!important;box-shadow:none!important}
+.searchbox .iconbtn.search-close{box-shadow:inset 0 1px 0 rgba(255,255,255,.92),0 6px 18px rgba(64,101,136,.08)!important}
+.topic-signal,
+.topic-signal::before,
+.topic-signal::after{display:none!important;content:none!important}
+.topic-card{overflow:hidden!important}
+.pager{
+  width:min(394px,calc(100vw - 18px))!important;
+  height:88px!important;
+  left:50%!important;
+  right:auto!important;
+  top:auto!important;
+  bottom:calc(env(safe-area-inset-bottom) + 10px)!important;
+  transform:translateX(-50%)!important;
+  padding:8px!important;
+  border-radius:999px!important;
+  background:linear-gradient(160deg,rgba(255,255,255,.34),rgba(233,244,255,.12) 48%,rgba(255,255,255,.24))!important;
+  box-shadow:0 18px 40px rgba(48,87,123,.18),inset 0 1px 1px rgba(255,255,255,.92),inset 0 -1px 1px rgba(170,203,232,.16)!important;
+}
+.pager::after{border-radius:inherit!important}
+.pager-items{
+  display:grid!important;
+  grid-template-columns:repeat(5,minmax(0,1fr))!important;
+  grid-template-rows:none!important;
+  height:100%!important;
+  align-items:stretch!important;
+  gap:0!important;
+}
+.nav-item{
+  min-height:100%!important;
+  min-width:0!important;
+  padding:10px 6px 8px!important;
+  gap:5px!important;
+  border-radius:999px!important;
+  justify-content:center!important;
+}
+.nav-item svg{width:21px!important;height:21px!important}
+.nav-item span{
+  display:block!important;
+  width:100%!important;
+  white-space:nowrap!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+  text-align:center!important;
+  font-size:11px!important;
+  line-height:1.1!important;
+}
+.pager-thumb{
+  top:8px!important;
+  bottom:8px!important;
+  height:calc(100% - 16px)!important;
+  border-radius:999px!important;
+  background:
+    radial-gradient(120% 130% at 50% -12%,rgba(255,255,255,.98),rgba(255,255,255,.34) 42%,transparent 72%),
+    linear-gradient(155deg,rgba(251,254,255,.80),rgba(216,235,255,.34) 68%,rgba(236,244,255,.18))!important;
+  box-shadow:inset 0 1px 1px rgba(255,255,255,.99),inset 0 -10px 18px -14px rgba(93,145,194,.26),0 10px 22px rgba(55,98,138,.16),0 1px 4px rgba(55,98,138,.10)!important;
+}
+.pager-thumb::before{border-radius:inherit!important}
+.thumb-spec{
+  left:16%!important;right:16%!important;top:8px!important;height:8px!important;
+  opacity:.95!important;
+}
+body.dark .pager{
+  background:linear-gradient(160deg,rgba(156,193,225,.16),rgba(96,134,167,.08) 48%,rgba(154,193,228,.13))!important;
+  box-shadow:0 16px 36px rgba(0,0,0,.28),inset 0 1px 1px rgba(255,255,255,.14),inset 0 -1px 1px rgba(255,255,255,.08)!important;
+}
+body.dark .pager-thumb{
+  background:
+    radial-gradient(120% 130% at 50% -12%,rgba(227,241,255,.48),rgba(168,196,220,.16) 42%,transparent 72%),
+    linear-gradient(155deg,rgba(101,131,157,.52),rgba(50,72,92,.38) 68%,rgba(42,62,82,.34))!important;
+}
+@media (max-width:740px){
+  .pager{width:min(392px,calc(100vw - 14px))!important;height:86px!important;padding:7px!important}
+  .nav-item{padding:9px 4px 8px!important}
+  .nav-item span{font-size:10.5px!important}
+}
+@media (max-width:520px){
+  .pager{width:calc(100vw - 10px)!important;bottom:calc(env(safe-area-inset-bottom) + 8px)!important;height:84px!important}
+  .nav-item svg{width:20px!important;height:20px!important}
+  .nav-item span{font-size:10px!important}
+}
+@media (max-width:390px){
+  .pager{width:calc(100vw - 8px)!important;height:82px!important}
+  .nav-item{padding:8px 2px 7px!important}
+  .nav-item span{font-size:9.5px!important;letter-spacing:.01em!important}
+}
+</style>
+
+
+<style id="sw-v23-9-10-ig-liquid-pager">
+/* v23.9.10 · IG / Threads inspired liquid bottom pager */
+.pager{
+  --ig-glass-a:rgba(255,255,255,.48);
+  --ig-glass-b:rgba(244,249,255,.20);
+  --ig-blush:rgba(247,213,229,.16);
+  --ig-mint:rgba(207,241,232,.11);
+  isolation:isolate!important;
+  overflow:visible!important;
+  background:
+    radial-gradient(120px 74px at 16% 20%,rgba(255,255,255,.56),transparent 72%),
+    radial-gradient(170px 78px at 78% 84%,var(--ig-blush),transparent 72%),
+    radial-gradient(130px 72px at 50% 16%,var(--ig-mint),transparent 70%),
+    linear-gradient(158deg,var(--ig-glass-a),var(--ig-glass-b))!important;
+  border:1px solid rgba(255,255,255,.76)!important;
+  box-shadow:
+    0 14px 34px rgba(38,73,105,.15),
+    0 3px 10px rgba(38,73,105,.07),
+    inset 0 1px 1px rgba(255,255,255,.96),
+    inset 0 -1px 1px rgba(160,198,230,.13)!important;
+  backdrop-filter:blur(30px) saturate(172%) brightness(1.035)!important;
+  -webkit-backdrop-filter:blur(30px) saturate(172%) brightness(1.035)!important;
+  transition:box-shadow .24s ease,background .28s ease,transform .26s cubic-bezier(.2,.9,.2,1)!important;
+}
+.pager::before{
+  border-radius:inherit!important;
+  opacity:.70!important;
+  background:linear-gradient(150deg,rgba(255,255,255,.95),rgba(255,255,255,.18) 34%,rgba(210,229,246,.28) 62%,rgba(255,255,255,.88))!important;
+}
+.pager::after{
+  border-radius:inherit!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.74),inset 0 0 18px rgba(255,255,255,.16)!important;
+}
+.pager-thumb{
+  overflow:hidden!important;
+  transform-origin:center center!important;
+  will-change:transform,left,width!important;
+  background:
+    radial-gradient(112% 110% at 50% -15%,rgba(255,255,255,.98),rgba(255,255,255,.32) 46%,transparent 72%),
+    radial-gradient(85% 95% at 18% 82%,rgba(196,224,250,.24),transparent 72%),
+    linear-gradient(155deg,rgba(249,252,255,.78),rgba(216,231,244,.42) 68%,rgba(232,238,246,.26))!important;
+  box-shadow:
+    inset 0 1px 1px rgba(255,255,255,.98),
+    inset 0 -9px 18px -13px rgba(73,123,169,.30),
+    0 8px 18px rgba(43,81,116,.13),
+    0 1px 3px rgba(43,81,116,.10)!important;
+  backdrop-filter:blur(10px) saturate(190%) brightness(1.08)!important;
+  -webkit-backdrop-filter:blur(10px) saturate(190%) brightness(1.08)!important;
+  transition:filter .22s ease,box-shadow .22s ease,opacity .2s ease!important;
+}
+.pager-thumb::after{
+  content:"";
+  position:absolute;inset:0;border-radius:inherit;pointer-events:none;
+  background:linear-gradient(115deg,transparent 25%,rgba(255,255,255,.42) 44%,rgba(255,255,255,.12) 58%,transparent 76%);
+  transform:translateX(-42%);
+  opacity:.55;
+  transition:transform .42s cubic-bezier(.2,.9,.2,1),opacity .2s ease;
+}
+.pager.nav-traveling .pager-thumb::after,
+body.pager-programmatic .pager-thumb::after,
+body.pager-dragging .pager-thumb::after{transform:translateX(24%);opacity:.9}
+.thumb-spec{
+  height:7px!important;
+  filter:blur(1px)!important;
+  opacity:.78!important;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.96),transparent)!important;
+}
+.nav-item{
+  transition:color .22s ease,transform .28s cubic-bezier(.2,1.18,.3,1),opacity .2s ease!important;
+}
+.nav-item svg{
+  transition:transform .32s cubic-bezier(.2,1.26,.3,1),stroke-width .2s ease!important;
+}
+.nav-item span{
+  transition:transform .28s cubic-bezier(.2,1.18,.3,1),opacity .2s ease!important;
+}
+.nav-item.active{transform:translateY(-1px) scale(1.025)!important}
+.nav-item.active svg{transform:translateY(-1px) scale(1.12)!important;stroke-width:2.05!important}
+.nav-item.active span{transform:translateY(-1px);font-weight:790!important}
+body.pager-dragging .pager,
+body.pager-programmatic .pager,
+.pager.nav-traveling{
+  box-shadow:
+    0 16px 38px rgba(38,73,105,.18),
+    0 3px 10px rgba(38,73,105,.08),
+    inset 0 1px 1px rgba(255,255,255,.98),
+    inset 0 -1px 1px rgba(160,198,230,.15)!important;
+}
+body.pager-dragging .pager-thumb,
+body.pager-programmatic .pager-thumb,
+.pager.nav-traveling .pager-thumb{
+  filter:saturate(1.07) brightness(1.015)!important;
+  box-shadow:
+    inset 0 1px 1px rgba(255,255,255,1),
+    inset 0 -10px 18px -13px rgba(73,123,169,.34),
+    0 10px 22px rgba(43,81,116,.16),
+    0 1px 3px rgba(43,81,116,.10)!important;
+}
+body.dark .pager{
+  --ig-glass-a:rgba(103,132,157,.22);
+  --ig-glass-b:rgba(39,61,80,.18);
+  --ig-blush:rgba(206,156,182,.07);
+  --ig-mint:rgba(158,209,196,.06);
+  border-color:rgba(200,224,244,.14)!important;
+  box-shadow:0 14px 34px rgba(0,0,0,.26),0 3px 10px rgba(0,0,0,.15),inset 0 1px 1px rgba(255,255,255,.14),inset 0 -1px 1px rgba(255,255,255,.06)!important;
+}
+body.dark .pager-thumb{
+  background:
+    radial-gradient(112% 110% at 50% -15%,rgba(224,240,255,.38),rgba(177,204,226,.13) 48%,transparent 72%),
+    linear-gradient(155deg,rgba(101,132,158,.50),rgba(49,71,91,.42) 68%,rgba(37,56,74,.34))!important;
+  box-shadow:inset 0 1px 1px rgba(255,255,255,.16),inset 0 -8px 16px -12px rgba(150,195,230,.16),0 8px 18px rgba(0,0,0,.18)!important;
+}
+@media (hover:none) and (pointer:coarse){
+  .pager{backdrop-filter:blur(24px) saturate(160%)!important;-webkit-backdrop-filter:blur(24px) saturate(160%)!important}
+  .pager-thumb{backdrop-filter:blur(8px) saturate(175%)!important;-webkit-backdrop-filter:blur(8px) saturate(175%)!important}
+}
+@media (prefers-reduced-motion:reduce){
+  .pager,.pager-thumb,.pager-thumb::after,.nav-item,.nav-item svg,.nav-item span{transition:none!important}
+}
+</style>
+
+<link rel="stylesheet" href="assets/signwell-loader.css?build=23.9.11">
 </head>
 <body class="boot-preparing" data-page="share">
+<div class="sw-page-loader" id="swPageLoader" role="status" aria-live="polite" aria-label="頁面載入進度"><div class="sw-page-loader-card"><div class="sw-page-loader-brand">SIGN WELL</div><div class="sw-page-loader-sub">欣緯生醫</div><div class="sw-page-loader-track" aria-hidden="true"><i class="sw-page-loader-bar"></i></div><div class="sw-page-loader-meta"><span class="sw-page-loader-stage">準備頁面</span><strong class="sw-page-loader-pct">6%</strong></div></div></div>
+<script src="assets/signwell-loader.js?build=23.9.11"></script>
 <div id="welcomeSplash" aria-hidden="true"><div class="splash-word">欣緯生醫<small>SIGN WELL BIOMED</small></div><div class="splash-line"></div></div>
 <div id="readingProgress"></div>
 <div class="ambient" id="ambient" aria-hidden="true"><div class="orb a"></div><div class="orb b"></div><div class="orb c"></div><div class="orb d"></div></div>
@@ -5877,11 +6103,6 @@ function ensureNewsletterTermsModal(){
         <button class="newsletter-terms-close" type="button" aria-label="關閉">×</button>
       </header>
 
-      <div class="newsletter-legal-tabs" role="tablist" aria-label="法律文件">
-        <button class="newsletter-legal-tab" type="button" role="tab" id="legalTermsTab" aria-selected="true" aria-controls="legalTermsPanel" data-legal-tab="terms">服務條款</button>
-        <button class="newsletter-legal-tab" type="button" role="tab" id="legalPrivacyTab" aria-selected="false" aria-controls="legalPrivacyPanel" data-legal-tab="privacy">隱私權政策</button>
-      </div>
-
       <div class="newsletter-terms-body">
         <section class="newsletter-legal-panel" id="legalTermsPanel" role="tabpanel" aria-labelledby="legalTermsTab" data-legal-panel="terms">
           <div class="legal-meta"><span>適用：SIGN WELL／欣緯生醫網站</span><span>更新：2026-09-13</span></div>
@@ -5918,7 +6139,8 @@ function ensureNewsletterTermsModal(){
           <p>對本條款、電子報或資料處理有疑問，可透過 <a href="mailto:signwell.com@gmail.com">signwell.com@gmail.com</a> 聯絡。</p>
         </section>
 
-        <section class="newsletter-legal-panel" id="legalPrivacyPanel" role="tabpanel" aria-labelledby="legalPrivacyTab" data-legal-panel="privacy" hidden>
+        <div class="newsletter-legal-divider" aria-hidden="true"><span>隱私權與個人資料</span></div>
+        <section class="newsletter-legal-panel newsletter-legal-panel-privacy" id="legalPrivacyPanel" data-legal-panel="privacy">
           <div class="legal-meta"><span>依台灣個資法原則設計</span><span>更新：2026-09-13</span></div>
           <p class="legal-intro">SIGN WELL／欣緯生醫尊重使用者的個人資料與隱私。本政策依本站目前實際功能撰寫，說明我們蒐集哪些資料、為何使用、保存多久、可能由哪些技術服務協助處理，以及你可以如何行使個人資料相關權利。</p>
 
@@ -5965,26 +6187,31 @@ function ensureNewsletterTermsModal(){
 
       <footer class="newsletter-terms-actions">
         <button class="newsletter-terms-decline" type="button">取消</button>
-        <button class="newsletter-terms-agree" type="button">我同意</button>
+        <button class="newsletter-terms-agree" type="button" disabled aria-disabled="true">我同意</button>
       </footer>
     </section>`;
 
   document.body.appendChild(modal);
 
-  const tabs=[...modal.querySelectorAll('[data-legal-tab]')];
-  const panels=[...modal.querySelectorAll('[data-legal-panel]')];
-  const activateLegalTab=(name,focus=false)=>{
-    tabs.forEach(btn=>{
-      const on=btn.dataset.legalTab===name;
-      btn.setAttribute('aria-selected',on?'true':'false');
-      if(on&&focus)btn.focus();
-    });
-    panels.forEach(panel=>{panel.hidden=panel.dataset.legalPanel!==name});
-    const body=modal.querySelector('.newsletter-terms-body');
-    if(body)body.scrollTop=0;
+  const body=modal.querySelector('.newsletter-terms-body');
+  const agree=modal.querySelector('.newsletter-terms-agree');
+  const updateLegalReadGate=()=>{
+    if(!body||!agree)return;
+    const max=Math.max(1,body.scrollHeight-body.clientHeight);
+    const progress=max<=2?1:Math.max(0,Math.min(1,body.scrollTop/max));
+    agree.style.setProperty('--terms-progress',progress.toFixed(3));
+    const ready=progress>=0.985;
+    agree.disabled=!ready;
+    agree.classList.toggle('is-ready',ready);
+    agree.setAttribute('aria-disabled',ready?'false':'true');
+    agree.textContent=ready?'我同意':'請滑至底部';
   };
-  tabs.forEach(btn=>btn.addEventListener('click',()=>activateLegalTab(btn.dataset.legalTab)));
-  modal._activateLegalTab=activateLegalTab;
+  body?.addEventListener('scroll',updateLegalReadGate,{passive:true});
+  modal._resetLegalScrollGate=()=>{
+    if(body)body.scrollTop=0;
+    if(agree){agree.disabled=true;agree.classList.remove('is-ready');agree.setAttribute('aria-disabled','true');agree.style.setProperty('--terms-progress','0');agree.textContent='請滑至底部'}
+    requestAnimationFrame(updateLegalReadGate);
+  };
 
   const close=()=>{
     modal.classList.remove('show');
@@ -6029,13 +6256,13 @@ function showNewsletterTermsModal(onAgree){
   const modal=ensureNewsletterTermsModal();
   newsletterTermsPriorFocus=document.activeElement;
   newsletterTermsAgreeCallback=typeof onAgree==='function'?onAgree:null;
-  modal._activateLegalTab?.('terms');
+  modal._resetLegalScrollGate?.();
   document.body.classList.add('newsletter-terms-open');
   modal.classList.remove('show');
   void modal.offsetWidth;
   modal.classList.add('show');
   modal.setAttribute('aria-hidden','false');
-  setTimeout(()=>modal.querySelector('.newsletter-terms-agree')?.focus(),70);
+  setTimeout(()=>modal.querySelector('.newsletter-terms-close')?.focus(),70);
 }
 
 function bindNewsletterConsentTerms(){
@@ -6219,14 +6446,29 @@ function swCurrentSection(){
   let best='';for(const h of hs){if(h.getBoundingClientRect().top<=150)best=h.id;else break}return best;
 }
 function swApplyReaderFont(view,size){
-  const allowed=['small','medium','large'];const next=allowed.includes(size)?size:'medium';
-  view.dataset.fontSize=next;try{localStorage.setItem('signwell-reader-font',next)}catch(_){}
-  view.querySelectorAll('[data-font-size]').forEach(b=>b.classList.toggle('active',b.dataset.fontSize===next));
+  const allowed=['small','medium','large'];
+  const next=allowed.includes(size)?size:'small';
+  view.dataset.fontSize=next;
+  try{localStorage.setItem('signwell-reader-font-v2',next)}catch(_){}
+  view.querySelectorAll('[data-font-size]').forEach(b=>{
+    const active=b.dataset.fontSize===next;
+    b.classList.toggle('active',active);
+    b.setAttribute('aria-pressed',active?'true':'false');
+  });
+  const dock=view.querySelector('.sw-font-dock');
+  if(dock){
+    dock.dataset.size=next;
+    dock.classList.remove('is-changing');
+    void dock.offsetWidth;
+    dock.classList.add('is-changing');
+    clearTimeout(dock._swFontTimer);
+    dock._swFontTimer=setTimeout(()=>dock.classList.remove('is-changing'),260);
+  }
 }
 async function swOpenContinueQR(a){
   document.querySelector('.sw-continue-overlay')?.remove();
   const section=swCurrentSection(),url=swArticleSectionUrl(a.slug,section);
-  const overlay=document.createElement('div');overlay.className='sw-continue-overlay';overlay.innerHTML=`<div class="sw-continue-card" role="dialog" aria-modal="true"><h3>在另一台裝置繼續閱讀</h3><p>${section?'QR Code 會帶你回到目前章節。':'掃描後直接開啟這篇文章。'} 不需要登入帳號。</p><div class="sw-continue-qr" id="swContinueQr">正在產生 QR Code…</div><div class="sw-continue-actions"><button data-sw-copy>複製接續連結</button><button class="primary" data-sw-close>完成</button></div></div>`;document.body.appendChild(overlay);
+  const overlay=document.createElement('div');overlay.className='sw-continue-overlay';overlay.innerHTML=`<div class="sw-continue-card" role="dialog" aria-modal="true"><h3>使用其他裝置閱讀</h3><p>${section?'QR Code 會帶你回到目前章節。':'掃描後直接開啟這篇文章。'} 不需要登入帳號。</p><div class="sw-continue-qr" id="swContinueQr">正在產生 QR Code…</div><div class="sw-continue-actions"><button data-sw-copy>複製閱讀連結</button><button class="primary" data-sw-close>完成</button></div></div>`;document.body.appendChild(overlay);
   overlay.onclick=e=>{if(e.target===overlay||e.target.closest('[data-sw-close]'))overlay.remove()};
   overlay.querySelector('[data-sw-copy]').onclick=()=>copyText(url);
   const ok=await ensureQRCodeLib();const box=overlay.querySelector('#swContinueQr');
@@ -6243,10 +6485,6 @@ function swScrollToRequestedSection(){
   const id=new URLSearchParams(location.search).get('s');if(!id)return;
   requestAnimationFrame(()=>setTimeout(()=>document.getElementById(id)?.scrollIntoView({behavior:reduceMotion()?'auto':'smooth',block:'start'}),80));
 }
-function swCopyCitation(a){
-  const pub=publisherForArticle(a);const year=String(a.updatedAt||a.publishedAt||'').slice(0,4)||new Date().getFullYear();
-  const url=articleUrl(a.slug);const text=`${pub.name||'SIGN WELL'}（${year}）。${a.title||'未命名文章'}。SIGN WELL 欣緯生醫。${url}`;return copyText(text);
-}
 function swUpdateArticleMeta(a){
   const set=(sel,val)=>{let el=document.querySelector(sel);if(el&&val)el.setAttribute('content',val)};
   set('meta[property="og:title"]',a.title||'SIGN WELL · 欣緯生醫');set('meta[property="og:description"]',excerpt(a));set('meta[name="twitter:title"]',a.title||'');set('meta[name="twitter:description"]',excerpt(a));if(a.cover){set('meta[property="og:image"]',a.cover);set('meta[name="twitter:image"]',a.cover)}
@@ -6258,7 +6496,7 @@ async function renderArticle(slug){
   const html=renderContent(a),wrap=document.createElement('div');wrap.innerHTML=html;
   const heads=[...wrap.querySelectorAll('h2')].map(h=>({id:h.id,text:h.textContent}));
   const age=swArticleAgeDays(a),updated=swDisplayDate(a.updatedAt||a.publishedAt),published=swDisplayDate(a.publishedAt);
-  app.innerHTML=`<article class="article-view" data-font-size="medium">
+  app.innerHTML=`<article class="article-view" data-font-size="small">
     <header class="article-top">
       <button class="backlink" data-back="index.html">← 返回首頁</button>
       <div class="kicker" style="margin-top:24px">${categoryChipHTML(a.category||'醫學筆記')} <span aria-hidden="true">·</span> ${escapeHTML(a.type||'文章')}</div>
@@ -6270,7 +6508,13 @@ async function renderArticle(slug){
         <span>約 ${readingTime(a)} ${escapeHTML(t('minutesReadSuffix'))}</span>
       </div>
       <div class="article-actions"><button class="pillbtn" id="shareArticle">${escapeHTML(t('shareLabel'))}</button><button class="pillbtn" id="copyArticle">${iconSvg('copy')}${escapeHTML(t('copyLinkLabel'))}</button></div>
-      <div class="sw-reader-tools"><div class="sw-font-controls"><span>字級</span><button data-font-size="small" aria-label="較小字級">A−</button><button data-font-size="medium" aria-label="標準字級">A</button><button data-font-size="large" aria-label="較大字級">A＋</button></div><button id="continueArticle">手機接續閱讀</button><button id="emailSelfArticle">寄給自己</button><button id="citeArticle">引用這篇</button></div>
+      <div class="sw-reader-tools"><button id="continueArticle">使用其他裝置閱讀</button><button id="emailSelfArticle">寄給自己</button></div>
+      <div class="sw-font-dock" data-size="small" role="group" aria-label="文章字級">
+        <span class="sw-font-dock-thumb" aria-hidden="true"></span>
+        <button type="button" data-font-size="small" aria-label="小字" aria-pressed="true">小</button>
+        <button type="button" data-font-size="medium" aria-label="中字" aria-pressed="false">中</button>
+        <button type="button" data-font-size="large" aria-label="大字" aria-pressed="false">大</button>
+      </div>
     </header>
     ${age>365?`<div class="sw-stale-note">這篇文章最後更新於 ${escapeHTML(updated||a.updatedAt||a.publishedAt||'較早時間')}，已超過一年。醫學資訊可能已有新的研究或指引，請搭配最新專業資料判讀。</div>`:''}
     ${a.cover?`<div class="article-cover"><img loading="eager" fetchpriority="high" decoding="async" src="${escapeHTML(a.cover)}" alt=""></div>`:defaultCoverMarkup(a,true)}
@@ -6287,8 +6531,7 @@ async function renderArticle(slug){
   $('#shareArticle').onclick=async()=>{try{if(navigator.share)await navigator.share({title:a.title,text:excerpt(a),url:shareUrl});else await copyText(shareUrl)}catch(e){if(e?.name!=='AbortError')showToast('這個瀏覽器不支援系統分享，連結已可手動複製')}};
   $('#continueArticle').onclick=()=>swOpenContinueQR(a);
   $('#emailSelfArticle').onclick=()=>{const u=encodeURIComponent(swArticleSectionUrl(a.slug,swCurrentSection()));const subject=encodeURIComponent('稍後閱讀｜'+(a.title||'SIGN WELL'));location.href=`mailto:?subject=${subject}&body=${u}`};
-  $('#citeArticle').onclick=()=>swCopyCitation(a);
-  const view=document.querySelector('.article-view');let fs='medium';try{fs=localStorage.getItem('signwell-reader-font')||'medium'}catch(_){}swApplyReaderFont(view,fs);$$('[data-font-size]').forEach(b=>b.onclick=()=>swApplyReaderFont(view,b.dataset.fontSize));
+  const view=document.querySelector('.article-view');let fs='small';try{fs=localStorage.getItem('signwell-reader-font-v2')||'small'}catch(_){}swApplyReaderFont(view,fs);$$('[data-font-size]').forEach(b=>b.onclick=()=>swApplyReaderFont(view,b.dataset.fontSize));
   swBindSectionLinks(a);swScrollToRequestedSection();swUpdateArticleMeta(a);
   document.title=`${a.title} · SIGN WELL`;
   hardenRenderedArticleMedia();bindBack();initReveal();setupToc();
@@ -6517,11 +6760,15 @@ const Slider=(()=>{
     size={w:a.width,h:a.height};
     railRect={left:rr.left,top:rr.top};
 
-    thumb.style.width=size.w+'px';
-    thumb.style.height=size.h+'px';
-    thumb.style.left=base.x+'px';
-    thumb.style.top=base.y+'px';
-    thumb.style.borderRadius=(Math.min(size.w,size.h)*.46)+'px';
+    const thumbInsetX=vert?6:6;
+    const thumbInsetY=vert?6:5;
+    const thumbW=Math.max(56,size.w-thumbInsetX*2);
+    const thumbH=Math.max(44,size.h-thumbInsetY*2);
+    thumb.style.width=thumbW+'px';
+    thumb.style.height=thumbH+'px';
+    thumb.style.left=(base.x+(size.w-thumbW)/2)+'px';
+    thumb.style.top=(base.y+(size.h-thumbH)/2)+'px';
+    thumb.style.borderRadius=(Math.min(thumbW,thumbH)*.5)+'px';
 
     pos=goal=index*step;
     draw(0,true);
@@ -6537,9 +6784,16 @@ const Slider=(()=>{
     /* v17.2: translation only.
        Removing velocity-based scale/stretch eliminates the visible wobble
        that made the liquid slider feel like it was "jumping". */
+    const speedNorm=Math.min(1,Math.abs(vel)/1250);
+    const liquidStretch=(dragging||document.body.classList.contains('pager-programmatic')||rail.classList.contains('nav-traveling'))
+      ? 1+speedNorm*.075
+      : 1;
+    const liquidSquish=(dragging||document.body.classList.contains('pager-programmatic')||rail.classList.contains('nav-traveling'))
+      ? 1-speedNorm*.018
+      : 1;
     thumb.style.transform=vert
-      ? `translate3d(0,${pos.toFixed(3)}px,0)`
-      : `translate3d(${pos.toFixed(3)}px,0,0)`;
+      ? `translate3d(0,${pos.toFixed(3)}px,0) scale3d(${liquidSquish.toFixed(3)},${liquidStretch.toFixed(3)},1)`
+      : `translate3d(${pos.toFixed(3)}px,0,0) scale3d(${liquidStretch.toFixed(3)},${liquidSquish.toFixed(3)},1)`;
 
     if(!coarse || forceDecor || !dragging){
       thumb.style.setProperty('--spec','0px');
@@ -7454,7 +7708,7 @@ window.addEventListener('pagehide',()=>{
 
 </script>
 
-<script src="assets/signwell-common.js?build=23.9.0"></script>
+<script src="assets/signwell-common.js?build=23.9.8"></script>
 
 
 

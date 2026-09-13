@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="robots" content="noindex,nofollow,noarchive,nosnippet,noimageindex">
-<meta name="signwell-release" content="23.9.0">
+<meta name="signwell-release" content="23.9.10">
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self' data:; base-uri 'self'; object-src 'none'; form-action 'none'; upgrade-insecure-requests">
 <title>隱私權政策與個資告知 · SIGN WELL</title>
@@ -18,11 +18,237 @@
 <meta property="og:image" content="https://980510linz.github.io/-/assets/signwell-share.png">
 <meta name="twitter:image" content="https://980510linz.github.io/-/assets/signwell-share.png">
 <link rel="stylesheet" href="assets/signwell-contrast.css?build=23.9.0">
-<link rel="stylesheet" href="assets/signwell-uiux.css?build=23.9.0">
+<link rel="stylesheet" href="assets/signwell-uiux.css?build=23.9.9">
 <link rel="stylesheet" href="assets/signwell-dialogs.css?build=23.9.1">
 <meta name="signwell-public-ui" content="23.9.0">
+<style id="sw-v2398-legal-dark">@media(prefers-color-scheme:dark){body{background:#07111c!important;color:#fff!important}main{background:#07111c!important;color:#fff!important;box-shadow:none!important;border:0!important}main :is(h1,h2,h3,h4,p,li,strong,span,a,.top,.back){color:#fff!important;-webkit-text-fill-color:#fff!important}main .back{background:#07111c!important;border-color:rgba(255,255,255,.18)!important}}</style>
+<style id="sw-v23-9-9-hotfix">
+/* SIGN WELL Public v23.9.9 · search + topic + IG dock hotfix */
+.search-input{
+  background:rgba(255,255,255,.58)!important;
+  border:1px solid rgba(255,255,255,.88)!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.96),0 8px 22px rgba(75,122,158,.06)!important;
+}
+.search-input:focus-within{
+  border-color:rgba(156,188,214,.62)!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.96),0 10px 24px rgba(75,122,158,.08)!important;
+}
+.search-input input,
+.search-input input:focus{outline:none!important;box-shadow:none!important}
+.searchbox .iconbtn.search-close{box-shadow:inset 0 1px 0 rgba(255,255,255,.92),0 6px 18px rgba(64,101,136,.08)!important}
+.topic-signal,
+.topic-signal::before,
+.topic-signal::after{display:none!important;content:none!important}
+.topic-card{overflow:hidden!important}
+.pager{
+  width:min(394px,calc(100vw - 18px))!important;
+  height:88px!important;
+  left:50%!important;
+  right:auto!important;
+  top:auto!important;
+  bottom:calc(env(safe-area-inset-bottom) + 10px)!important;
+  transform:translateX(-50%)!important;
+  padding:8px!important;
+  border-radius:999px!important;
+  background:linear-gradient(160deg,rgba(255,255,255,.34),rgba(233,244,255,.12) 48%,rgba(255,255,255,.24))!important;
+  box-shadow:0 18px 40px rgba(48,87,123,.18),inset 0 1px 1px rgba(255,255,255,.92),inset 0 -1px 1px rgba(170,203,232,.16)!important;
+}
+.pager::after{border-radius:inherit!important}
+.pager-items{
+  display:grid!important;
+  grid-template-columns:repeat(5,minmax(0,1fr))!important;
+  grid-template-rows:none!important;
+  height:100%!important;
+  align-items:stretch!important;
+  gap:0!important;
+}
+.nav-item{
+  min-height:100%!important;
+  min-width:0!important;
+  padding:10px 6px 8px!important;
+  gap:5px!important;
+  border-radius:999px!important;
+  justify-content:center!important;
+}
+.nav-item svg{width:21px!important;height:21px!important}
+.nav-item span{
+  display:block!important;
+  width:100%!important;
+  white-space:nowrap!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+  text-align:center!important;
+  font-size:11px!important;
+  line-height:1.1!important;
+}
+.pager-thumb{
+  top:8px!important;
+  bottom:8px!important;
+  height:calc(100% - 16px)!important;
+  border-radius:999px!important;
+  background:
+    radial-gradient(120% 130% at 50% -12%,rgba(255,255,255,.98),rgba(255,255,255,.34) 42%,transparent 72%),
+    linear-gradient(155deg,rgba(251,254,255,.80),rgba(216,235,255,.34) 68%,rgba(236,244,255,.18))!important;
+  box-shadow:inset 0 1px 1px rgba(255,255,255,.99),inset 0 -10px 18px -14px rgba(93,145,194,.26),0 10px 22px rgba(55,98,138,.16),0 1px 4px rgba(55,98,138,.10)!important;
+}
+.pager-thumb::before{border-radius:inherit!important}
+.thumb-spec{
+  left:16%!important;right:16%!important;top:8px!important;height:8px!important;
+  opacity:.95!important;
+}
+body.dark .pager{
+  background:linear-gradient(160deg,rgba(156,193,225,.16),rgba(96,134,167,.08) 48%,rgba(154,193,228,.13))!important;
+  box-shadow:0 16px 36px rgba(0,0,0,.28),inset 0 1px 1px rgba(255,255,255,.14),inset 0 -1px 1px rgba(255,255,255,.08)!important;
+}
+body.dark .pager-thumb{
+  background:
+    radial-gradient(120% 130% at 50% -12%,rgba(227,241,255,.48),rgba(168,196,220,.16) 42%,transparent 72%),
+    linear-gradient(155deg,rgba(101,131,157,.52),rgba(50,72,92,.38) 68%,rgba(42,62,82,.34))!important;
+}
+@media (max-width:740px){
+  .pager{width:min(392px,calc(100vw - 14px))!important;height:86px!important;padding:7px!important}
+  .nav-item{padding:9px 4px 8px!important}
+  .nav-item span{font-size:10.5px!important}
+}
+@media (max-width:520px){
+  .pager{width:calc(100vw - 10px)!important;bottom:calc(env(safe-area-inset-bottom) + 8px)!important;height:84px!important}
+  .nav-item svg{width:20px!important;height:20px!important}
+  .nav-item span{font-size:10px!important}
+}
+@media (max-width:390px){
+  .pager{width:calc(100vw - 8px)!important;height:82px!important}
+  .nav-item{padding:8px 2px 7px!important}
+  .nav-item span{font-size:9.5px!important;letter-spacing:.01em!important}
+}
+</style>
+
+
+<style id="sw-v23-9-10-ig-liquid-pager">
+/* v23.9.10 · IG / Threads inspired liquid bottom pager */
+.pager{
+  --ig-glass-a:rgba(255,255,255,.48);
+  --ig-glass-b:rgba(244,249,255,.20);
+  --ig-blush:rgba(247,213,229,.16);
+  --ig-mint:rgba(207,241,232,.11);
+  isolation:isolate!important;
+  overflow:visible!important;
+  background:
+    radial-gradient(120px 74px at 16% 20%,rgba(255,255,255,.56),transparent 72%),
+    radial-gradient(170px 78px at 78% 84%,var(--ig-blush),transparent 72%),
+    radial-gradient(130px 72px at 50% 16%,var(--ig-mint),transparent 70%),
+    linear-gradient(158deg,var(--ig-glass-a),var(--ig-glass-b))!important;
+  border:1px solid rgba(255,255,255,.76)!important;
+  box-shadow:
+    0 14px 34px rgba(38,73,105,.15),
+    0 3px 10px rgba(38,73,105,.07),
+    inset 0 1px 1px rgba(255,255,255,.96),
+    inset 0 -1px 1px rgba(160,198,230,.13)!important;
+  backdrop-filter:blur(30px) saturate(172%) brightness(1.035)!important;
+  -webkit-backdrop-filter:blur(30px) saturate(172%) brightness(1.035)!important;
+  transition:box-shadow .24s ease,background .28s ease,transform .26s cubic-bezier(.2,.9,.2,1)!important;
+}
+.pager::before{
+  border-radius:inherit!important;
+  opacity:.70!important;
+  background:linear-gradient(150deg,rgba(255,255,255,.95),rgba(255,255,255,.18) 34%,rgba(210,229,246,.28) 62%,rgba(255,255,255,.88))!important;
+}
+.pager::after{
+  border-radius:inherit!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.74),inset 0 0 18px rgba(255,255,255,.16)!important;
+}
+.pager-thumb{
+  overflow:hidden!important;
+  transform-origin:center center!important;
+  will-change:transform,left,width!important;
+  background:
+    radial-gradient(112% 110% at 50% -15%,rgba(255,255,255,.98),rgba(255,255,255,.32) 46%,transparent 72%),
+    radial-gradient(85% 95% at 18% 82%,rgba(196,224,250,.24),transparent 72%),
+    linear-gradient(155deg,rgba(249,252,255,.78),rgba(216,231,244,.42) 68%,rgba(232,238,246,.26))!important;
+  box-shadow:
+    inset 0 1px 1px rgba(255,255,255,.98),
+    inset 0 -9px 18px -13px rgba(73,123,169,.30),
+    0 8px 18px rgba(43,81,116,.13),
+    0 1px 3px rgba(43,81,116,.10)!important;
+  backdrop-filter:blur(10px) saturate(190%) brightness(1.08)!important;
+  -webkit-backdrop-filter:blur(10px) saturate(190%) brightness(1.08)!important;
+  transition:filter .22s ease,box-shadow .22s ease,opacity .2s ease!important;
+}
+.pager-thumb::after{
+  content:"";
+  position:absolute;inset:0;border-radius:inherit;pointer-events:none;
+  background:linear-gradient(115deg,transparent 25%,rgba(255,255,255,.42) 44%,rgba(255,255,255,.12) 58%,transparent 76%);
+  transform:translateX(-42%);
+  opacity:.55;
+  transition:transform .42s cubic-bezier(.2,.9,.2,1),opacity .2s ease;
+}
+.pager.nav-traveling .pager-thumb::after,
+body.pager-programmatic .pager-thumb::after,
+body.pager-dragging .pager-thumb::after{transform:translateX(24%);opacity:.9}
+.thumb-spec{
+  height:7px!important;
+  filter:blur(1px)!important;
+  opacity:.78!important;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.96),transparent)!important;
+}
+.nav-item{
+  transition:color .22s ease,transform .28s cubic-bezier(.2,1.18,.3,1),opacity .2s ease!important;
+}
+.nav-item svg{
+  transition:transform .32s cubic-bezier(.2,1.26,.3,1),stroke-width .2s ease!important;
+}
+.nav-item span{
+  transition:transform .28s cubic-bezier(.2,1.18,.3,1),opacity .2s ease!important;
+}
+.nav-item.active{transform:translateY(-1px) scale(1.025)!important}
+.nav-item.active svg{transform:translateY(-1px) scale(1.12)!important;stroke-width:2.05!important}
+.nav-item.active span{transform:translateY(-1px);font-weight:790!important}
+body.pager-dragging .pager,
+body.pager-programmatic .pager,
+.pager.nav-traveling{
+  box-shadow:
+    0 16px 38px rgba(38,73,105,.18),
+    0 3px 10px rgba(38,73,105,.08),
+    inset 0 1px 1px rgba(255,255,255,.98),
+    inset 0 -1px 1px rgba(160,198,230,.15)!important;
+}
+body.pager-dragging .pager-thumb,
+body.pager-programmatic .pager-thumb,
+.pager.nav-traveling .pager-thumb{
+  filter:saturate(1.07) brightness(1.015)!important;
+  box-shadow:
+    inset 0 1px 1px rgba(255,255,255,1),
+    inset 0 -10px 18px -13px rgba(73,123,169,.34),
+    0 10px 22px rgba(43,81,116,.16),
+    0 1px 3px rgba(43,81,116,.10)!important;
+}
+body.dark .pager{
+  --ig-glass-a:rgba(103,132,157,.22);
+  --ig-glass-b:rgba(39,61,80,.18);
+  --ig-blush:rgba(206,156,182,.07);
+  --ig-mint:rgba(158,209,196,.06);
+  border-color:rgba(200,224,244,.14)!important;
+  box-shadow:0 14px 34px rgba(0,0,0,.26),0 3px 10px rgba(0,0,0,.15),inset 0 1px 1px rgba(255,255,255,.14),inset 0 -1px 1px rgba(255,255,255,.06)!important;
+}
+body.dark .pager-thumb{
+  background:
+    radial-gradient(112% 110% at 50% -15%,rgba(224,240,255,.38),rgba(177,204,226,.13) 48%,transparent 72%),
+    linear-gradient(155deg,rgba(101,132,158,.50),rgba(49,71,91,.42) 68%,rgba(37,56,74,.34))!important;
+  box-shadow:inset 0 1px 1px rgba(255,255,255,.16),inset 0 -8px 16px -12px rgba(150,195,230,.16),0 8px 18px rgba(0,0,0,.18)!important;
+}
+@media (hover:none) and (pointer:coarse){
+  .pager{backdrop-filter:blur(24px) saturate(160%)!important;-webkit-backdrop-filter:blur(24px) saturate(160%)!important}
+  .pager-thumb{backdrop-filter:blur(8px) saturate(175%)!important;-webkit-backdrop-filter:blur(8px) saturate(175%)!important}
+}
+@media (prefers-reduced-motion:reduce){
+  .pager,.pager-thumb,.pager-thumb::after,.nav-item,.nav-item svg,.nav-item span{transition:none!important}
+}
+</style>
+
+<link rel="stylesheet" href="assets/signwell-loader.css?build=23.9.11">
 </head>
-<body><main>
+<body>
+<div class="sw-page-loader" id="swPageLoader" role="status" aria-live="polite" aria-label="頁面載入進度"><div class="sw-page-loader-card"><div class="sw-page-loader-brand">SIGN WELL</div><div class="sw-page-loader-sub">欣緯生醫</div><div class="sw-page-loader-track" aria-hidden="true"><i class="sw-page-loader-bar"></i></div><div class="sw-page-loader-meta"><span class="sw-page-loader-stage">準備頁面</span><strong class="sw-page-loader-pct">6%</strong></div></div></div>
+<script src="assets/signwell-loader.js?build=23.9.11"></script><main>
 <div class="top"><div class="eyebrow">SIGN WELL · 欣緯生醫</div><a class="back" href="newsletter.html">返回電子報</a></div>
 <h1>隱私權政策與個人資料蒐集告知</h1>
 <p class="meta">版本 23.9.0 · 生效日：2026 年 9 月 13 日</p>

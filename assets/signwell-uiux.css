@@ -304,3 +304,233 @@ body>main:only-child .back{display:inline-flex!important;align-items:center!impo
   .home-wave-stage,.home-wave,.home-foam{animation:none!important}
   .article-card,.topic-card,.about-value,.about-team-card,.sw-related-card{transform:none!important}
 }
+
+/* ============================================================
+   v23.9.6 · Mobile lower-blue artwork / bottom glass hardening
+   Prevent iOS Safari clipping / oversized transformed pseudo-layers.
+   ============================================================ */
+@media(max-width:760px){
+  html,body{max-width:100%!important;overflow-x:clip!important}
+  body.home-glass-focus .home-scroll-scene{overflow:clip!important;contain:paint}
+  body.home-glass-focus .home-scroll-scene::after{
+    left:50%!important;
+    right:auto!important;
+    bottom:40px!important;
+    width:min(84vw,430px)!important;
+    max-width:calc(100% - 24px)!important;
+    height:74px!important;
+    transform:translate3d(-50%,0,0)!important;
+    border-radius:28px!important;
+    opacity:.34!important;
+    filter:none!important;
+    -webkit-backdrop-filter:none!important;
+    backdrop-filter:none!important;
+    background:linear-gradient(110deg,rgba(255,255,255,.16),rgba(176,219,247,.10) 48%,rgba(255,255,255,.03))!important;
+    border:1px solid rgba(255,255,255,.30)!important;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.50)!important;
+  }
+  body.dark.home-glass-focus .home-scroll-scene::after{
+    background:linear-gradient(110deg,rgba(255,255,255,.055),rgba(96,151,199,.10) 48%,rgba(255,255,255,.015))!important;
+    border-color:rgba(181,216,241,.14)!important;
+  }
+  .pager{
+    left:50%!important;
+    right:auto!important;
+    transform:translate3d(-50%,0,0)!important;
+    width:calc(100vw - 18px)!important;
+    max-width:min(458px,calc(100vw - 18px))!important;
+    overflow:hidden!important;
+    contain:paint;
+  }
+  .pager::before,.pager::after{border-radius:inherit!important}
+}
+
+
+
+/* ============================================================
+   v23.9.7 · Mobile stack / legal consent / shadow / capsule polish
+   ============================================================ */
+
+/* Main Public bottom pager: fully rounded capsule, no hard corners. */
+.pager{
+  border-radius:999px!important;
+  overflow:hidden!important;
+}
+.pager::before,.pager::after,.pager-thumb,.nav-item{border-radius:999px!important}
+.pager-thumb{inset-block:5px!important}
+
+/* Newsletter legal document is one continuous reading surface. */
+.newsletter-legal-tabs{display:none!important}
+.newsletter-legal-panel[hidden]{display:block!important}
+.newsletter-legal-divider{
+  display:flex;align-items:center;gap:10px;
+  margin:28px 0 20px;color:#657b8d;font-size:10px;font-weight:850;letter-spacing:.11em;text-transform:uppercase;
+}
+.newsletter-legal-divider::before,.newsletter-legal-divider::after{content:"";height:1px;flex:1;background:rgba(102,135,161,.14)}
+.newsletter-legal-panel-privacy{padding-top:2px}
+.newsletter-terms-agree{
+  --terms-progress:0;
+  position:relative!important;overflow:hidden!important;
+  background:rgba(255,255,255,.94)!important;
+  color:#87939e!important;-webkit-text-fill-color:#87939e!important;
+  border:1px solid rgba(113,139,160,.16)!important;
+  box-shadow:inset 0 1px 0 #fff,0 4px 12px rgba(49,80,107,.04)!important;
+  opacity:1!important;cursor:not-allowed!important;
+  transition:color .22s ease,border-color .22s ease,box-shadow .22s ease,transform .2s ease!important;
+}
+.newsletter-terms-agree::before{
+  content:"";position:absolute;inset:0;z-index:0;pointer-events:none;
+  background:linear-gradient(145deg,#e7606b,#be3545);
+  opacity:var(--terms-progress);transition:opacity .08s linear;
+}
+.newsletter-terms-agree>*{position:relative;z-index:1}
+.newsletter-terms-agree.is-ready{
+  color:#fff!important;-webkit-text-fill-color:#fff!important;
+  border-color:transparent!important;cursor:pointer!important;
+  box-shadow:0 9px 22px rgba(190,53,69,.18),inset 0 1px 0 rgba(255,255,255,.22)!important;
+}
+.newsletter-terms-agree.is-ready::before{opacity:1}
+.newsletter-terms-agree.is-ready:active{transform:scale(.985)}
+body.dark .newsletter-terms-agree{
+  background:rgba(255,255,255,.92)!important;color:#66727d!important;-webkit-text-fill-color:#66727d!important;
+  border-color:rgba(255,255,255,.22)!important;
+}
+body.dark .newsletter-terms-agree.is-ready{color:#fff!important;-webkit-text-fill-color:#fff!important}
+
+/* Restore the original mobile stacked-topic browsing interaction. */
+@media(max-width:680px){
+  body[data-page="topics"] .topic-grid{
+    display:block!important;position:relative!important;padding:4px 0 13vh!important;
+  }
+  body[data-page="topics"] .topic-card{
+    --topic-stack-i:0;
+    position:-webkit-sticky!important;position:sticky!important;
+    top:calc(82px + env(safe-area-inset-top) + (var(--topic-stack-i) * 52px))!important;
+    z-index:calc(30 + var(--topic-stack-i))!important;
+    min-height:226px!important;
+    margin:0 0 16px!important;
+    padding:20px 20px 22px!important;
+    border-radius:26px!important;
+    transform:none!important;
+    transform-origin:50% 0%!important;
+    overflow:hidden!important;
+    background:linear-gradient(155deg,rgba(255,255,255,.84),rgba(238,248,255,.72))!important;
+    border:1px solid rgba(255,255,255,.90)!important;
+    -webkit-backdrop-filter:blur(8px) saturate(128%)!important;
+    backdrop-filter:blur(8px) saturate(128%)!important;
+    box-shadow:0 7px 20px rgba(57,94,126,.075),inset 0 1px 0 rgba(255,255,255,.94)!important;
+    transition:transform .26s cubic-bezier(.2,.8,.2,1),box-shadow .24s ease!important;
+  }
+  body[data-page="topics"] .topic-card::after{
+    display:block!important;content:""!important;position:absolute!important;
+    left:18px!important;right:18px!important;top:0!important;height:1px!important;
+    background:linear-gradient(90deg,transparent,rgba(255,255,255,.95),transparent)!important;opacity:.82!important;
+  }
+  body[data-page="topics"] .topic-card h3{font-size:25px!important;line-height:1.18!important;margin:26px 0 8px!important}
+  body[data-page="topics"] .topic-card p{font-size:13px!important;line-height:1.72!important}
+  body[data-page="topics"] .topic-count{margin-top:14px!important}
+  body.dark[data-page="topics"] .topic-card{
+    background:linear-gradient(155deg,rgba(31,48,62,.94),rgba(21,34,46,.88))!important;
+    border-color:rgba(215,235,249,.12)!important;
+    box-shadow:0 8px 22px rgba(0,0,0,.14),inset 0 1px 0 rgba(255,255,255,.06)!important;
+  }
+}
+@media(max-width:390px){
+  body[data-page="topics"] .topic-card{top:calc(76px + env(safe-area-inset-top) + (var(--topic-stack-i) * 47px))!important;min-height:214px!important}
+}
+
+/* Mobile shadow audit: lighter, tighter and more consistent on every Public page. */
+@media(max-width:760px){
+  :root{
+    --swui-shadow:0 6px 18px rgba(49,83,113,.055),0 1px 4px rgba(49,83,113,.025)!important;
+    --swui-shadow-up:0 9px 24px rgba(49,83,113,.075),0 2px 6px rgba(49,83,113,.03)!important;
+  }
+  body:not(.dark) :is(.glass,.hero-card,.article-card,.topic-card,.person-card,.share-card,.newsletter-card,.about-manifesto,.about-value,.about-team-card,.article-view,.toc,.searchbox,.search-panel,.newsletter-terms-card,.newsletter-flow-card,.share-sheet,.sw-trust-panel,.sw-related-card){
+    box-shadow:0 6px 18px rgba(48,82,111,.055),inset 0 1px 0 rgba(255,255,255,.94)!important;
+  }
+  body.dark :is(.glass,.hero-card,.article-card,.topic-card,.person-card,.share-card,.newsletter-card,.about-manifesto,.about-value,.about-team-card,.article-view,.toc,.searchbox,.search-panel,.newsletter-terms-card,.newsletter-flow-card,.share-sheet,.sw-trust-panel,.sw-related-card){
+    box-shadow:0 8px 22px rgba(0,0,0,.14),inset 0 1px 0 rgba(255,255,255,.055)!important;
+  }
+  .brand-top,.top-actions :is(button,.iconbtn),.pager,.pager-thumb,.sw-font-dock,.sw-font-dock-thumb{
+    box-shadow:0 6px 18px rgba(48,82,111,.07),inset 0 1px 0 rgba(255,255,255,.91)!important;
+  }
+  body.dark :is(.brand-top,.top-actions button,.top-actions .iconbtn,.pager,.pager-thumb,.sw-font-dock,.sw-font-dock-thumb){
+    box-shadow:0 7px 20px rgba(0,0,0,.15),inset 0 1px 0 rgba(255,255,255,.06)!important;
+  }
+  .article-body img,.article-cover img{box-shadow:0 5px 16px rgba(49,83,117,.055)!important}
+  .newsletter-terms-overlay,.sw-continue-overlay,.sw-dialog-overlay{-webkit-backdrop-filter:blur(12px) saturate(125%)!important;backdrop-filter:blur(12px) saturate(125%)!important}
+  .pager{border-radius:999px!important}
+  .pager-thumb,.nav-item{border-radius:999px!important}
+}
+
+
+@media(max-width:760px){
+  /* Standalone legal / unsubscribe documents use the same lighter mobile elevation. */
+  body>main{
+    box-shadow:0 6px 18px rgba(48,82,111,.055),inset 0 1px 0 rgba(255,255,255,.88)!important;
+  }
+  body.dark>main{box-shadow:0 8px 22px rgba(0,0,0,.14),inset 0 1px 0 rgba(255,255,255,.05)!important}
+}
+
+
+/* ============================================================
+   v23.9.8 · mobile brand centering / dark reading / footer polish
+   ============================================================ */
+
+/* Mobile: keep SIGN WELL visually centered regardless of left/right controls. */
+@media(max-width:760px){
+  .brand-top{
+    left:50%!important;
+    right:auto!important;
+    transform:translateX(-50%)!important;
+    max-width:min(160px,calc(100vw - 148px))!important;
+    justify-content:center!important;
+    text-align:center!important;
+    margin:0!important;
+  }
+  .brand-top:hover{transform:translateX(-50%) translateY(-1px)!important}
+  .brand-top:active{transform:translateX(-50%) scale(.98)!important}
+  .brand-copy{display:block!important;text-align:center!important}
+  .brand-copy strong{white-space:nowrap!important;text-align:center!important}
+}
+
+/* Dark mode: article/topic headings must always render pure white, including WebKit text-fill. */
+body.dark :is(
+  .article-top h1,.article-view h1,.article-view h2,.article-view h3,
+  .article-body h1,.article-body h2,.article-body h3,.article-body h4,
+  .article-card h3,.topic-card h3,.topic-detail-head h1,.topic-detail-head h2,
+  .page-hero h1,.section-head h2
+){
+  color:#fff!important;
+  -webkit-text-fill-color:#fff!important;
+  text-shadow:none!important;
+}
+
+/* Dark footer/legal strip: same visual color as page background, all text white. */
+body.dark .footer{
+  background:var(--bg,#101820)!important;
+  color:#fff!important;
+  border-top-color:rgba(255,255,255,.10)!important;
+  box-shadow:none!important;
+}
+body.dark .footer :is(strong,div,span,a,p,small),
+body.dark .sw-legal-links,
+body.dark .sw-legal-links a,
+body.dark .sw-legal-links span{
+  color:#fff!important;
+  -webkit-text-fill-color:#fff!important;
+  opacity:1!important;
+}
+body.dark .sw-legal-links a{border-bottom-color:rgba(255,255,255,.34)!important}
+
+/* Newsletter legal surface in dark mode should merge with the page background instead of floating as a separate dark card. */
+body.dark :is(.newsletter-terms-card,.newsletter-legal-panel,.newsletter-terms-body,.legal-modal-card,.terms-sheet,.privacy-sheet){
+  background:var(--bg,#101820)!important;
+  color:#fff!important;
+  box-shadow:none!important;
+}
+body.dark :is(.newsletter-terms-card,.newsletter-legal-panel,.newsletter-terms-body,.legal-modal-card,.terms-sheet,.privacy-sheet) :is(h1,h2,h3,h4,p,li,strong,span,label,a,small){
+  color:#fff!important;
+  -webkit-text-fill-color:#fff!important;
+  opacity:1!important;
+}

@@ -7,9 +7,13 @@
 .sw-font-controls span{padding:0 5px;color:#6b7f91;font-size:10px;font-weight:800;letter-spacing:.06em}
 .sw-font-controls button,.sw-reader-tools>button{min-height:38px;border:1px solid rgba(255,255,255,.9);background:rgba(255,255,255,.72);color:#20384d;border-radius:11px;padding:0 11px;font-size:11px;font-weight:800;cursor:pointer}
 .sw-font-controls button.active{background:#23445d;color:#fff;border-color:transparent}
-.article-view[data-font-size="small"] .article-body{font-size:15.5px}
-.article-view[data-font-size="medium"] .article-body{font-size:17px}
-.article-view[data-font-size="large"] .article-body{font-size:19px;line-height:2.02}
+/* Reader scale: SMALL is intentionally the pre-existing article size. */
+.article-view[data-font-size="small"] .article-body{font-size:17px;line-height:1.94}
+.article-view[data-font-size="medium"] .article-body{font-size:18.5px;line-height:1.97}
+.article-view[data-font-size="large"] .article-body{font-size:20px;line-height:2.02}
+.article-view .article-body{transition:font-size .24s cubic-bezier(.2,.8,.2,1),line-height .24s ease}
+.article-view .article-body table{font-size:.84em!important}
+.article-view .article-body :is(figcaption,.caption){font-size:.82em!important}
 .sw-article-main{min-width:0}
 .sw-trust-panel{margin-top:42px;padding:22px;border-radius:24px;background:linear-gradient(145deg,rgba(255,255,255,.78),rgba(235,246,254,.52));border:1px solid rgba(255,255,255,.92);box-shadow:inset 0 1px 0 #fff,0 14px 34px rgba(54,92,124,.08)}
 .sw-trust-head{display:flex;justify-content:space-between;gap:16px;align-items:flex-start;margin-bottom:15px}
@@ -37,3 +41,136 @@ body.dark .sw-continue-card{background:rgba(16,31,45,.96);border-color:rgba(230,
 @media print{.sw-reader-tools,.sw-stale-note,.sw-related,.sw-section-link,.sw-continue-overlay{display:none!important}.sw-trust-panel{box-shadow:none!important;background:#fff!important;border:1px solid #bbb!important;break-inside:avoid}.sw-trust-grid{grid-template-columns:repeat(3,1fr)!important}.sw-evidence-ref{break-inside:avoid}.article-body a[href]::after{content:" (" attr(href) ")";font-size:9pt;overflow-wrap:anywhere}.sw-evidence-ref[href]::after{content:""}}
 
 .sw-audit-strip{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 13px}.sw-audit-strip span{display:inline-flex;align-items:center;min-height:28px;padding:0 9px;border-radius:999px;background:rgba(219,241,255,.74);border:1px solid rgba(85,139,181,.10);color:#2a658f;font-size:9.5px;font-weight:800}.dark .sw-audit-strip span{background:rgba(119,185,246,.13);border-color:rgba(177,218,248,.12);color:#b6ddf8}
+
+/* ============================================================
+   v23.9.6 · Persistent article font-size liquid dock
+   Bottom-center like the Public liquid pager. SMALL = old default.
+   ============================================================ */
+.sw-font-dock{
+  --sw-font-index:0;
+  position:fixed;
+  left:50%;
+  bottom:22px;
+  transform:translateX(-50%);
+  z-index:1180;
+  width:194px;
+  height:54px;
+  padding:5px;
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  align-items:stretch;
+  border-radius:27px;
+  isolation:isolate;
+  overflow:hidden;
+  background:linear-gradient(152deg,rgba(255,255,255,.46),rgba(248,252,255,.16) 48%,rgba(255,255,255,.34));
+  border:1px solid rgba(255,255,255,.72);
+  -webkit-backdrop-filter:blur(20px) saturate(160%);
+  backdrop-filter:blur(20px) saturate(160%);
+  box-shadow:0 18px 46px rgba(43,82,119,.15),0 2px 8px rgba(43,82,119,.06),inset 0 1px 1px rgba(255,255,255,.94),inset 0 -1px 0 rgba(112,150,181,.06);
+  user-select:none;
+  -webkit-user-select:none;
+}
+.sw-font-dock[data-size="small"]{--sw-font-index:0}
+.sw-font-dock[data-size="medium"]{--sw-font-index:1}
+.sw-font-dock[data-size="large"]{--sw-font-index:2}
+.sw-font-dock::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  border-radius:inherit;
+  padding:1px;
+  pointer-events:none;
+  z-index:4;
+  background:conic-gradient(from 145deg at 50% 50%,rgba(255,255,255,.98),rgba(208,231,252,.42) 24%,rgba(246,222,232,.30) 48%,rgba(224,241,234,.28) 70%,rgba(255,255,255,.98));
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
+  -webkit-mask-composite:xor;
+  mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
+  mask-composite:exclude;
+}
+.sw-font-dock-thumb{
+  position:absolute;
+  left:5px;
+  top:5px;
+  bottom:5px;
+  width:calc((100% - 10px)/3);
+  border-radius:22px;
+  z-index:0;
+  transform:translate3d(calc(var(--sw-font-index) * 100%),0,0);
+  background:radial-gradient(120% 100% at 26% 0%,rgba(255,255,255,.98),rgba(255,255,255,.36) 44%,transparent 72%),linear-gradient(155deg,rgba(249,252,255,.88),rgba(225,239,253,.48));
+  box-shadow:inset 0 1px 1px rgba(255,255,255,.98),inset 0 -10px 20px -14px rgba(91,148,198,.34),0 9px 20px rgba(53,97,136,.14);
+  transition:transform .34s cubic-bezier(.18,.86,.22,1),scale .32s cubic-bezier(.18,1.25,.28,1);
+}
+.sw-font-dock.is-changing .sw-font-dock-thumb{scale:1.055}
+.sw-font-dock button{
+  position:relative;
+  z-index:2;
+  border:0!important;
+  background:transparent!important;
+  color:#60788c!important;
+  -webkit-text-fill-color:#60788c!important;
+  min-width:0;
+  min-height:44px;
+  padding:0!important;
+  border-radius:20px;
+  font-size:13px!important;
+  line-height:1;
+  font-weight:820!important;
+  cursor:pointer;
+  touch-action:manipulation;
+  transition:color .22s ease,transform .22s cubic-bezier(.18,1.2,.3,1);
+}
+.sw-font-dock button.active{color:#183e5d!important;-webkit-text-fill-color:#183e5d!important;transform:scale(1.05)}
+.sw-font-dock button:focus-visible{outline:2px solid rgba(70,132,189,.38);outline-offset:-3px}
+body.dark .sw-font-dock{
+  background:linear-gradient(155deg,rgba(42,58,73,.88),rgba(24,38,51,.80));
+  border-color:rgba(218,236,250,.18);
+  box-shadow:0 18px 46px rgba(0,0,0,.28),inset 0 1px 1px rgba(255,255,255,.10);
+}
+body.dark .sw-font-dock-thumb{background:linear-gradient(155deg,rgba(102,132,157,.58),rgba(54,76,95,.58));box-shadow:inset 0 1px 0 rgba(255,255,255,.20),0 8px 20px rgba(0,0,0,.18)}
+body.dark .sw-font-dock button{color:#b7cbd9!important;-webkit-text-fill-color:#b7cbd9!important}
+body.dark .sw-font-dock button.active{color:#fff!important;-webkit-text-fill-color:#fff!important}
+
+@media(max-width:760px){
+  .article-view[data-font-size="small"] .article-body{font-size:16.5px!important;line-height:1.90!important}
+  .article-view[data-font-size="medium"] .article-body{font-size:18px!important;line-height:1.94!important}
+  .article-view[data-font-size="large"] .article-body{font-size:19.5px!important;line-height:1.98!important}
+  .sw-font-dock{
+    width:188px;
+    height:54px;
+    bottom:calc(env(safe-area-inset-bottom) + 82px);
+    border-radius:27px;
+    -webkit-backdrop-filter:blur(18px) saturate(150%);
+    backdrop-filter:blur(18px) saturate(150%);
+  }
+  .sw-font-dock button{font-size:13px!important}
+}
+@media(max-width:390px){.sw-font-dock{width:176px}}
+@media(prefers-reduced-motion:reduce){
+  .sw-font-dock-thumb,.sw-font-dock button,.article-view .article-body{transition:none!important}
+  .sw-font-dock.is-changing .sw-font-dock-thumb{scale:1}
+}
+@media print{.sw-font-dock{display:none!important}}
+
+
+
+/* ============================================================
+   v23.9.7 · Reader tools / capsule dock refinement
+   ============================================================ */
+.sw-reader-tools{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+.sw-font-dock{
+  border-radius:999px!important;
+  padding:5px 6px!important;
+  overflow:hidden!important;
+}
+.sw-font-dock::before{border-radius:999px!important}
+.sw-font-dock-thumb{
+  left:6px!important;top:5px!important;bottom:5px!important;
+  width:calc((100% - 12px)/3)!important;
+  border-radius:999px!important;
+}
+.sw-font-dock button{border-radius:999px!important}
+@media(max-width:760px){
+  .sw-reader-tools{display:grid!important;grid-template-columns:1fr 1fr!important}
+  .sw-reader-tools>button{width:100%!important}
+  .sw-continue-card{box-shadow:0 12px 34px rgba(23,53,78,.12)!important}
+}
