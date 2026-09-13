@@ -43,15 +43,17 @@ body.dark .sw-continue-card{background:rgba(16,31,45,.96);border-color:rgba(230,
 .sw-audit-strip{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 13px}.sw-audit-strip span{display:inline-flex;align-items:center;min-height:28px;padding:0 9px;border-radius:999px;background:rgba(219,241,255,.74);border:1px solid rgba(85,139,181,.10);color:#2a658f;font-size:9.5px;font-weight:800}.dark .sw-audit-strip span{background:rgba(119,185,246,.13);border-color:rgba(177,218,248,.12);color:#b6ddf8}
 
 /* ============================================================
-   v23.9.6 · Persistent article font-size liquid dock
+   v23.9.18 · Viewport-anchored article font-size liquid dock
    Bottom-center like the Public liquid pager. SMALL = old default.
    ============================================================ */
 .sw-font-dock{
   --sw-font-index:0;
+  --sw-font-scale:1;
   position:fixed;
   left:50%;
-  bottom:22px;
-  transform:translateX(-50%);
+  bottom:max(22px,calc(env(safe-area-inset-bottom) + 14px));
+  transform:translate3d(-50%,0,0) scale(var(--sw-font-scale));
+  transform-origin:50% 50%;
   z-index:1180;
   width:194px;
   height:54px;
@@ -69,6 +71,8 @@ body.dark .sw-continue-card{background:rgba(16,31,45,.96);border-color:rgba(230,
   box-shadow:0 18px 46px rgba(43,82,119,.15),0 2px 8px rgba(43,82,119,.06),inset 0 1px 1px rgba(255,255,255,.94),inset 0 -1px 0 rgba(112,150,181,.06);
   user-select:none;
   -webkit-user-select:none;
+  transition:transform .30s cubic-bezier(.18,1.15,.28,1),box-shadow .24s ease,background .24s ease;
+  will-change:transform;
 }
 .sw-font-dock[data-size="small"]{--sw-font-index:0}
 .sw-font-dock[data-size="medium"]{--sw-font-index:1}
@@ -100,7 +104,9 @@ body.dark .sw-continue-card{background:rgba(16,31,45,.96);border-color:rgba(230,
   box-shadow:inset 0 1px 1px rgba(255,255,255,.98),inset 0 -10px 20px -14px rgba(91,148,198,.34),0 9px 20px rgba(53,97,136,.14);
   transition:transform .34s cubic-bezier(.18,.86,.22,1),scale .32s cubic-bezier(.18,1.25,.28,1);
 }
-.sw-font-dock.is-changing .sw-font-dock-thumb{scale:1.055}
+.sw-font-dock.is-changing{--sw-font-scale:1.018}
+.sw-font-dock.is-pressing{--sw-font-scale:1.036}
+.sw-font-dock.is-changing .sw-font-dock-thumb{scale:1.055 1.02}
 .sw-font-dock button{
   position:relative;
   z-index:2;
@@ -147,6 +153,7 @@ body.dark .sw-font-dock button.active{color:#fff!important;-webkit-text-fill-col
 @media(max-width:390px){.sw-font-dock{width:176px}}
 @media(prefers-reduced-motion:reduce){
   .sw-font-dock-thumb,.sw-font-dock button,.article-view .article-body{transition:none!important}
+  .sw-font-dock.is-changing,.sw-font-dock.is-pressing{--sw-font-scale:1}
   .sw-font-dock.is-changing .sw-font-dock-thumb{scale:1}
 }
 @media print{.sw-font-dock{display:none!important}}

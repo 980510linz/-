@@ -355,7 +355,6 @@ h1{font-size:clamp(44px,7vw,92px);line-height:.98;letter-spacing:-.06em;margin:1
 .softbtn{background:rgba(255,255,255,.6);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px)}
 .softbtn:hover{transform:translateY(-2px);box-shadow:0 14px 30px rgba(63,110,148,.14)}
 .primarybtn:active,.softbtn:active{transform:scale(.96)}
-.share-actions{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
 .qr-box{width:230px;height:230px;margin:auto;border-radius:30px;padding:18px;background:rgba(255,255,255,.84);
   display:grid;place-items:center;box-shadow:inset 0 1px 0 #fff,0 20px 44px rgba(70,115,150,.16);
   transition:transform .5s var(--ease-spring)}
@@ -4533,7 +4532,7 @@ body.dark .ambient{opacity:.84!important;filter:blur(82px) saturate(122%)!import
 
 </style>
 
-<link rel="stylesheet" href="assets/signwell-common-a.css?build=23.9.0">
+<link rel="stylesheet" href="assets/signwell-common-a.css?build=23.9.20">
 
 
 
@@ -4553,7 +4552,7 @@ body.dark .ambient{opacity:.84!important;filter:blur(82px) saturate(122%)!import
 <meta name="twitter:image" content="https://980510linz.github.io/-/assets/signwell-share.png">
 <link rel="stylesheet" href="assets/signwell-reader.css?build=23.9.8">
 <link rel="stylesheet" href="assets/signwell-contrast.css?build=23.9.0">
-<link rel="stylesheet" href="assets/signwell-uiux.css?build=23.9.8">
+<link rel="stylesheet" href="assets/signwell-uiux.css?build=23.9.36">
 <link rel="stylesheet" href="assets/signwell-dialogs.css?build=23.9.1">
 <meta name="signwell-public-ui" content="23.9.0">
 
@@ -4779,11 +4778,127 @@ body.dark .pager-thumb{
 }
 </style>
 
-<link rel="stylesheet" href="assets/signwell-loader.css?build=23.9.11">
+<link rel="stylesheet" href="assets/signwell-loader.css?build=23.9.31">
+
+<style id="sw-v23934-pastel-liquid-pager">
+/* ============================================================
+   SIGN WELL v23.9.34 · pastel reflective liquid pager
+   White glass first, powder blue / blush pink as reflected light.
+   ============================================================ */
+.pager{
+  --sw-pager-blue:rgba(205,229,255,.36);
+  --sw-pager-pink:rgba(249,220,235,.28);
+  --sw-pager-white:rgba(255,255,255,.96);
+  background:
+    radial-gradient(115% 130% at 22% -18%,rgba(255,255,255,.98) 0%,rgba(255,255,255,.60) 34%,transparent 61%),
+    radial-gradient(85% 105% at 4% 92%,var(--sw-pager-blue) 0%,rgba(205,229,255,.12) 48%,transparent 72%),
+    radial-gradient(82% 105% at 98% 88%,var(--sw-pager-pink) 0%,rgba(249,220,235,.10) 48%,transparent 72%),
+    linear-gradient(154deg,rgba(255,255,255,.72) 0%,rgba(250,253,255,.48) 48%,rgba(255,255,255,.62) 100%)!important;
+  border:1px solid rgba(255,255,255,.90)!important;
+  box-shadow:
+    0 18px 46px rgba(72,110,145,.14),
+    0 3px 12px rgba(72,110,145,.06),
+    inset 0 1px 1px rgba(255,255,255,1),
+    inset 0 -1px 1px rgba(199,220,240,.16)!important;
+  backdrop-filter:blur(30px) saturate(155%) brightness(1.055)!important;
+  -webkit-backdrop-filter:blur(30px) saturate(155%) brightness(1.055)!important;
+}
+.pager::before{
+  opacity:.94!important;
+  background:
+    conic-gradient(from var(--rim,140deg) at 50% 50%,
+      rgba(255,255,255,1) 0deg,
+      rgba(255,255,255,.88) 54deg,
+      rgba(213,234,255,.54) 88deg,
+      rgba(255,255,255,.84) 132deg,
+      rgba(255,255,255,.95) 196deg,
+      rgba(249,221,235,.44) 242deg,
+      rgba(255,255,255,.88) 292deg,
+      rgba(255,255,255,1) 360deg)!important;
+}
+.pager::after{
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.96),
+    inset 0 0 18px rgba(255,255,255,.28),
+    inset 14px 0 24px -24px rgba(159,205,249,.32),
+    inset -14px 0 24px -24px rgba(240,182,214,.24)!important;
+}
+.pager-thumb{
+  background:
+    radial-gradient(120% 115% at 50% -18%,rgba(255,255,255,1) 0%,rgba(255,255,255,.74) 36%,rgba(255,255,255,.22) 62%,transparent 76%),
+    radial-gradient(82% 100% at 3% 92%,rgba(193,223,253,.34) 0%,rgba(193,223,253,.08) 48%,transparent 72%),
+    radial-gradient(82% 100% at 99% 90%,rgba(247,210,230,.28) 0%,rgba(247,210,230,.07) 48%,transparent 72%),
+    linear-gradient(156deg,rgba(255,255,255,.90) 0%,rgba(249,252,255,.66) 52%,rgba(255,255,255,.78) 100%)!important;
+  box-shadow:
+    inset 0 1px 1px rgba(255,255,255,1),
+    inset 0 -8px 18px -14px rgba(120,172,218,.20),
+    0 10px 24px rgba(58,96,132,.13),
+    0 1px 4px rgba(58,96,132,.08)!important;
+  backdrop-filter:blur(9px) saturate(165%) brightness(1.08)!important;
+  -webkit-backdrop-filter:blur(9px) saturate(165%) brightness(1.08)!important;
+}
+.pager-thumb::before{
+  background:linear-gradient(150deg,
+    rgba(255,255,255,1) 0%,
+    rgba(255,255,255,.74) 36%,
+    rgba(210,233,255,.30) 60%,
+    rgba(248,219,234,.24) 78%,
+    rgba(255,255,255,.94) 100%)!important;
+}
+.pager-thumb::after{
+  background:linear-gradient(112deg,
+    transparent 18%,
+    rgba(255,255,255,.16) 30%,
+    rgba(255,255,255,.96) 45%,
+    rgba(255,255,255,.38) 54%,
+    rgba(244,221,236,.18) 64%,
+    transparent 82%)!important;
+  opacity:.72!important;
+}
+.thumb-spec{
+  background:linear-gradient(90deg,
+    transparent 0%,
+    rgba(223,239,255,.34) 22%,
+    rgba(255,255,255,1) 50%,
+    rgba(251,226,239,.32) 78%,
+    transparent 100%)!important;
+  opacity:.90!important;
+}
+body.pager-dragging .pager-thumb,
+body.pager-programmatic .pager-thumb,
+.pager.nav-traveling .pager-thumb{
+  filter:saturate(1.03) brightness(1.025)!important;
+  box-shadow:
+    inset 0 1px 1px rgba(255,255,255,1),
+    inset 0 -9px 18px -14px rgba(120,172,218,.22),
+    0 12px 28px rgba(58,96,132,.15),
+    0 1px 4px rgba(58,96,132,.08)!important;
+}
+
+/* Dark mode keeps the same blue/pink reflection idea without a white slab. */
+body.dark .pager{
+  --sw-pager-blue:rgba(139,190,237,.14);
+  --sw-pager-pink:rgba(232,166,202,.11);
+  background:
+    radial-gradient(115% 120% at 24% -18%,rgba(255,255,255,.18) 0%,rgba(255,255,255,.05) 40%,transparent 66%),
+    radial-gradient(84% 100% at 4% 92%,var(--sw-pager-blue),transparent 70%),
+    radial-gradient(82% 100% at 98% 90%,var(--sw-pager-pink),transparent 70%),
+    linear-gradient(154deg,rgba(68,88,108,.34),rgba(31,48,64,.26))!important;
+  border-color:rgba(220,239,255,.18)!important;
+}
+body.dark .pager-thumb{
+  background:
+    radial-gradient(120% 115% at 50% -18%,rgba(238,248,255,.38),rgba(238,248,255,.10) 45%,transparent 72%),
+    radial-gradient(82% 100% at 2% 92%,rgba(130,188,239,.16),transparent 70%),
+    radial-gradient(82% 100% at 99% 90%,rgba(226,157,196,.12),transparent 70%),
+    linear-gradient(156deg,rgba(112,142,167,.44),rgba(50,72,91,.36))!important;
+}
+
+</style>
 </head>
 <body class="boot-preparing" data-page="about">
 <div class="sw-page-loader" id="swPageLoader" role="status" aria-live="polite" aria-label="頁面載入進度"><div class="sw-page-loader-card"><div class="sw-page-loader-brand">SIGN WELL</div><div class="sw-page-loader-sub">欣緯生醫</div><div class="sw-page-loader-track" aria-hidden="true"><i class="sw-page-loader-bar"></i></div><div class="sw-page-loader-meta"><span class="sw-page-loader-stage">準備頁面</span><strong class="sw-page-loader-pct">6%</strong></div></div></div>
-<script src="assets/signwell-loader.js?build=23.9.11"></script>
+<script src="assets/signwell-loader.js?build=23.9.31"></script>
 <div id="welcomeSplash" aria-hidden="true"><div class="splash-word">欣緯生醫<small>SIGN WELL BIOMED</small></div><div class="splash-line"></div></div>
 <div id="readingProgress"></div>
 <div class="ambient" id="ambient" aria-hidden="true"><div class="orb a"></div><div class="orb b"></div><div class="orb c"></div><div class="orb d"></div></div>
@@ -5361,7 +5476,20 @@ function sanitizeHTML(html=''){
   });
   return d.body.firstElementChild?.innerHTML||'';
 }
-function renderContent(a){return sanitizeHTML(a?.content||'')}
+function swIsMedicalNewsArticle(a){return a?.sourceWorkspace?.type==='medical-news-workspace'||String(a?.category||'')==='時事探討'}
+function swStripPrivatePubMedHTML(a,html=''){
+  if(!swIsMedicalNewsArticle(a))return html;
+  const d=new DOMParser().parseFromString(`<div id="sw-public-content">${html}</div>`,'text/html');
+  const root=d.getElementById('sw-public-content');
+  root.querySelectorAll('a[href*="pubmed.ncbi.nlm.nih.gov"]')?.forEach(link=>{
+    const li=link.closest('li');
+    if(li)li.remove(); else link.remove();
+  });
+  root.querySelectorAll('li').forEach(li=>{if(/\bPMID\b/i.test(li.textContent||''))li.remove()});
+  root.querySelectorAll('sup').forEach(sup=>{if(!sup.textContent.trim()&&!sup.querySelector('a'))sup.remove()});
+  return root.innerHTML;
+}
+function renderContent(a){return swStripPrivatePubMedHTML(a,sanitizeHTML(a?.content||''))}
 function excerpt(a){
   if(a.excerpt)return a.excerpt;
   const d=document.createElement('div');d.innerHTML=a.content?renderContent(a):'';
@@ -5448,6 +5576,14 @@ function goto(page){
   else if(page.startsWith('topic/'))url=pageUrl(PAGE_FILE.topics,page);
   else return;
   markInternalNav();
+  /* Share has one canonical renderer only. Never render an embedded stale clone from another primary document. */
+  if(page==='share'&&!SW_IS_SHARE_DOCUMENT){
+    const freshShareUrl=new URL(url,location.href);
+    freshShareUrl.searchParams.set('build','23.9.20');
+    document.body.classList.add('page-switching');
+    location.assign(freshShareUrl.href);
+    return;
+  }
   if(softPrimaryRoute(url,page))return;
   if(softRoute(url))return;
   document.body.classList.add('page-switching');
@@ -5615,7 +5751,6 @@ function renderShare(){
           <h1>${escapeHTML(t('shareTitle'))}</h1>
           <p>${escapeHTML(t('shareSubtitle'))}</p>
           <div class="share-url"><input id="shareUrl" value="${escapeHTML(url)}" readonly aria-label="網站連結"><button class="primarybtn" id="copySite">複製連結</button></div>
-          <div class="share-actions"><button class="softbtn" id="nativeShare">系統分享</button><button class="softbtn" id="refreshQr">重新產生 QR Code</button></div>
         </div>
         <div class="qr-box" id="qrcode"><div class="qr-fallback">正在產生 QR Code…</div></div>
       </div>
@@ -5623,12 +5758,6 @@ function renderShare(){
   </div>`;
   $('#shareUrl').onclick=e=>e.target.select();
   $('#copySite').onclick=()=>copyText(url);
-  $('#nativeShare').onclick=async()=>{
-    try{
-      if(navigator.share)await navigator.share({title:t('siteTitle'),url});
-      else await copyText(url);
-    }catch(e){if(e?.name!=='AbortError')showToast('這個瀏覽器不支援系統分享，連結已可手動複製')}
-  };
   makeQR(url);initReveal();
 }
 
@@ -6239,12 +6368,14 @@ function swEvidenceLevelLabel(ref){
 }
 function swArticleTrustHTML(a){
   const pub=publisherForArticle(a),refs=Array.isArray(a?.references)?a.references:[];
-  const lit=refs.filter(r=>r&&r.type==='literature');
+  const medicalNews=swIsMedicalNewsArticle(a);
+  const lit=medicalNews?[]:refs.filter(r=>r&&r.type==='literature');
   const audit=a?.audit&&typeof a.audit==='object'?a.audit:null;
   const shown=lit.slice(0,6);
-  const auditHtml=audit?.claimEvidenceLocked?`<div class="sw-audit-strip"><span>Claim–Evidence Lock ✓</span>${Number.isFinite(Number(audit.topicFitScore))?`<span>Topic Fit ${Math.round(Number(audit.topicFitScore))}/100</span>`:''}${audit.numericalFidelityChecked?'<span>Numerical Fidelity ✓</span>':''}</div>`:'';
-  const refsHtml=shown.length?`<div class="sw-evidence-list">${shown.map(r=>`<a class="sw-evidence-ref" href="${escapeHTML(r.url||'#')}" target="_blank" rel="noopener noreferrer"><span class="sw-evidence-level">${escapeHTML(r.evidenceLevel||'PubMed')}</span><span><strong>${escapeHTML(r.title||'研究文獻')}</strong><small>${escapeHTML([r.journal,r.year,r.pmid?('PMID '+r.pmid):''].filter(Boolean).join(' · '))}</small></span></a>`).join('')}</div>`:'';
-  return `<section class="sw-trust-panel" aria-label="文章可信度資訊"><div class="sw-trust-head"><div><strong>文章資訊與證據</strong><span>讓你知道這篇內容由誰整理、何時更新，以及引用了哪些研究。</span></div>${lit.length?`<span>${lit.length} 篇研究文獻</span>`:''}</div>${auditHtml}<div class="sw-trust-grid"><div class="sw-trust-item"><b>作者 / 發布者</b><span>${escapeHTML(pub.name||'SIGN WELL')}</span></div><div class="sw-trust-item"><b>最後更新</b><span>${escapeHTML(swDisplayDate(a.updatedAt||a.publishedAt)||'未標示')}</span></div><div class="sw-trust-item"><b>閱讀時間</b><span>約 ${readingTime(a)} 分鐘</span></div></div>${refsHtml}<div class="sw-article-disclaimer">本站內容僅供醫學教育與資訊整理，不構成個別醫療建議，也不能取代正式臨床評估、診斷或治療。研究證據可能隨時間更新；如涉及個人健康決策，請與合格醫療專業人員討論。</div></section>`;
+  const auditHtml=audit?.claimEvidenceLocked?`<div class="sw-audit-strip"><span>${medicalNews?'主張－證據審查 ✓':'證據審查 ✓'}</span>${Number.isFinite(Number(audit.topicFitScore))?`<span>主題吻合度 ${Math.round(Number(audit.topicFitScore))}/100</span>`:''}${audit.numericalFidelityChecked?'<span>數字核對 ✓</span>':''}</div>`:'';
+  const refsHtml=shown.length?`<div class="sw-evidence-list">${shown.map(r=>`<a class="sw-evidence-ref" href="${escapeHTML(r.url||'#')}" target="_blank" rel="noopener noreferrer"><span class="sw-evidence-level">${escapeHTML(r.evidenceLevel||'研究')}</span><span><strong>${escapeHTML(r.title||'研究文獻')}</strong><small>${escapeHTML([r.journal,r.year].filter(Boolean).join(' · '))}</small></span></a>`).join('')}</div>`:'';
+  const trustCopy=medicalNews?'讓你知道這篇內容由誰整理、何時更新，以及公開引用的新聞來源。':'讓你知道這篇內容由誰整理、何時更新，以及引用了哪些研究。';
+  return `<section class="sw-trust-panel" aria-label="文章可信度資訊"><div class="sw-trust-head"><div><strong>文章資訊與證據</strong><span>${trustCopy}</span></div>${lit.length?`<span>${lit.length} 篇研究文獻</span>`:''}</div>${auditHtml}<div class="sw-trust-grid"><div class="sw-trust-item"><b>作者 / 發布者</b><span>${escapeHTML(pub.name||'SIGN WELL')}</span></div><div class="sw-trust-item"><b>最後更新</b><span>${escapeHTML(swDisplayDate(a.updatedAt||a.publishedAt)||'未標示')}</span></div><div class="sw-trust-item"><b>閱讀時間</b><span>約 ${readingTime(a)} 分鐘</span></div></div>${refsHtml}<div class="sw-article-disclaimer">本站內容僅供醫學教育與資訊整理，不構成個別醫療建議，也不能取代正式臨床評估、診斷或治療。研究證據可能隨時間更新；如涉及個人健康決策，請與合格醫療專業人員討論。</div></section>`;
 }
 function swRelatedArticles(a){
   const same=articles.filter(x=>x.slug!==a.slug&&(x.category===a.category||((x.tags||[]).some(t=>(a.tags||[]).includes(t))))).slice(0,3);
@@ -6260,25 +6391,40 @@ function swCurrentSection(){
   const hs=[...document.querySelectorAll('.article-body h2[id],.article-body h3[id]')];
   let best='';for(const h of hs){if(h.getBoundingClientRect().top<=150)best=h.id;else break}return best;
 }
+function swArticleFontDock(){return document.getElementById('swArticleFontDock')}
 function swApplyReaderFont(view,size){
   const allowed=['small','medium','large'];
   const next=allowed.includes(size)?size:'small';
-  view.dataset.fontSize=next;
+  if(view)view.dataset.fontSize=next;
   try{localStorage.setItem('signwell-reader-font-v2',next)}catch(_){}
-  view.querySelectorAll('[data-font-size]').forEach(b=>{
+  const dock=swArticleFontDock()||view?.querySelector('.sw-font-dock');
+  dock?.querySelectorAll('[data-font-size]').forEach(b=>{
     const active=b.dataset.fontSize===next;
     b.classList.toggle('active',active);
     b.setAttribute('aria-pressed',active?'true':'false');
   });
-  const dock=view.querySelector('.sw-font-dock');
   if(dock){
     dock.dataset.size=next;
     dock.classList.remove('is-changing');
     void dock.offsetWidth;
     dock.classList.add('is-changing');
     clearTimeout(dock._swFontTimer);
-    dock._swFontTimer=setTimeout(()=>dock.classList.remove('is-changing'),260);
+    dock._swFontTimer=setTimeout(()=>dock.classList.remove('is-changing'),300);
   }
+}
+function swMountArticleFontDock(view){
+  const dock=view?.querySelector('#swArticleFontDock');
+  if(!dock)return null;
+  document.querySelectorAll('body > #swArticleFontDock').forEach(old=>{if(old!==dock)old.remove()});
+  document.body.appendChild(dock);
+  const press=()=>dock.classList.add('is-pressing');
+  const release=()=>dock.classList.remove('is-pressing');
+  dock.addEventListener('pointerdown',press,{passive:true});
+  dock.addEventListener('pointerup',release,{passive:true});
+  dock.addEventListener('pointercancel',release,{passive:true});
+  dock.addEventListener('pointerleave',release,{passive:true});
+  dock.querySelectorAll('[data-font-size]').forEach(b=>b.onclick=()=>swApplyReaderFont(view,b.dataset.fontSize));
+  return dock;
 }
 async function swOpenContinueQR(a){
   document.querySelector('.sw-continue-overlay')?.remove();
@@ -6306,6 +6452,7 @@ function swUpdateArticleMeta(a){
 }
 
 async function renderArticle(slug){
+  swArticleFontDock()?.remove();
   const a=await getFullArticle(slug);
   if(!a){app.innerHTML='<div class="shell"><div class="empty"><strong>找不到這篇文章</strong><br>它可能已經移除、網址已更新，或目前尚未公開。<br><button class="backlink" data-back="index.html" style="margin-top:14px">← 回到首頁看看其他內容</button></div></div>';bindBack();return}
   const html=renderContent(a),wrap=document.createElement('div');wrap.innerHTML=html;
@@ -6324,7 +6471,7 @@ async function renderArticle(slug){
       </div>
       <div class="article-actions"><button class="pillbtn" id="shareArticle">${escapeHTML(t('shareLabel'))}</button><button class="pillbtn" id="copyArticle">${iconSvg('copy')}${escapeHTML(t('copyLinkLabel'))}</button></div>
       <div class="sw-reader-tools"><button id="continueArticle">使用其他裝置閱讀</button><button id="emailSelfArticle">寄給自己</button></div>
-      <div class="sw-font-dock" data-size="small" role="group" aria-label="文章字級">
+      <div class="sw-font-dock" id="swArticleFontDock" data-size="small" role="group" aria-label="文章字級">
         <span class="sw-font-dock-thumb" aria-hidden="true"></span>
         <button type="button" data-font-size="small" aria-label="小字" aria-pressed="true">小</button>
         <button type="button" data-font-size="medium" aria-label="中字" aria-pressed="false">中</button>
@@ -6346,7 +6493,7 @@ async function renderArticle(slug){
   $('#shareArticle').onclick=async()=>{try{if(navigator.share)await navigator.share({title:a.title,text:excerpt(a),url:shareUrl});else await copyText(shareUrl)}catch(e){if(e?.name!=='AbortError')showToast('這個瀏覽器不支援系統分享，連結已可手動複製')}};
   $('#continueArticle').onclick=()=>swOpenContinueQR(a);
   $('#emailSelfArticle').onclick=()=>{const u=encodeURIComponent(swArticleSectionUrl(a.slug,swCurrentSection()));const subject=encodeURIComponent('稍後閱讀｜'+(a.title||'SIGN WELL'));location.href=`mailto:?subject=${subject}&body=${u}`};
-  const view=document.querySelector('.article-view');let fs='small';try{fs=localStorage.getItem('signwell-reader-font-v2')||'small'}catch(_){}swApplyReaderFont(view,fs);$$('[data-font-size]').forEach(b=>b.onclick=()=>swApplyReaderFont(view,b.dataset.fontSize));
+  const view=document.querySelector('.article-view');const fontDock=swMountArticleFontDock(view);let fs='small';try{fs=localStorage.getItem('signwell-reader-font-v2')||'small'}catch(_){}swApplyReaderFont(view,fs);fontDock?.querySelectorAll('[data-font-size]').forEach(b=>b.onclick=()=>swApplyReaderFont(view,b.dataset.fontSize));
   swBindSectionLinks(a);swScrollToRequestedSection();swUpdateArticleMeta(a);
   document.title=`${a.title} · SIGN WELL`;
   hardenRenderedArticleMedia();bindBack();initReveal();setupToc();
@@ -6370,6 +6517,7 @@ function bindScrollCue(){
 /* ---------- render orchestration ---------- */
 async function paint(){
   const r=route();
+  if(r.page!=='article')swArticleFontDock()?.remove();
   setNav(routeIndex(r));
   if(r.page==='home')renderHome();
   else if(r.page==='topics')renderTopics();
@@ -7518,7 +7666,7 @@ window.addEventListener('pagehide',()=>{
 
 </script>
 
-<script src="assets/signwell-common.js?build=23.9.8"></script>
+<script src="assets/signwell-common.js?build=23.9.36"></script>
 
 
 
@@ -7532,7 +7680,7 @@ window.addEventListener('pagehide',()=>{
 
 
 
-<script src="assets/signwell-runtime.js?build=23.9.0"></script>
+<script src="assets/signwell-runtime.js?build=23.9.20"></script>
 <script src="assets/signwell-dialogs.js?build=23.9.1"></script>
 </body>
 </html>

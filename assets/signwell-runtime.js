@@ -1,4 +1,4 @@
-/* SIGN WELL Public v23 · runtime performance / quality guardrails */
+/* SIGN WELL Public v23.9.20 · runtime performance / quality guardrails */
 (()=>{
   'use strict';
   const d=document, root=d.documentElement;
@@ -106,3 +106,53 @@
     }
   });
 })();
+
+/* SIGN WELL v23.9.20 · article citation/source confirmation */
+(()=>{
+  'use strict';
+  const d=document;
+  const selector='.article-body sup a[href], .article-body .refs a[href], .article-body .sw-source-figure a[href], .sw-evidence-ref[href]';
+  const sourceLabel=a=>{
+    const card=a.closest('.sw-evidence-ref');
+    const titled=card?.querySelector('strong')?.textContent?.trim();
+    if(titled)return titled;
+    const ref=a.closest('li');
+    const liText=ref?.textContent?.replace(/\s+/g,' ')?.trim();
+    if(liText)return liText.replace(/^\[?\d+\]?\s*/,'').slice(0,120);
+    return a.getAttribute('aria-label')||a.textContent?.trim()||'外部來源';
+  };
+  d.addEventListener('click',async e=>{
+    const a=e.target.closest?.(selector);
+    if(!a||e.defaultPrevented||e.button!==0||e.metaKey||e.ctrlKey||e.shiftKey||e.altKey)return;
+    let url;try{url=new URL(a.href,location.href)}catch(_){return}
+    if(!/^https?:$/i.test(url.protocol)||url.origin===location.origin)return;
+    e.preventDefault();
+    const label=sourceLabel(a);
+    const host=url.hostname.replace(/^www\./,'');
+    const message=`即將離開 SIGN WELL，前往引用來源：${label}\n\n來源網站：${host}`;
+    let ok=true;
+    if(typeof window.swConfirm==='function'){
+      ok=await window.swConfirm(message,{
+        title:'前往文章引用來源？',
+        kicker:'SIGN WELL · SOURCE',
+        confirmText:'前往來源',
+        cancelText:'留在本站',
+        hint:'外部網站的內容與隱私政策由該網站負責。',
+        tone:'info',
+        icon:'↗'
+      });
+    }else{
+      ok=window.confirm('即將前往外部引用來源，是否繼續？');
+    }
+    if(!ok)return;
+    const follow=d.createElement('a');
+    follow.href=url.href;
+    follow.target='_blank';
+    follow.rel='noopener noreferrer';
+    follow.style.display='none';
+    d.body.appendChild(follow);
+    follow.click();
+    follow.remove();
+  },true);
+})();
+

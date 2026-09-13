@@ -405,3 +405,37 @@ document.documentElement.dataset.signwellRelease="23.9.0";
   };
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',run,{once:true}); else run();
 })();
+
+/* SIGN WELL v23.9.36 · subtle tap bounce for the bottom liquid-glass frame */
+(function swPagerTapBounce(){
+  const rail=document.getElementById('pager');
+  if(!rail||rail.dataset.swTapBounce==='1')return;
+  rail.dataset.swTapBounce='1';
+  const reduced=()=>window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let pointerId=null,startX=0,startY=0;
+  let timer=0;
+  const bounce=()=>{
+    if(reduced())return;
+    clearTimeout(timer);
+    rail.classList.remove('sw-tap-bounce');
+    void rail.offsetWidth;
+    rail.classList.add('sw-tap-bounce');
+    timer=setTimeout(()=>rail.classList.remove('sw-tap-bounce'),390);
+  };
+  rail.addEventListener('pointerdown',e=>{
+    pointerId=e.pointerId;
+    startX=e.clientX;
+    startY=e.clientY;
+  },{passive:true});
+  rail.addEventListener('pointerup',e=>{
+    if(pointerId!==null&&e.pointerId===pointerId){
+      const dx=e.clientX-startX,dy=e.clientY-startY;
+      if(Math.hypot(dx,dy)<9)bounce();
+    }
+    pointerId=null;
+  },{passive:true});
+  rail.addEventListener('pointercancel',()=>{pointerId=null},{passive:true});
+  rail.addEventListener('keydown',e=>{
+    if(e.key==='Enter'||e.key===' ')bounce();
+  });
+})();

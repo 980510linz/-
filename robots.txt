@@ -2,3 +2,5 @@
 # Search-engine and crawler exclusion policy
 User-agent: *
 Disallow: /
+Disallow: /-/confirm.html
+Disallow: /confirm.html

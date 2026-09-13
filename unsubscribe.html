@@ -1919,8 +1919,6 @@ body.dark .article-body :is(pre,code,table,th,td){color:#dce8f0!important}
   .share-card p{font-size:14px!important;line-height:1.75!important}
   .share-url{display:grid!important;grid-template-columns:1fr!important;gap:8px!important;margin-top:18px!important}
   .share-url input{height:52px!important;font-size:14px!important;border-radius:16px!important}
-  .share-actions{display:grid!important;grid-template-columns:1fr 1fr!important;gap:8px!important}
-  .share-actions>*{width:100%!important;min-height:48px!important}
   .qr-box{width:184px!important;height:184px!important;padding:14px!important;border-radius:24px!important}
 
   /* newsletter */
@@ -2104,7 +2102,6 @@ body.dark .article-body :is(pre,code,table,th,td){color:#dce8f0!important}
   .nav-item{font-size:8.4px!important}.nav-item svg{width:17px!important;height:17px!important}
   .hero h1{font-size:43px!important}
   .article-top h1{font-size:31px!important}
-  .share-actions{grid-template-columns:1fr!important}
 }
 
 @media(prefers-contrast:more){
@@ -2193,7 +2190,7 @@ body.dark .article-view{background:linear-gradient(145deg,rgba(28,42,56,.88),rgb
 <meta property="og:image" content="https://980510linz.github.io/-/assets/signwell-share.png">
 <meta name="twitter:image" content="https://980510linz.github.io/-/assets/signwell-share.png">
 <link rel="stylesheet" href="assets/signwell-contrast.css?build=23.9.0">
-<link rel="stylesheet" href="assets/signwell-uiux.css?build=23.9.9">
+<link rel="stylesheet" href="assets/signwell-uiux.css?build=23.9.36">
 <link rel="stylesheet" href="assets/signwell-dialogs.css?build=23.9.1">
 <meta name="signwell-public-ui" content="23.9.0">
 
@@ -2419,11 +2416,127 @@ body.dark .pager-thumb{
 }
 </style>
 
-<link rel="stylesheet" href="assets/signwell-loader.css?build=23.9.11">
+<link rel="stylesheet" href="assets/signwell-loader.css?build=23.9.31">
+
+<style id="sw-v23934-pastel-liquid-pager">
+/* ============================================================
+   SIGN WELL v23.9.34 · pastel reflective liquid pager
+   White glass first, powder blue / blush pink as reflected light.
+   ============================================================ */
+.pager{
+  --sw-pager-blue:rgba(205,229,255,.36);
+  --sw-pager-pink:rgba(249,220,235,.28);
+  --sw-pager-white:rgba(255,255,255,.96);
+  background:
+    radial-gradient(115% 130% at 22% -18%,rgba(255,255,255,.98) 0%,rgba(255,255,255,.60) 34%,transparent 61%),
+    radial-gradient(85% 105% at 4% 92%,var(--sw-pager-blue) 0%,rgba(205,229,255,.12) 48%,transparent 72%),
+    radial-gradient(82% 105% at 98% 88%,var(--sw-pager-pink) 0%,rgba(249,220,235,.10) 48%,transparent 72%),
+    linear-gradient(154deg,rgba(255,255,255,.72) 0%,rgba(250,253,255,.48) 48%,rgba(255,255,255,.62) 100%)!important;
+  border:1px solid rgba(255,255,255,.90)!important;
+  box-shadow:
+    0 18px 46px rgba(72,110,145,.14),
+    0 3px 12px rgba(72,110,145,.06),
+    inset 0 1px 1px rgba(255,255,255,1),
+    inset 0 -1px 1px rgba(199,220,240,.16)!important;
+  backdrop-filter:blur(30px) saturate(155%) brightness(1.055)!important;
+  -webkit-backdrop-filter:blur(30px) saturate(155%) brightness(1.055)!important;
+}
+.pager::before{
+  opacity:.94!important;
+  background:
+    conic-gradient(from var(--rim,140deg) at 50% 50%,
+      rgba(255,255,255,1) 0deg,
+      rgba(255,255,255,.88) 54deg,
+      rgba(213,234,255,.54) 88deg,
+      rgba(255,255,255,.84) 132deg,
+      rgba(255,255,255,.95) 196deg,
+      rgba(249,221,235,.44) 242deg,
+      rgba(255,255,255,.88) 292deg,
+      rgba(255,255,255,1) 360deg)!important;
+}
+.pager::after{
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.96),
+    inset 0 0 18px rgba(255,255,255,.28),
+    inset 14px 0 24px -24px rgba(159,205,249,.32),
+    inset -14px 0 24px -24px rgba(240,182,214,.24)!important;
+}
+.pager-thumb{
+  background:
+    radial-gradient(120% 115% at 50% -18%,rgba(255,255,255,1) 0%,rgba(255,255,255,.74) 36%,rgba(255,255,255,.22) 62%,transparent 76%),
+    radial-gradient(82% 100% at 3% 92%,rgba(193,223,253,.34) 0%,rgba(193,223,253,.08) 48%,transparent 72%),
+    radial-gradient(82% 100% at 99% 90%,rgba(247,210,230,.28) 0%,rgba(247,210,230,.07) 48%,transparent 72%),
+    linear-gradient(156deg,rgba(255,255,255,.90) 0%,rgba(249,252,255,.66) 52%,rgba(255,255,255,.78) 100%)!important;
+  box-shadow:
+    inset 0 1px 1px rgba(255,255,255,1),
+    inset 0 -8px 18px -14px rgba(120,172,218,.20),
+    0 10px 24px rgba(58,96,132,.13),
+    0 1px 4px rgba(58,96,132,.08)!important;
+  backdrop-filter:blur(9px) saturate(165%) brightness(1.08)!important;
+  -webkit-backdrop-filter:blur(9px) saturate(165%) brightness(1.08)!important;
+}
+.pager-thumb::before{
+  background:linear-gradient(150deg,
+    rgba(255,255,255,1) 0%,
+    rgba(255,255,255,.74) 36%,
+    rgba(210,233,255,.30) 60%,
+    rgba(248,219,234,.24) 78%,
+    rgba(255,255,255,.94) 100%)!important;
+}
+.pager-thumb::after{
+  background:linear-gradient(112deg,
+    transparent 18%,
+    rgba(255,255,255,.16) 30%,
+    rgba(255,255,255,.96) 45%,
+    rgba(255,255,255,.38) 54%,
+    rgba(244,221,236,.18) 64%,
+    transparent 82%)!important;
+  opacity:.72!important;
+}
+.thumb-spec{
+  background:linear-gradient(90deg,
+    transparent 0%,
+    rgba(223,239,255,.34) 22%,
+    rgba(255,255,255,1) 50%,
+    rgba(251,226,239,.32) 78%,
+    transparent 100%)!important;
+  opacity:.90!important;
+}
+body.pager-dragging .pager-thumb,
+body.pager-programmatic .pager-thumb,
+.pager.nav-traveling .pager-thumb{
+  filter:saturate(1.03) brightness(1.025)!important;
+  box-shadow:
+    inset 0 1px 1px rgba(255,255,255,1),
+    inset 0 -9px 18px -14px rgba(120,172,218,.22),
+    0 12px 28px rgba(58,96,132,.15),
+    0 1px 4px rgba(58,96,132,.08)!important;
+}
+
+/* Dark mode keeps the same blue/pink reflection idea without a white slab. */
+body.dark .pager{
+  --sw-pager-blue:rgba(139,190,237,.14);
+  --sw-pager-pink:rgba(232,166,202,.11);
+  background:
+    radial-gradient(115% 120% at 24% -18%,rgba(255,255,255,.18) 0%,rgba(255,255,255,.05) 40%,transparent 66%),
+    radial-gradient(84% 100% at 4% 92%,var(--sw-pager-blue),transparent 70%),
+    radial-gradient(82% 100% at 98% 90%,var(--sw-pager-pink),transparent 70%),
+    linear-gradient(154deg,rgba(68,88,108,.34),rgba(31,48,64,.26))!important;
+  border-color:rgba(220,239,255,.18)!important;
+}
+body.dark .pager-thumb{
+  background:
+    radial-gradient(120% 115% at 50% -18%,rgba(238,248,255,.38),rgba(238,248,255,.10) 45%,transparent 72%),
+    radial-gradient(82% 100% at 2% 92%,rgba(130,188,239,.16),transparent 70%),
+    radial-gradient(82% 100% at 99% 90%,rgba(226,157,196,.12),transparent 70%),
+    linear-gradient(156deg,rgba(112,142,167,.44),rgba(50,72,91,.36))!important;
+}
+
+</style>
 </head>
 <body>
 <div class="sw-page-loader" id="swPageLoader" role="status" aria-live="polite" aria-label="頁面載入進度"><div class="sw-page-loader-card"><div class="sw-page-loader-brand">SIGN WELL</div><div class="sw-page-loader-sub">欣緯生醫</div><div class="sw-page-loader-track" aria-hidden="true"><i class="sw-page-loader-bar"></i></div><div class="sw-page-loader-meta"><span class="sw-page-loader-stage">準備頁面</span><strong class="sw-page-loader-pct">6%</strong></div></div></div>
-<script src="assets/signwell-loader.js?build=23.9.11"></script>
+<script src="assets/signwell-loader.js?build=23.9.31"></script>
 <div class="ambient" aria-hidden="true"><i class="orb o1"></i><i class="orb o2"></i></div>
 <main class="card" role="main" aria-live="polite">
   <div class="brand">SIGN WELL · 欣緯生醫</div>
@@ -2680,7 +2793,7 @@ else if(!token)setResult('連結無效','請從你收到的 SIGN WELL 電子報�
 </script>
 
 
-<script src="assets/signwell-runtime.js?build=23.9.0"></script>
+<script src="assets/signwell-runtime.js?build=23.9.20"></script>
 <script src="assets/signwell-dialogs.js?build=23.9.1"></script>
 </body>
 </html>
