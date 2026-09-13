@@ -752,3 +752,15 @@ body.dark #brandChinese{
 body.dark #newsletterTermsOverlay .newsletter-terms-agree.is-ready,
 body.dark .newsletter-terms-overlay .newsletter-terms-agree.is-ready,
 body.dark .newsletter-terms-agree.is-ready{color:#101216!important;-webkit-text-fill-color:#101216!important}
+
+
+/* SIGN WELL v23.9.47 · legal consent foreground label */
+.newsletter-terms-agree{isolation:isolate!important}
+.newsletter-terms-agree::before{z-index:0!important}
+.newsletter-terms-agree::after{z-index:1!important;pointer-events:none!important}
+.newsletter-terms-agree-label{
+  position:relative!important;z-index:3!important;display:inline-block!important;
+  color:#101216!important;-webkit-text-fill-color:#101216!important;
+  text-shadow:none!important;opacity:1!important;mix-blend-mode:normal!important;
+}
+body.dark .newsletter-terms-agree-label{color:#101216!important;-webkit-text-fill-color:#101216!important}

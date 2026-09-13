@@ -4804,7 +4804,7 @@ body.dark .ambient{opacity:.84!important;filter:blur(82px) saturate(122%)!import
 <meta name="twitter:image" content="https://980510linz.github.io/-/assets/signwell-share.png">
 <link rel="stylesheet" href="assets/signwell-reader.css?build=23.9.38">
 <link rel="stylesheet" href="assets/signwell-contrast.css?build=23.9.0">
-<link rel="stylesheet" href="assets/signwell-uiux.css?build=23.9.46">
+<link rel="stylesheet" href="assets/signwell-uiux.css?build=23.9.47">
 <link rel="stylesheet" href="assets/signwell-dialogs.css?build=23.9.1">
 <meta name="signwell-public-ui" content="23.9.6">
 
@@ -5524,27 +5524,39 @@ body.dark .pager-thumb{
 </style>
 
 
-<style id="sw-v23-9-46-public-terms-button-fix">
-/* SIGN WELL v23.9.46 · subscription legal consent CTA hard black text */
+<style id="sw-v23-9-47-public-terms-button-fix">
+/* SIGN WELL v23.9.47 · keep consent label above progress/sheens */
 #newsletterTermsOverlay .newsletter-terms-agree,
 .newsletter-terms-overlay .newsletter-terms-agree,
-.newsletter-terms-agree,
-#newsletterTermsOverlay .newsletter-terms-agree.is-ready,
-.newsletter-terms-overlay .newsletter-terms-agree.is-ready,
-.newsletter-terms-agree.is-ready{
+.newsletter-terms-agree{
   color:#101216!important;
   -webkit-text-fill-color:#101216!important;
   text-shadow:none!important;
+  isolation:isolate!important;
 }
-body.dark #newsletterTermsOverlay .newsletter-terms-agree,
-body.dark .newsletter-terms-overlay .newsletter-terms-agree,
-body.dark .newsletter-terms-agree,
-body.dark #newsletterTermsOverlay .newsletter-terms-agree.is-ready,
-body.dark .newsletter-terms-overlay .newsletter-terms-agree.is-ready,
-body.dark .newsletter-terms-agree.is-ready{
+#newsletterTermsOverlay .newsletter-terms-agree::before,
+.newsletter-terms-overlay .newsletter-terms-agree::before,
+.newsletter-terms-agree::before{z-index:0!important}
+#newsletterTermsOverlay .newsletter-terms-agree::after,
+.newsletter-terms-overlay .newsletter-terms-agree::after,
+.newsletter-terms-agree::after{z-index:1!important;pointer-events:none!important}
+#newsletterTermsOverlay .newsletter-terms-agree-label,
+.newsletter-terms-overlay .newsletter-terms-agree-label,
+.newsletter-terms-agree-label{
+  position:relative!important;
+  z-index:3!important;
+  display:inline-block!important;
   color:#101216!important;
   -webkit-text-fill-color:#101216!important;
   text-shadow:none!important;
+  opacity:1!important;
+  mix-blend-mode:normal!important;
+}
+body.dark #newsletterTermsOverlay .newsletter-terms-agree-label,
+body.dark .newsletter-terms-overlay .newsletter-terms-agree-label,
+body.dark .newsletter-terms-agree-label{
+  color:#101216!important;
+  -webkit-text-fill-color:#101216!important;
 }
 </style>
 </head>
@@ -7043,7 +7055,7 @@ function ensureNewsletterTermsModal(){
 
       <footer class="newsletter-terms-actions">
         <button class="newsletter-terms-decline" type="button">取消</button>
-        <button class="newsletter-terms-agree" type="button" disabled aria-disabled="true">我同意</button>
+        <button class="newsletter-terms-agree" type="button" disabled aria-disabled="true"><span class="newsletter-terms-agree-label">我同意</span></button>
       </footer>
     </section>`;
 
@@ -7063,12 +7075,13 @@ function ensureNewsletterTermsModal(){
     agree.disabled=!ready;
     agree.classList.toggle('is-ready',ready);
     agree.setAttribute('aria-disabled',ready?'false':'true');
-    agree.textContent=ready?'我同意':'請滑至底部';
+    const agreeLabel=agree.querySelector('.newsletter-terms-agree-label');
+    if(agreeLabel)agreeLabel.textContent=ready?'我同意':'請滑至底部';
   };
   body?.addEventListener('scroll',updateLegalReadGate,{passive:true});
   modal._resetLegalScrollGate=()=>{
     if(body)body.scrollTop=0;
-    if(agree){agree.disabled=true;agree.classList.remove('is-ready');agree.setAttribute('aria-disabled','true');agree.style.setProperty('--terms-progress','0');agree.style.setProperty('color','#101216','important');agree.style.setProperty('-webkit-text-fill-color','#101216','important');agree.style.setProperty('text-shadow','none','important');agree.textContent='請滑至底部'}
+    if(agree){agree.disabled=true;agree.classList.remove('is-ready');agree.setAttribute('aria-disabled','true');agree.style.setProperty('--terms-progress','0');agree.style.setProperty('color','#101216','important');agree.style.setProperty('-webkit-text-fill-color','#101216','important');agree.style.setProperty('text-shadow','none','important');const agreeLabel=agree.querySelector('.newsletter-terms-agree-label');if(agreeLabel)agreeLabel.textContent='請滑至底部'}
     requestAnimationFrame(updateLegalReadGate);
   };
 
