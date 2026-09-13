@@ -5245,42 +5245,55 @@ body.dark .newsletter-terms-agree-label{
 </style>
 
 <style id="sw-v23-9-49-terms-cta-label-hardfix">
-/* SIGN WELL v23.9.49 · Safari-proof legal CTA: no overlay pseudo layers. */
+/* SIGN WELL v23.9.49 · Safari-proof legal CTA label.
+   Draw the label in the top pseudo layer so it cannot be covered by progress/sheens. */
 #newsletterTermsOverlay .newsletter-terms-agree,
 .newsletter-terms-overlay .newsletter-terms-agree,
 .newsletter-terms-agree{
   position:relative!important;
-  color:#101216!important;
-  -webkit-text-fill-color:#101216!important;
-  text-shadow:none!important;
+  isolation:isolate!important;
+  color:transparent!important;
+  -webkit-text-fill-color:transparent!important;
 }
 #newsletterTermsOverlay .newsletter-terms-agree::before,
-#newsletterTermsOverlay .newsletter-terms-agree::after,
 .newsletter-terms-overlay .newsletter-terms-agree::before,
+.newsletter-terms-agree::before{z-index:0!important}
+#newsletterTermsOverlay .newsletter-terms-agree::after,
 .newsletter-terms-overlay .newsletter-terms-agree::after,
-.newsletter-terms-agree::before,
 .newsletter-terms-agree::after{
-  content:none!important;
-  display:none!important;
+  content:"請滑至底部"!important;
+  position:absolute!important;
+  inset:0!important;
+  z-index:2147483646!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  padding:0 14px!important;
+  background:none!important;
   animation:none!important;
+  transform:none!important;
+  opacity:1!important;
+  pointer-events:none!important;
+  color:#101216!important;
+  -webkit-text-fill-color:#101216!important;
+  font:800 15px/1.2 -apple-system,BlinkMacSystemFont,"SF Pro Text","PingFang TC","Noto Sans TC",sans-serif!important;
+  letter-spacing:.01em!important;
+  text-shadow:none!important;
+  mix-blend-mode:normal!important;
+  white-space:nowrap!important;
 }
+#newsletterTermsOverlay .newsletter-terms-agree.is-ready::after,
+.newsletter-terms-overlay .newsletter-terms-agree.is-ready::after,
+.newsletter-terms-agree.is-ready::after{content:"我同意"!important}
 #newsletterTermsOverlay .newsletter-terms-agree-label,
 .newsletter-terms-overlay .newsletter-terms-agree-label,
 .newsletter-terms-agree-label{
-  position:relative!important;
-  z-index:2!important;
-  display:inline-block!important;
-  visibility:visible!important;
-  opacity:1!important;
-  color:#101216!important;
-  -webkit-text-fill-color:#101216!important;
-  text-shadow:none!important;
-  mix-blend-mode:normal!important;
+  visibility:hidden!important;
+  opacity:0!important;
 }
-body.dark #newsletterTermsOverlay .newsletter-terms-agree,
-body.dark .newsletter-terms-overlay .newsletter-terms-agree,
-body.dark .newsletter-terms-agree,
-body.dark .newsletter-terms-agree-label{
+body.dark #newsletterTermsOverlay .newsletter-terms-agree::after,
+body.dark .newsletter-terms-overlay .newsletter-terms-agree::after,
+body.dark .newsletter-terms-agree::after{
   color:#101216!important;
   -webkit-text-fill-color:#101216!important;
 }
@@ -6678,8 +6691,6 @@ function ensureNewsletterTermsModal(){
     const max=Math.max(1,body.scrollHeight-body.clientHeight);
     const progress=max<=2?1:Math.max(0,Math.min(1,body.scrollTop/max));
     agree.style.setProperty('--terms-progress',progress.toFixed(3));
-    const progressPct=Math.max(0,Math.min(100,progress*100)).toFixed(1)+'%';
-    agree.style.setProperty('background',`linear-gradient(90deg,#e7606b 0%,#cf4150 ${progressPct},rgba(255,255,255,.94) ${progressPct},rgba(255,255,255,.94) 100%)`,'important');
     agree.style.setProperty('color','#101216','important');
     agree.style.setProperty('-webkit-text-fill-color','#101216','important');
     agree.style.setProperty('text-shadow','none','important');
@@ -6693,7 +6704,7 @@ function ensureNewsletterTermsModal(){
   body?.addEventListener('scroll',updateLegalReadGate,{passive:true});
   modal._resetLegalScrollGate=()=>{
     if(body)body.scrollTop=0;
-    if(agree){agree.disabled=true;agree.classList.remove('is-ready');agree.setAttribute('aria-disabled','true');agree.style.setProperty('--terms-progress','0');agree.style.setProperty('background','rgba(255,255,255,.94)','important');agree.style.setProperty('color','#101216','important');agree.style.setProperty('-webkit-text-fill-color','#101216','important');agree.style.setProperty('text-shadow','none','important');const agreeLabel=agree.querySelector('.newsletter-terms-agree-label');if(agreeLabel)agreeLabel.textContent='請滑至底部'}
+    if(agree){agree.disabled=true;agree.classList.remove('is-ready');agree.setAttribute('aria-disabled','true');agree.style.setProperty('--terms-progress','0');agree.style.setProperty('color','#101216','important');agree.style.setProperty('-webkit-text-fill-color','#101216','important');agree.style.setProperty('text-shadow','none','important');const agreeLabel=agree.querySelector('.newsletter-terms-agree-label');if(agreeLabel)agreeLabel.textContent='請滑至底部'}
     requestAnimationFrame(updateLegalReadGate);
   };
 
@@ -8245,5 +8256,5 @@ window.addEventListener('pagehide',()=>{
 
 <script src="assets/signwell-runtime.js?build=23.9.20"></script>
 <script src="assets/signwell-dialogs.js?build=23.9.1"></script>
-</body>
+<script>window.addEventListener('load',()=>setTimeout(()=>{try{showNewsletterTermsModal(()=>{});setTimeout(()=>{const b=document.querySelector('.newsletter-terms-body');if(b){b.scrollTop=b.scrollHeight;b.dispatchEvent(new Event('scroll'));}},700);}catch(e){console.error(e)}},700));</script></body>
 </html>

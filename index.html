@@ -4804,7 +4804,7 @@ body.dark .ambient{opacity:.84!important;filter:blur(82px) saturate(122%)!import
 <meta name="twitter:image" content="https://980510linz.github.io/-/assets/signwell-share.png">
 <link rel="stylesheet" href="assets/signwell-reader.css?build=23.9.38">
 <link rel="stylesheet" href="assets/signwell-contrast.css?build=23.9.0">
-<link rel="stylesheet" href="assets/signwell-uiux.css?build=23.9.47">
+<link rel="stylesheet" href="assets/signwell-uiux.css?build=23.9.49">
 <link rel="stylesheet" href="assets/signwell-dialogs.css?build=23.9.1">
 <meta name="signwell-public-ui" content="23.9.6">
 
@@ -5554,6 +5554,48 @@ body.dark .pager-thumb{
 }
 body.dark #newsletterTermsOverlay .newsletter-terms-agree-label,
 body.dark .newsletter-terms-overlay .newsletter-terms-agree-label,
+body.dark .newsletter-terms-agree-label{
+  color:#101216!important;
+  -webkit-text-fill-color:#101216!important;
+}
+</style>
+
+<style id="sw-v23-9-49-terms-cta-label-hardfix">
+/* SIGN WELL v23.9.49 · Safari-proof legal CTA: no overlay pseudo layers. */
+#newsletterTermsOverlay .newsletter-terms-agree,
+.newsletter-terms-overlay .newsletter-terms-agree,
+.newsletter-terms-agree{
+  position:relative!important;
+  color:#101216!important;
+  -webkit-text-fill-color:#101216!important;
+  text-shadow:none!important;
+}
+#newsletterTermsOverlay .newsletter-terms-agree::before,
+#newsletterTermsOverlay .newsletter-terms-agree::after,
+.newsletter-terms-overlay .newsletter-terms-agree::before,
+.newsletter-terms-overlay .newsletter-terms-agree::after,
+.newsletter-terms-agree::before,
+.newsletter-terms-agree::after{
+  content:none!important;
+  display:none!important;
+  animation:none!important;
+}
+#newsletterTermsOverlay .newsletter-terms-agree-label,
+.newsletter-terms-overlay .newsletter-terms-agree-label,
+.newsletter-terms-agree-label{
+  position:relative!important;
+  z-index:2!important;
+  display:inline-block!important;
+  visibility:visible!important;
+  opacity:1!important;
+  color:#101216!important;
+  -webkit-text-fill-color:#101216!important;
+  text-shadow:none!important;
+  mix-blend-mode:normal!important;
+}
+body.dark #newsletterTermsOverlay .newsletter-terms-agree,
+body.dark .newsletter-terms-overlay .newsletter-terms-agree,
+body.dark .newsletter-terms-agree,
 body.dark .newsletter-terms-agree-label{
   color:#101216!important;
   -webkit-text-fill-color:#101216!important;
@@ -7068,6 +7110,8 @@ function ensureNewsletterTermsModal(){
     const max=Math.max(1,body.scrollHeight-body.clientHeight);
     const progress=max<=2?1:Math.max(0,Math.min(1,body.scrollTop/max));
     agree.style.setProperty('--terms-progress',progress.toFixed(3));
+    const progressPct=Math.max(0,Math.min(100,progress*100)).toFixed(1)+'%';
+    agree.style.setProperty('background',`linear-gradient(90deg,#e7606b 0%,#cf4150 ${progressPct},rgba(255,255,255,.94) ${progressPct},rgba(255,255,255,.94) 100%)`,'important');
     agree.style.setProperty('color','#101216','important');
     agree.style.setProperty('-webkit-text-fill-color','#101216','important');
     agree.style.setProperty('text-shadow','none','important');
@@ -7081,7 +7125,7 @@ function ensureNewsletterTermsModal(){
   body?.addEventListener('scroll',updateLegalReadGate,{passive:true});
   modal._resetLegalScrollGate=()=>{
     if(body)body.scrollTop=0;
-    if(agree){agree.disabled=true;agree.classList.remove('is-ready');agree.setAttribute('aria-disabled','true');agree.style.setProperty('--terms-progress','0');agree.style.setProperty('color','#101216','important');agree.style.setProperty('-webkit-text-fill-color','#101216','important');agree.style.setProperty('text-shadow','none','important');const agreeLabel=agree.querySelector('.newsletter-terms-agree-label');if(agreeLabel)agreeLabel.textContent='請滑至底部'}
+    if(agree){agree.disabled=true;agree.classList.remove('is-ready');agree.setAttribute('aria-disabled','true');agree.style.setProperty('--terms-progress','0');agree.style.setProperty('background','rgba(255,255,255,.94)','important');agree.style.setProperty('color','#101216','important');agree.style.setProperty('-webkit-text-fill-color','#101216','important');agree.style.setProperty('text-shadow','none','important');const agreeLabel=agree.querySelector('.newsletter-terms-agree-label');if(agreeLabel)agreeLabel.textContent='請滑至底部'}
     requestAnimationFrame(updateLegalReadGate);
   };
 
