@@ -2,7 +2,7 @@
 <html lang="zh-Hant">
 <head>
 <meta charset="utf-8">
-<meta name="signwell-release" content="23.9.10">
+<meta name="signwell-release" content="23.9.42">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="robots" content="noindex,nofollow,noarchive,nosnippet,noimageindex,max-snippet:0,max-image-preview:none,max-video-preview:0">
 <meta name="googlebot" content="noindex,nofollow,noarchive,nosnippet,noimageindex,max-snippet:0,max-image-preview:none,max-video-preview:0">
@@ -4802,9 +4802,9 @@ body.dark .ambient{opacity:.84!important;filter:blur(82px) saturate(122%)!import
 <link rel="apple-touch-icon" href="assets/signwell-app-icon-192.png">
 <meta property="og:image" content="https://980510linz.github.io/-/assets/signwell-share.png">
 <meta name="twitter:image" content="https://980510linz.github.io/-/assets/signwell-share.png">
-<link rel="stylesheet" href="assets/signwell-reader.css?build=23.9.8">
+<link rel="stylesheet" href="assets/signwell-reader.css?build=23.9.38">
 <link rel="stylesheet" href="assets/signwell-contrast.css?build=23.9.0">
-<link rel="stylesheet" href="assets/signwell-uiux.css?build=23.9.36">
+<link rel="stylesheet" href="assets/signwell-uiux.css?build=23.9.46">
 <link rel="stylesheet" href="assets/signwell-dialogs.css?build=23.9.1">
 <meta name="signwell-public-ui" content="23.9.6">
 
@@ -5496,6 +5496,57 @@ body.dark .pager-thumb{
 }
 
 </style>
+<link rel="stylesheet" href="assets/signwell-soft-shadow.css?build=23.9.39">
+
+<style id="sw-v23-9-41-autodrift-ribbon">
+/* v23.9.41 · always drifting SIGN WELL ribbon; scroll accelerates + shifts blue/pink color. */
+.sw-signwell-ribbon{
+  --sw-ribbon-c1:#A6CFFA;
+  --sw-ribbon-c2:#CBC2EE;
+  --sw-ribbon-c3:#F2C3D8;
+}
+.sw-signwell-ribbon-track{
+  background-image:linear-gradient(
+    90deg,
+    var(--sw-ribbon-c1) 0%,
+    var(--sw-ribbon-c1) 28%,
+    var(--sw-ribbon-c2) 50%,
+    var(--sw-ribbon-c3) 72%,
+    var(--sw-ribbon-c3) 100%
+  )!important;
+  background-size:100% 100%!important;
+  transition:none!important;
+  will-change:transform;
+}
+@media(prefers-reduced-motion:reduce){
+  .sw-signwell-ribbon-track{will-change:auto!important}
+}
+</style>
+
+
+<style id="sw-v23-9-46-public-terms-button-fix">
+/* SIGN WELL v23.9.46 · subscription legal consent CTA hard black text */
+#newsletterTermsOverlay .newsletter-terms-agree,
+.newsletter-terms-overlay .newsletter-terms-agree,
+.newsletter-terms-agree,
+#newsletterTermsOverlay .newsletter-terms-agree.is-ready,
+.newsletter-terms-overlay .newsletter-terms-agree.is-ready,
+.newsletter-terms-agree.is-ready{
+  color:#101216!important;
+  -webkit-text-fill-color:#101216!important;
+  text-shadow:none!important;
+}
+body.dark #newsletterTermsOverlay .newsletter-terms-agree,
+body.dark .newsletter-terms-overlay .newsletter-terms-agree,
+body.dark .newsletter-terms-agree,
+body.dark #newsletterTermsOverlay .newsletter-terms-agree.is-ready,
+body.dark .newsletter-terms-overlay .newsletter-terms-agree.is-ready,
+body.dark .newsletter-terms-agree.is-ready{
+  color:#101216!important;
+  -webkit-text-fill-color:#101216!important;
+  text-shadow:none!important;
+}
+</style>
 </head>
 <body class="boot-preparing" data-page="home">
 <div class="sw-page-loader" id="swPageLoader" role="status" aria-live="polite" aria-label="頁面載入進度"><div class="sw-page-loader-card"><div class="sw-page-loader-brand">SIGN WELL</div><div class="sw-page-loader-sub">欣緯生醫</div><div class="sw-page-loader-track" aria-hidden="true"><i class="sw-page-loader-bar"></i></div><div class="sw-page-loader-meta"><span class="sw-page-loader-stage">準備頁面</span><strong class="sw-page-loader-pct">6%</strong></div></div></div>
@@ -5770,12 +5821,14 @@ function slugify(s=''){return String(s).toLowerCase().replace(/[^\p{L}\p{N}]+/gu
 /* ---------- data ---------- */
 function parseLegacy(text=''){const m=String(text).match(/window\.BLOG_ARTICLES\s*=\s*([\s\S]*);\s*$/);if(!m)return[];try{return JSON.parse(m[1]).filter(x=>x&&x.status==='Published')}catch(_){return[]}}
 
-const SW_ARTICLES_CACHE='signwell-public-articles-v22-2';
+const SW_ARTICLES_CACHE='signwell-public-articles-v23-9-42';
 const SW_TOPICS_CACHE='signwell-public-topics-v22-2';
 const SW_BUNDLE_CACHE='signwell-public-bundle-v22-2';
 const SW_REVISION_KEY='signwell-public-data-revision';
 const PUBLIC_BUNDLE_PATH='public-data.json';
 const PUBLIC_RAW_BUNDLE='https://raw.githubusercontent.com/980510linz/-/main/public-data.json';
+const PUBLIC_RAW_INDEX='https://raw.githubusercontent.com/980510linz/-/main/articles/index.json';
+const PUBLIC_RAW_BASE='https://raw.githubusercontent.com/980510linz/-/main/';
 let publicBundleRevision=0;
 let swLastRefresh=0;
 const SW_IS_SHARE_DOCUMENT=(location.pathname.split('/').pop()||'').toLowerCase()==='share.html';
@@ -5930,15 +5983,22 @@ async function loadPublicBundle(){
   return true;
 }
 
-async function fetchArticlesFresh(){
+async function fetchArticleIndexCandidate(url){
   try{
-    /* v22.2: articles/index.json is the only article source of truth.
-       Legacy articles.js is intentionally not used because deleted items can survive there. */
-    const r=await fetch('articles/index.json?sw='+Date.now(),{cache:'no-store'});
+    const r=await fetch(url+(url.includes('?')?'&':'?')+'sw='+Date.now(),{cache:'no-store',headers:{'Accept':'application/json'}});
     if(!r.ok)throw 0;
-    const a=(await r.json()).filter(x=>x&&x.status==='Published');
-    return {ok:true,data:a};
-  }catch(_){return {ok:false,data:[]}}
+    const a=await r.json();
+    if(!Array.isArray(a))throw 0;
+    return a.filter(x=>x&&x.status==='Published');
+  }catch(_){return null}
+}
+async function fetchArticlesFresh(){
+  /* Raw main is authoritative for delete visibility: GitHub Pages can lag behind a commit.
+     Fall back to the Pages copy only when raw main is temporarily unavailable. */
+  const raw=await fetchArticleIndexCandidate(PUBLIC_RAW_INDEX);
+  if(Array.isArray(raw))return {ok:true,data:raw,source:'raw'};
+  const page=await fetchArticleIndexCandidate('articles/index.json');
+  return Array.isArray(page)?{ok:true,data:page,source:'pages'}:{ok:false,data:[]};
 }
 
 async function loadArticles(){
@@ -6047,19 +6107,34 @@ async function revalidatePublicData(force=false){
 function schedulePublicRevalidate(delay=180){
   setTimeout(()=>revalidatePublicData(true).catch(()=>{}),delay);
 }
+async function refreshArticleAvailability(slug){
+  const fresh=await fetchArticlesFresh();
+  if(!fresh.ok)return true;
+  const next=fresh.data.slice().sort((a,b)=>String(b.publishedAt||'').localeCompare(String(a.publishedAt||'')));
+  const stillLive=next.some(a=>String(a.slug)===String(slug));
+  articles=next;writeSessionJSON(SW_ARTICLES_CACHE,next);
+  if(!stillLive)articleCache.delete(slug);
+  return stillLive;
+}
 async function getFullArticle(slug){
+  const stillLive=await refreshArticleAvailability(slug);
+  if(!stillLive)return null;
   if(articleCache.has(slug))return articleCache.get(slug);
   const meta=articles.find(a=>a.slug===slug);
   if(!meta)return null;
   if(meta.content){articleCache.set(slug,meta);return meta}
-  try{
-    const file=meta.file||`articles/${encodeURIComponent(slug)}.json`;
-    const r=await fetch(file+'?v='+encodeURIComponent(meta.revision||''),{cache:'default'});
-    if(!r.ok)throw 0;
-    const full={...meta,...await r.json()};
-    articleCache.set(slug,full);
-    return full;
-  }catch(_){return meta}
+  const file=meta.file||`articles/${encodeURIComponent(slug)}.json`;
+  const candidates=[PUBLIC_RAW_BASE+file,file];
+  for(const source of candidates){
+    try{
+      const r=await fetch(source+(source.includes('?')?'&':'?')+'v='+encodeURIComponent(meta.revision||Date.now()),{cache:'no-store'});
+      if(!r.ok)continue;
+      const full={...meta,...await r.json()};
+      articleCache.set(slug,full);
+      return full;
+    }catch(_){}
+  }
+  return meta;
 }
 
 function sanitizeHTML(html=''){
@@ -6312,55 +6387,169 @@ function queueHomeScrollFX(){
 
 let signwellRibbonRAF=0;
 let signwellRibbonBound=false;
+let signwellRibbonTracks=[];
+let signwellRibbonPeriods=[];
+let signwellRibbonPhase=0;
+let signwellRibbonLastFrame=0;
+let signwellRibbonLastScrollY=window.scrollY||0;
+let signwellRibbonLastScrollTime=performance.now();
+let signwellRibbonLastScrollEvent=0;
+let signwellRibbonBoost=0;
+let signwellRibbonBoostTarget=0;
+let signwellRibbonLastColorKey='';
 
-function updateSignwellRibbonFX(){
-  signwellRibbonRAF=0;
+/* v23.9.41 · always-on ribbon drift + scroll acceleration with hard speed ceiling. */
+function swRibbonConfig(){
+  const mobile=matchMedia('(max-width:700px)').matches;
+  return mobile
+    ? {base:9,max:72,gain:.070,colorGain:1.00}
+    : {base:12,max:88,gain:.070,colorGain:1.00};
+}
+
+function swClamp(v,min,max){return Math.max(min,Math.min(max,v))}
+function swMixRGB(a,b,t){
+  t=swClamp(t,0,1);
+  const c=a.map((v,i)=>Math.round(v+(b[i]-v)*t));
+  return `rgb(${c[0]} ${c[1]} ${c[2]})`;
+}
+
+function prepareSignwellRibbonTracks(){
   const ribbon=document.querySelector('[data-signwell-ribbon]');
   const tracks=[...document.querySelectorAll('[data-signwell-ribbon-track]')];
-  if(!ribbon||!tracks.length)return;
+  if(!ribbon||!tracks.length)return null;
 
-  if(reduceMotion()){
-    tracks.forEach((track,i)=>track.style.transform=`translate3d(${i?-76:-24}px,0,0)`);
-    return;
-  }
+  /* Build two identical text blocks so the wrap point is genuinely seamless. */
+  tracks.forEach(track=>{
+    if(track.dataset.loopReady==='1')return;
+    const unit='SIGN WELL\u00a0\u00a0 ';
+    const block=unit.repeat(10);
+    track.textContent=block+block;
+    track.dataset.loopReady='1';
+  });
 
-  const vh=(window.visualViewport&&window.visualViewport.height)||window.innerHeight||800;
-  const vw=(window.visualViewport&&window.visualViewport.width)||window.innerWidth||390;
-  const rect=ribbon.getBoundingClientRect();
+  signwellRibbonTracks=tracks;
+  signwellRibbonPeriods=tracks.map(track=>Math.max(1,track.scrollWidth/2));
+  return ribbon;
+}
 
-  /* Start fully blue as the ribbon enters the viewport. Finish fully pink
-     when it approaches the fixed SIGN WELL brand at the top. */
-  const startY=vh*.92;
-  const endY=Math.max(88,Math.min(118,vh*.15));
-  const raw=Math.max(0,Math.min(1,(startY-rect.top)/Math.max(1,startY-endY)));
-  const ease=raw<.5 ? 2*raw*raw : 1-Math.pow(-2*raw+2,2)/2;
+function applySignwellRibbonColor(ribbon,boost,maxSpeed){
+  if(!ribbon)return;
+  const signed=swClamp(boost/Math.max(1,maxSpeed),-1,1);
+  const strength=Math.min(1,Math.abs(signed)*1.15);
+  const down=signed>0;
+  const dark=document.body.classList.contains('dark');
 
-  const edgePad=Math.max(22,Math.min(54,vw*.08));
-  tracks.forEach((track,i)=>{
-    const travel=Math.max(0,track.scrollWidth-vw-(edgePad*2));
-    const phase=i?Math.min(120,Math.max(52,vw*.12)):0;
-    const x=-(edgePad+phase+(travel*ease));
-    track.style.transform=`translate3d(${x.toFixed(2)}px,0,0)`;
+  const idle=dark
+    ? [[116,181,255],[183,174,239],[246,168,209]]
+    : [[166,207,250],[203,194,238],[242,195,216]];
+  const blue=dark
+    ? [[92,170,255],[132,188,255],[200,182,240]]
+    : [[137,196,252],[173,208,251],[214,203,239]];
+  const pink=dark
+    ? [[166,177,244],[222,162,220],[255,146,195]]
+    : [[191,204,245],[229,184,226],[248,175,205]];
+  const target=down?pink:blue;
+  const t=.18+strength*.70;
+  const cols=idle.map((c,i)=>swMixRGB(c,target[i],strength*t));
+  const key=cols.join('|');
+  if(key===signwellRibbonLastColorKey)return;
+  signwellRibbonLastColorKey=key;
+  ribbon.style.setProperty('--sw-ribbon-c1',cols[0]);
+  ribbon.style.setProperty('--sw-ribbon-c2',cols[1]);
+  ribbon.style.setProperty('--sw-ribbon-c3',cols[2]);
+}
+
+function applySignwellRibbonTransform(){
+  signwellRibbonTracks.forEach((track,i)=>{
+    const period=signwellRibbonPeriods[i]||1;
+    const offset=i?period*.075:0;
+    const wrapped=((signwellRibbonPhase+offset)%period+period)%period;
+    track.style.transform=`translate3d(${-wrapped.toFixed(3)}px,0,0)`;
   });
 }
 
-function queueSignwellRibbonFX(){
-  if(signwellRibbonRAF)return;
-  signwellRibbonRAF=requestAnimationFrame(updateSignwellRibbonFX);
+function stepSignwellRibbon(now){
+  signwellRibbonRAF=0;
+  const ribbon=document.querySelector('[data-signwell-ribbon]');
+  if(!ribbon||!document.documentElement.contains(ribbon)){
+    signwellRibbonTracks=[];
+    signwellRibbonPeriods=[];
+    signwellRibbonLastFrame=0;
+    return;
+  }
+  if(reduceMotion()){
+    signwellRibbonTracks.forEach((track,i)=>track.style.transform=`translate3d(${i?-76:-24}px,0,0)`);
+    ribbon.style.removeProperty('--sw-ribbon-c1');
+    ribbon.style.removeProperty('--sw-ribbon-c2');
+    ribbon.style.removeProperty('--sw-ribbon-c3');
+    signwellRibbonLastFrame=0;
+    return;
+  }
+
+  const cfg=swRibbonConfig();
+  const dt=Math.min(.05,Math.max(.001,signwellRibbonLastFrame?(now-signwellRibbonLastFrame)/1000:.016));
+  signwellRibbonLastFrame=now;
+
+  /* Scroll impulse eases in quickly and decays back to the autonomous drift. */
+  if(now-signwellRibbonLastScrollEvent>70)signwellRibbonBoostTarget=0;
+  const response=1-Math.exp(-dt/.085);
+  signwellRibbonBoost+=(signwellRibbonBoostTarget-signwellRibbonBoost)*response;
+  if(now-signwellRibbonLastScrollEvent>100){
+    signwellRibbonBoost*=Math.exp(-dt/.24);
+  }
+
+  /* Hard cap: user scroll can never drive the ribbon faster than cfg.max. */
+  const velocity=swClamp(cfg.base+signwellRibbonBoost,-cfg.max,cfg.max);
+  signwellRibbonPhase+=velocity*dt;
+  applySignwellRibbonTransform();
+  applySignwellRibbonColor(ribbon,signwellRibbonBoost,cfg.max);
+
+  signwellRibbonRAF=requestAnimationFrame(stepSignwellRibbon);
+}
+
+function onSignwellRibbonScroll(){
+  const now=performance.now();
+  const y=window.scrollY||0;
+  const dt=Math.max(8,now-signwellRibbonLastScrollTime);
+  const dy=y-signwellRibbonLastScrollY;
+  signwellRibbonLastScrollY=y;
+  signwellRibbonLastScrollTime=now;
+  signwellRibbonLastScrollEvent=now;
+
+  const cfg=swRibbonConfig();
+  const pageVelocity=swClamp((dy/dt)*1000,-3600,3600); // px/s
+  const maxExtra=Math.max(0,cfg.max-cfg.base);
+  signwellRibbonBoostTarget=swClamp(pageVelocity*cfg.gain,-maxExtra,maxExtra);
+
+  if(!signwellRibbonRAF)signwellRibbonRAF=requestAnimationFrame(stepSignwellRibbon);
+}
+
+function onSignwellRibbonResize(){
+  const ribbon=prepareSignwellRibbonTracks();
+  if(!ribbon)return;
+  applySignwellRibbonTransform();
+  if(!signwellRibbonRAF&&!reduceMotion())signwellRibbonRAF=requestAnimationFrame(stepSignwellRibbon);
 }
 
 function initSignwellRibbonFX(){
-  const ribbon=document.querySelector('[data-signwell-ribbon]');
+  const ribbon=prepareSignwellRibbonTracks();
   if(!ribbon)return;
-  queueSignwellRibbonFX();
+  signwellRibbonLastScrollY=window.scrollY||0;
+  signwellRibbonLastScrollTime=performance.now();
+  applySignwellRibbonTransform();
+  if(!reduceMotion()&&!signwellRibbonRAF){
+    signwellRibbonLastFrame=performance.now();
+    signwellRibbonRAF=requestAnimationFrame(stepSignwellRibbon);
+  }
   if(signwellRibbonBound)return;
   signwellRibbonBound=true;
-  addEventListener('scroll',queueSignwellRibbonFX,{passive:true});
-  addEventListener('resize',queueSignwellRibbonFX,{passive:true});
+  addEventListener('scroll',onSignwellRibbonScroll,{passive:true});
+  addEventListener('resize',onSignwellRibbonResize,{passive:true});
   if(window.visualViewport){
-    window.visualViewport.addEventListener('resize',queueSignwellRibbonFX,{passive:true});
+    window.visualViewport.addEventListener('resize',onSignwellRibbonResize,{passive:true});
   }
 }
+
 
 function initHomeScrollScene(){
   const scene=$('.home-scroll-scene');
@@ -6867,6 +7056,9 @@ function ensureNewsletterTermsModal(){
     const max=Math.max(1,body.scrollHeight-body.clientHeight);
     const progress=max<=2?1:Math.max(0,Math.min(1,body.scrollTop/max));
     agree.style.setProperty('--terms-progress',progress.toFixed(3));
+    agree.style.setProperty('color','#101216','important');
+    agree.style.setProperty('-webkit-text-fill-color','#101216','important');
+    agree.style.setProperty('text-shadow','none','important');
     const ready=progress>=0.985;
     agree.disabled=!ready;
     agree.classList.toggle('is-ready',ready);
@@ -6876,7 +7068,7 @@ function ensureNewsletterTermsModal(){
   body?.addEventListener('scroll',updateLegalReadGate,{passive:true});
   modal._resetLegalScrollGate=()=>{
     if(body)body.scrollTop=0;
-    if(agree){agree.disabled=true;agree.classList.remove('is-ready');agree.setAttribute('aria-disabled','true');agree.style.setProperty('--terms-progress','0');agree.textContent='請滑至底部'}
+    if(agree){agree.disabled=true;agree.classList.remove('is-ready');agree.setAttribute('aria-disabled','true');agree.style.setProperty('--terms-progress','0');agree.style.setProperty('color','#101216','important');agree.style.setProperty('-webkit-text-fill-color','#101216','important');agree.style.setProperty('text-shadow','none','important');agree.textContent='請滑至底部'}
     requestAnimationFrame(updateLegalReadGate);
   };
 
@@ -7140,6 +7332,13 @@ function swMountArticleFontDock(view){
   if(!dock)return null;
   document.querySelectorAll('body > #swArticleFontDock').forEach(old=>{if(old!==dock)old.remove()});
   document.body.appendChild(dock);
+  const desktopMotion=window.matchMedia?.('(min-width:761px) and (pointer:fine)').matches&&!reduceMotion();
+  if(desktopMotion){
+    dock.classList.remove('sw-font-exit');
+    dock.classList.add('sw-font-enter');
+    clearTimeout(dock._swEnterTimer);
+    dock._swEnterTimer=setTimeout(()=>dock.classList.remove('sw-font-enter'),520);
+  }
   const press=()=>dock.classList.add('is-pressing');
   const release=()=>dock.classList.remove('is-pressing');
   dock.addEventListener('pointerdown',press,{passive:true});
@@ -7148,6 +7347,17 @@ function swMountArticleFontDock(view){
   dock.addEventListener('pointerleave',release,{passive:true});
   dock.querySelectorAll('[data-font-size]').forEach(b=>b.onclick=()=>swApplyReaderFont(view,b.dataset.fontSize));
   return dock;
+}
+
+function swDismissArticleFontDock(){
+  const dock=swArticleFontDock();
+  if(!dock)return;
+  const desktopMotion=window.matchMedia?.('(min-width:761px) and (pointer:fine)').matches&&!reduceMotion();
+  if(!desktopMotion){dock.remove();return}
+  dock.classList.remove('sw-font-enter','is-changing','is-pressing');
+  dock.classList.add('sw-font-exit');
+  clearTimeout(dock._swExitTimer);
+  dock._swExitTimer=setTimeout(()=>dock.remove(),270);
 }
 async function swOpenContinueQR(a){
   document.querySelector('.sw-continue-overlay')?.remove();
@@ -7177,7 +7387,7 @@ function swUpdateArticleMeta(a){
 async function renderArticle(slug){
   swArticleFontDock()?.remove();
   const a=await getFullArticle(slug);
-  if(!a){app.innerHTML='<div class="shell"><div class="empty"><strong>找不到這篇文章</strong><br>它可能已經移除、網址已更新，或目前尚未公開。<br><button class="backlink" data-back="index.html" style="margin-top:14px">← 回到首頁看看其他內容</button></div></div>';bindBack();return}
+  if(!a){document.title='404 · SIGN WELL';app.innerHTML='<div class="shell"><section class="empty" role="status" style="min-height:58vh;display:grid;place-items:center;text-align:center;padding:48px 20px"><div><div style="font:700 clamp(48px,9vw,92px)/1 system-ui;letter-spacing:-.06em;color:rgba(88,132,174,.22);margin-bottom:10px">404</div><strong style="font-size:clamp(22px,3vw,34px)">這篇文章已不存在</strong><p style="max-width:520px;margin:12px auto 0;color:var(--muted);line-height:1.8">文章可能已由 CMS 刪除、尚未公開，或網址已失效。若你是從舊電子報進來，這代表該文章已從公開網站移除。</p><button class="backlink" data-back="index.html" style="margin-top:20px">← 回到首頁</button></div></section></div>';bindBack();return}
   const html=renderContent(a),wrap=document.createElement('div');wrap.innerHTML=html;
   const heads=[...wrap.querySelectorAll('h2')].map(h=>({id:h.id,text:h.textContent}));
   const age=swArticleAgeDays(a),updated=swDisplayDate(a.updatedAt||a.publishedAt),published=swDisplayDate(a.publishedAt);
@@ -7240,7 +7450,7 @@ function bindScrollCue(){
 /* ---------- render orchestration ---------- */
 async function paint(){
   const r=route();
-  if(r.page!=='article')swArticleFontDock()?.remove();
+  if(r.page!=='article')swDismissArticleFontDock();
   document.body.classList.toggle('home-glass-focus',r.page==='home');
   setNav(routeIndex(r));
   if(r.page==='home')renderHome();
@@ -8392,7 +8602,7 @@ window.addEventListener('pagehide',()=>{
 
 </script>
 
-<script src="assets/signwell-common.js?build=23.9.36"></script>
+<script src="assets/signwell-common.js?build=23.9.42"></script>
 
 
 

@@ -2,7 +2,7 @@
 <html lang="zh-Hant">
 <head>
 <meta charset="utf-8">
-<meta name="signwell-release" content="23.9.10">
+<meta name="signwell-release" content="23.9.42">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="robots" content="noindex,nofollow,noarchive,nosnippet,noimageindex,max-snippet:0,max-image-preview:none,max-video-preview:0">
 <meta name="googlebot" content="noindex,nofollow,noarchive,nosnippet,noimageindex,max-snippet:0,max-image-preview:none,max-video-preview:0">
@@ -4861,9 +4861,9 @@ body.dark .newsletter-terms-body .legal-contact a{color:#a9d8f7!important}
 <link rel="apple-touch-icon" href="assets/signwell-app-icon-192.png">
 <meta property="og:image" content="https://980510linz.github.io/-/assets/signwell-share.png">
 <meta name="twitter:image" content="https://980510linz.github.io/-/assets/signwell-share.png">
-<link rel="stylesheet" href="assets/signwell-reader.css?build=23.9.8">
+<link rel="stylesheet" href="assets/signwell-reader.css?build=23.9.38">
 <link rel="stylesheet" href="assets/signwell-contrast.css?build=23.9.0">
-<link rel="stylesheet" href="assets/signwell-uiux.css?build=23.9.36">
+<link rel="stylesheet" href="assets/signwell-uiux.css?build=23.9.46">
 <link rel="stylesheet" href="assets/signwell-dialogs.css?build=23.9.1">
 <meta name="signwell-public-ui" content="23.9.0">
 
@@ -5206,6 +5206,31 @@ body.dark .pager-thumb{
 }
 
 </style>
+<link rel="stylesheet" href="assets/signwell-soft-shadow.css?build=23.9.39">
+
+<style id="sw-v23-9-46-public-terms-button-fix">
+/* SIGN WELL v23.9.46 · subscription legal consent CTA hard black text */
+#newsletterTermsOverlay .newsletter-terms-agree,
+.newsletter-terms-overlay .newsletter-terms-agree,
+.newsletter-terms-agree,
+#newsletterTermsOverlay .newsletter-terms-agree.is-ready,
+.newsletter-terms-overlay .newsletter-terms-agree.is-ready,
+.newsletter-terms-agree.is-ready{
+  color:#101216!important;
+  -webkit-text-fill-color:#101216!important;
+  text-shadow:none!important;
+}
+body.dark #newsletterTermsOverlay .newsletter-terms-agree,
+body.dark .newsletter-terms-overlay .newsletter-terms-agree,
+body.dark .newsletter-terms-agree,
+body.dark #newsletterTermsOverlay .newsletter-terms-agree.is-ready,
+body.dark .newsletter-terms-overlay .newsletter-terms-agree.is-ready,
+body.dark .newsletter-terms-agree.is-ready{
+  color:#101216!important;
+  -webkit-text-fill-color:#101216!important;
+  text-shadow:none!important;
+}
+</style>
 </head>
 <body class="boot-preparing" data-page="newsletter">
 <div class="sw-page-loader" id="swPageLoader" role="status" aria-live="polite" aria-label="頁面載入進度"><div class="sw-page-loader-card"><div class="sw-page-loader-brand">SIGN WELL</div><div class="sw-page-loader-sub">欣緯生醫</div><div class="sw-page-loader-track" aria-hidden="true"><i class="sw-page-loader-bar"></i></div><div class="sw-page-loader-meta"><span class="sw-page-loader-stage">準備頁面</span><strong class="sw-page-loader-pct">6%</strong></div></div></div>
@@ -5480,12 +5505,14 @@ function slugify(s=''){return String(s).toLowerCase().replace(/[^\p{L}\p{N}]+/gu
 /* ---------- data ---------- */
 function parseLegacy(text=''){const m=String(text).match(/window\.BLOG_ARTICLES\s*=\s*([\s\S]*);\s*$/);if(!m)return[];try{return JSON.parse(m[1]).filter(x=>x&&x.status==='Published')}catch(_){return[]}}
 
-const SW_ARTICLES_CACHE='signwell-public-articles-v22-2';
+const SW_ARTICLES_CACHE='signwell-public-articles-v23-9-42';
 const SW_TOPICS_CACHE='signwell-public-topics-v22-2';
 const SW_BUNDLE_CACHE='signwell-public-bundle-v22-2';
 const SW_REVISION_KEY='signwell-public-data-revision';
 const PUBLIC_BUNDLE_PATH='public-data.json';
 const PUBLIC_RAW_BUNDLE='https://raw.githubusercontent.com/980510linz/-/main/public-data.json';
+const PUBLIC_RAW_INDEX='https://raw.githubusercontent.com/980510linz/-/main/articles/index.json';
+const PUBLIC_RAW_BASE='https://raw.githubusercontent.com/980510linz/-/main/';
 let publicBundleRevision=0;
 let swLastRefresh=0;
 const SW_IS_SHARE_DOCUMENT=(location.pathname.split('/').pop()||'').toLowerCase()==='share.html';
@@ -5640,15 +5667,22 @@ async function loadPublicBundle(){
   return true;
 }
 
-async function fetchArticlesFresh(){
+async function fetchArticleIndexCandidate(url){
   try{
-    /* v22.2: articles/index.json is the only article source of truth.
-       Legacy articles.js is intentionally not used because deleted items can survive there. */
-    const r=await fetch('articles/index.json?sw='+Date.now(),{cache:'no-store'});
+    const r=await fetch(url+(url.includes('?')?'&':'?')+'sw='+Date.now(),{cache:'no-store',headers:{'Accept':'application/json'}});
     if(!r.ok)throw 0;
-    const a=(await r.json()).filter(x=>x&&x.status==='Published');
-    return {ok:true,data:a};
-  }catch(_){return {ok:false,data:[]}}
+    const a=await r.json();
+    if(!Array.isArray(a))throw 0;
+    return a.filter(x=>x&&x.status==='Published');
+  }catch(_){return null}
+}
+async function fetchArticlesFresh(){
+  /* Raw main is authoritative for delete visibility: GitHub Pages can lag behind a commit.
+     Fall back to the Pages copy only when raw main is temporarily unavailable. */
+  const raw=await fetchArticleIndexCandidate(PUBLIC_RAW_INDEX);
+  if(Array.isArray(raw))return {ok:true,data:raw,source:'raw'};
+  const page=await fetchArticleIndexCandidate('articles/index.json');
+  return Array.isArray(page)?{ok:true,data:page,source:'pages'}:{ok:false,data:[]};
 }
 
 async function loadArticles(){
@@ -5757,19 +5791,34 @@ async function revalidatePublicData(force=false){
 function schedulePublicRevalidate(delay=180){
   setTimeout(()=>revalidatePublicData(true).catch(()=>{}),delay);
 }
+async function refreshArticleAvailability(slug){
+  const fresh=await fetchArticlesFresh();
+  if(!fresh.ok)return true;
+  const next=fresh.data.slice().sort((a,b)=>String(b.publishedAt||'').localeCompare(String(a.publishedAt||'')));
+  const stillLive=next.some(a=>String(a.slug)===String(slug));
+  articles=next;writeSessionJSON(SW_ARTICLES_CACHE,next);
+  if(!stillLive)articleCache.delete(slug);
+  return stillLive;
+}
 async function getFullArticle(slug){
+  const stillLive=await refreshArticleAvailability(slug);
+  if(!stillLive)return null;
   if(articleCache.has(slug))return articleCache.get(slug);
   const meta=articles.find(a=>a.slug===slug);
   if(!meta)return null;
   if(meta.content){articleCache.set(slug,meta);return meta}
-  try{
-    const file=meta.file||`articles/${encodeURIComponent(slug)}.json`;
-    const r=await fetch(file+'?v='+encodeURIComponent(meta.revision||''),{cache:'default'});
-    if(!r.ok)throw 0;
-    const full={...meta,...await r.json()};
-    articleCache.set(slug,full);
-    return full;
-  }catch(_){return meta}
+  const file=meta.file||`articles/${encodeURIComponent(slug)}.json`;
+  const candidates=[PUBLIC_RAW_BASE+file,file];
+  for(const source of candidates){
+    try{
+      const r=await fetch(source+(source.includes('?')?'&':'?')+'v='+encodeURIComponent(meta.revision||Date.now()),{cache:'no-store'});
+      if(!r.ok)continue;
+      const full={...meta,...await r.json()};
+      articleCache.set(slug,full);
+      return full;
+    }catch(_){}
+  }
+  return meta;
 }
 
 function sanitizeHTML(html=''){
@@ -6575,6 +6624,9 @@ function ensureNewsletterTermsModal(){
     const max=Math.max(1,body.scrollHeight-body.clientHeight);
     const progress=max<=2?1:Math.max(0,Math.min(1,body.scrollTop/max));
     agree.style.setProperty('--terms-progress',progress.toFixed(3));
+    agree.style.setProperty('color','#101216','important');
+    agree.style.setProperty('-webkit-text-fill-color','#101216','important');
+    agree.style.setProperty('text-shadow','none','important');
     const ready=progress>=0.985;
     agree.disabled=!ready;
     agree.classList.toggle('is-ready',ready);
@@ -6584,7 +6636,7 @@ function ensureNewsletterTermsModal(){
   body?.addEventListener('scroll',updateLegalReadGate,{passive:true});
   modal._resetLegalScrollGate=()=>{
     if(body)body.scrollTop=0;
-    if(agree){agree.disabled=true;agree.classList.remove('is-ready');agree.setAttribute('aria-disabled','true');agree.style.setProperty('--terms-progress','0');agree.textContent='請滑至底部'}
+    if(agree){agree.disabled=true;agree.classList.remove('is-ready');agree.setAttribute('aria-disabled','true');agree.style.setProperty('--terms-progress','0');agree.style.setProperty('color','#101216','important');agree.style.setProperty('-webkit-text-fill-color','#101216','important');agree.style.setProperty('text-shadow','none','important');agree.textContent='請滑至底部'}
     requestAnimationFrame(updateLegalReadGate);
   };
 
@@ -6848,6 +6900,13 @@ function swMountArticleFontDock(view){
   if(!dock)return null;
   document.querySelectorAll('body > #swArticleFontDock').forEach(old=>{if(old!==dock)old.remove()});
   document.body.appendChild(dock);
+  const desktopMotion=window.matchMedia?.('(min-width:761px) and (pointer:fine)').matches&&!reduceMotion();
+  if(desktopMotion){
+    dock.classList.remove('sw-font-exit');
+    dock.classList.add('sw-font-enter');
+    clearTimeout(dock._swEnterTimer);
+    dock._swEnterTimer=setTimeout(()=>dock.classList.remove('sw-font-enter'),520);
+  }
   const press=()=>dock.classList.add('is-pressing');
   const release=()=>dock.classList.remove('is-pressing');
   dock.addEventListener('pointerdown',press,{passive:true});
@@ -6856,6 +6915,17 @@ function swMountArticleFontDock(view){
   dock.addEventListener('pointerleave',release,{passive:true});
   dock.querySelectorAll('[data-font-size]').forEach(b=>b.onclick=()=>swApplyReaderFont(view,b.dataset.fontSize));
   return dock;
+}
+
+function swDismissArticleFontDock(){
+  const dock=swArticleFontDock();
+  if(!dock)return;
+  const desktopMotion=window.matchMedia?.('(min-width:761px) and (pointer:fine)').matches&&!reduceMotion();
+  if(!desktopMotion){dock.remove();return}
+  dock.classList.remove('sw-font-enter','is-changing','is-pressing');
+  dock.classList.add('sw-font-exit');
+  clearTimeout(dock._swExitTimer);
+  dock._swExitTimer=setTimeout(()=>dock.remove(),270);
 }
 async function swOpenContinueQR(a){
   document.querySelector('.sw-continue-overlay')?.remove();
@@ -6885,7 +6955,7 @@ function swUpdateArticleMeta(a){
 async function renderArticle(slug){
   swArticleFontDock()?.remove();
   const a=await getFullArticle(slug);
-  if(!a){app.innerHTML='<div class="shell"><div class="empty"><strong>找不到這篇文章</strong><br>它可能已經移除、網址已更新，或目前尚未公開。<br><button class="backlink" data-back="index.html" style="margin-top:14px">← 回到首頁看看其他內容</button></div></div>';bindBack();return}
+  if(!a){document.title='404 · SIGN WELL';app.innerHTML='<div class="shell"><section class="empty" role="status" style="min-height:58vh;display:grid;place-items:center;text-align:center;padding:48px 20px"><div><div style="font:700 clamp(48px,9vw,92px)/1 system-ui;letter-spacing:-.06em;color:rgba(88,132,174,.22);margin-bottom:10px">404</div><strong style="font-size:clamp(22px,3vw,34px)">這篇文章已不存在</strong><p style="max-width:520px;margin:12px auto 0;color:var(--muted);line-height:1.8">文章可能已由 CMS 刪除、尚未公開，或網址已失效。若你是從舊電子報進來，這代表該文章已從公開網站移除。</p><button class="backlink" data-back="index.html" style="margin-top:20px">← 回到首頁</button></div></section></div>';bindBack();return}
   const html=renderContent(a),wrap=document.createElement('div');wrap.innerHTML=html;
   const heads=[...wrap.querySelectorAll('h2')].map(h=>({id:h.id,text:h.textContent}));
   const age=swArticleAgeDays(a),updated=swDisplayDate(a.updatedAt||a.publishedAt),published=swDisplayDate(a.publishedAt);
@@ -6948,7 +7018,7 @@ function bindScrollCue(){
 /* ---------- render orchestration ---------- */
 async function paint(){
   const r=route();
-  if(r.page!=='article')swArticleFontDock()?.remove();
+  if(r.page!=='article')swDismissArticleFontDock();
   setNav(routeIndex(r));
   if(r.page==='home')renderHome();
   else if(r.page==='topics')renderTopics();
@@ -8102,7 +8172,7 @@ window.addEventListener('pagehide',()=>{
 
 </script>
 
-<script src="assets/signwell-common.js?build=23.9.36"></script>
+<script src="assets/signwell-common.js?build=23.9.42"></script>
 
 
 

@@ -368,7 +368,7 @@ body>main:only-child .back{display:inline-flex!important;align-items:center!impo
   --terms-progress:0;
   position:relative!important;overflow:hidden!important;
   background:rgba(255,255,255,.94)!important;
-  color:#87939e!important;-webkit-text-fill-color:#87939e!important;
+  color:#101216!important;-webkit-text-fill-color:#101216!important;
   border:1px solid rgba(113,139,160,.16)!important;
   box-shadow:inset 0 1px 0 #fff,0 4px 12px rgba(49,80,107,.04)!important;
   opacity:1!important;cursor:not-allowed!important;
@@ -381,17 +381,17 @@ body>main:only-child .back{display:inline-flex!important;align-items:center!impo
 }
 .newsletter-terms-agree>*{position:relative;z-index:1}
 .newsletter-terms-agree.is-ready{
-  color:#fff!important;-webkit-text-fill-color:#fff!important;
+  color:#101216!important;-webkit-text-fill-color:#101216!important;
   border-color:transparent!important;cursor:pointer!important;
   box-shadow:0 9px 22px rgba(190,53,69,.18),inset 0 1px 0 rgba(255,255,255,.22)!important;
 }
 .newsletter-terms-agree.is-ready::before{opacity:1}
 .newsletter-terms-agree.is-ready:active{transform:scale(.985)}
 body.dark .newsletter-terms-agree{
-  background:rgba(255,255,255,.92)!important;color:#66727d!important;-webkit-text-fill-color:#66727d!important;
+  background:rgba(255,255,255,.92)!important;color:#101216!important;-webkit-text-fill-color:#101216!important;
   border-color:rgba(255,255,255,.22)!important;
 }
-body.dark .newsletter-terms-agree.is-ready{color:#fff!important;-webkit-text-fill-color:#fff!important}
+body.dark .newsletter-terms-agree.is-ready{color:#101216!important;-webkit-text-fill-color:#101216!important}
 
 /* Restore the original mobile stacked-topic browsing interaction. */
 @media(max-width:680px){
@@ -659,25 +659,25 @@ body.lite .footer{background:transparent!important}
 }
 
 /* ============================================================
-   SIGN WELL v23.9.36 · tactile bounce belongs to the glass FRAME
-   The thumb keeps its route/drag transforms untouched.
+   SIGN WELL v23.9.40 · tactile press belongs to the glass FRAME
+   A tiny scale pulse replaces vertical bounce. The thumb keeps
+   its own route/drag transforms untouched.
    ============================================================ */
-@keyframes swPagerFrameTapBounce23936{
-  0%{translate:0 0}
-  26%{translate:0 1.0px}
-  56%{translate:0 -2.2px}
-  79%{translate:0 .5px}
-  100%{translate:0 0}
+@keyframes swPagerFramePress23940{
+  0%,100%{scale:1}
+  42%{scale:1.018}
+  72%{scale:.995}
 }
 .pager.sw-tap-bounce{
-  animation:swPagerFrameTapBounce23936 .34s cubic-bezier(.20,.86,.30,1.12) both;
+  transform-origin:50% 50%;
+  animation:swPagerFramePress23940 .30s cubic-bezier(.22,.82,.28,1.10) both;
 }
 .pager.sw-tap-bounce .pager-thumb{
   animation:none!important;
   translate:0 0!important;
 }
 @media (prefers-reduced-motion:reduce){
-  .pager.sw-tap-bounce{animation:none!important;translate:0 0!important}
+  .pager.sw-tap-bounce{animation:none!important;scale:1!important}
 }
 
 /* ============================================================
@@ -714,3 +714,41 @@ body.dark #brandChinese{
 @media (prefers-reduced-motion:reduce){
   #brandChinese{animation:none!important;background-position:50% 50%!important}
 }
+
+
+/* ============================================================
+   SIGN WELL v23.9.38 · crisp Chinese brand title
+   Keep the pearl-white blue/pink reflection, but remove all blur
+   from the glyphs themselves so 欣緯生醫 stays optically sharp.
+   ============================================================ */
+#brandChinese{
+  filter:none!important;
+  text-shadow:none!important;
+  -webkit-font-smoothing:antialiased;
+  text-rendering:geometricPrecision;
+  background:linear-gradient(105deg,
+    #ffffff 0%,
+    #ffffff 36%,
+    #eef8ff 45%,
+    #ffffff 56%,
+    #fff1f7 68%,
+    #ffffff 82%,
+    #ffffff 100%)!important;
+  background-size:230% 100%!important;
+  -webkit-background-clip:text!important;
+  background-clip:text!important;
+  -webkit-text-fill-color:transparent!important;
+}
+body.dark #brandChinese{
+  filter:none!important;
+  text-shadow:none!important;
+}
+
+
+/* SIGN WELL v23.9.43 · subscription legal consent CTA contrast */
+#newsletterTermsOverlay .newsletter-terms-agree.is-ready,
+.newsletter-terms-overlay .newsletter-terms-agree.is-ready,
+.newsletter-terms-agree.is-ready{color:#101216!important;-webkit-text-fill-color:#101216!important;text-shadow:none!important}
+body.dark #newsletterTermsOverlay .newsletter-terms-agree.is-ready,
+body.dark .newsletter-terms-overlay .newsletter-terms-agree.is-ready,
+body.dark .newsletter-terms-agree.is-ready{color:#101216!important;-webkit-text-fill-color:#101216!important}
