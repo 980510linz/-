@@ -406,7 +406,7 @@ document.documentElement.dataset.signwellRelease="23.9.0";
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',run,{once:true}); else run();
 })();
 
-/* SIGN WELL v23.9.36 · subtle tap bounce for the bottom liquid-glass frame */
+/* SIGN WELL v23.9.40 · subtle tap scale pulse for the bottom liquid-glass frame */
 (function swPagerTapBounce(){
   const rail=document.getElementById('pager');
   if(!rail||rail.dataset.swTapBounce==='1')return;
@@ -420,7 +420,7 @@ document.documentElement.dataset.signwellRelease="23.9.0";
     rail.classList.remove('sw-tap-bounce');
     void rail.offsetWidth;
     rail.classList.add('sw-tap-bounce');
-    timer=setTimeout(()=>rail.classList.remove('sw-tap-bounce'),390);
+    timer=setTimeout(()=>rail.classList.remove('sw-tap-bounce'),340);
   };
   rail.addEventListener('pointerdown',e=>{
     pointerId=e.pointerId;
@@ -438,4 +438,125 @@ document.documentElement.dataset.signwellRelease="23.9.0";
   rail.addEventListener('keydown',e=>{
     if(e.key==='Enter'||e.key===' ')bounce();
   });
+})();
+
+/* SIGN WELL v23.9.55 · automatic medical glossary cards */
+(function swMedicalGlossaryRuntime(){
+  if(window.__swMedicalGlossaryRuntime)return;
+  window.__swMedicalGlossaryRuntime=true;
+  const CACHE_KEY='signwell-public-bundle-v22-2';
+  const norm=v=>String(v||'').normalize('NFKC').replace(/\s+/g,' ').trim().toLowerCase();
+  const escRx=s=>String(s).replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
+  let currentSignature='';
+  let annotateTimer=0;
+  let pressTimer=0,pressStart=null;
+
+  function glossary(){
+    let list=[];
+    try{
+      const bundle=JSON.parse(sessionStorage.getItem(CACHE_KEY)||'null');
+      if(Array.isArray(bundle?.glossary))list=bundle.glossary;
+    }catch(_){}
+    if(!list.length&&Array.isArray(window.SIGNWELL_GLOSSARY))list=window.SIGNWELL_GLOSSARY;
+    return list.filter(g=>g&&g.active!==false&&String(g.term||'').trim()&&String(g.definition||'').trim());
+  }
+  function signature(list){return list.map(g=>[g.id,g.term,g.translation,g.definition,(g.aliases||[]).join('|'),g.active!==false].join('~')).join('||')}
+  function entryById(id){return glossary().find(g=>String(g.id)===String(id))||null}
+  function ensureCard(){
+    let card=document.getElementById('swMedicalTermCard');
+    if(card)return card;
+    card=document.createElement('div');card.id='swMedicalTermCard';card.className='sw-med-card';card.setAttribute('aria-hidden','true');
+    card.innerHTML='<div class="sw-med-card-panel" role="dialog" aria-modal="false" aria-labelledby="swMedCardTerm"><button type="button" class="sw-med-card-close" aria-label="關閉">×</button><div class="sw-med-card-kicker">SIGN WELL · 醫學詞卡</div><h3 id="swMedCardTerm"></h3><div class="sw-med-card-translation"></div><p class="sw-med-card-definition"></p><div class="sw-med-card-hint">長按文章中的醫學名詞可再次查看</div></div>';
+    document.body.appendChild(card);
+    card.addEventListener('click',e=>{if(e.target===card||e.target.closest('.sw-med-card-close'))closeCard()});
+    document.addEventListener('keydown',e=>{if(e.key==='Escape'&&card.classList.contains('show'))closeCard()});
+    return card;
+  }
+  function openCard(el){
+    const g=entryById(el?.dataset?.swTermId);if(!g)return;
+    const card=ensureCard();
+    card.querySelector('#swMedCardTerm').textContent=el.textContent.trim()||g.term||'';
+    card.querySelector('.sw-med-card-translation').textContent=g.translation||g.term||'';
+    card.querySelector('.sw-med-card-definition').textContent=g.definition||'';
+    card.classList.add('show');card.setAttribute('aria-hidden','false');
+    document.body.classList.add('sw-med-card-open');
+    try{navigator.vibrate?.(10)}catch(_){}
+  }
+  function closeCard(){const card=document.getElementById('swMedicalTermCard');if(!card)return;card.classList.remove('show');card.setAttribute('aria-hidden','true');document.body.classList.remove('sw-med-card-open')}
+  function unwrap(root){
+    root.querySelectorAll('.sw-med-term').forEach(el=>el.replaceWith(document.createTextNode(el.textContent||'')));
+    root.normalize();
+  }
+  function buildMatcher(root,list){
+    const text=norm(root.textContent||'');
+    const forms=[];
+    list.forEach(g=>{
+      [g.term,...(Array.isArray(g.aliases)?g.aliases:[])].forEach(form=>{
+        const clean=String(form||'').normalize('NFKC').trim();
+        const n=norm(clean);
+        if(n.length<2||!text.includes(n))return;
+        forms.push({form:clean,key:n,id:String(g.id||'')});
+      });
+    });
+    const dedup=new Map();forms.sort((a,b)=>b.form.length-a.form.length).forEach(x=>{if(!dedup.has(x.key))dedup.set(x.key,x)});
+    const chosen=[...dedup.values()].slice(0,180);
+    if(!chosen.length)return null;
+    const byKey=new Map(chosen.map(x=>[x.key,x]));
+    const rx=new RegExp(chosen.map(x=>escRx(x.form)).join('|'),'giu');
+    return {rx,byKey};
+  }
+  function shouldSkip(node){
+    const p=node.parentElement;if(!p)return true;
+    return Boolean(p.closest('a,button,code,pre,script,style,textarea,input,select,option,sup,sub,.sw-med-term,.sw-source-figure,.sw-evidence-ref,.sw-data-source'));
+  }
+  function annotate(root){
+    if(!root||root.dataset.swGlossaryBusy==='1')return;
+    const list=glossary();const sig=signature(list);
+    if(root.dataset.swGlossarySignature===sig&&root.querySelector('.sw-med-term'))return;
+    root.dataset.swGlossaryBusy='1';
+    try{
+      unwrap(root);
+      if(!list.length){root.dataset.swGlossarySignature=sig;return}
+      const match=buildMatcher(root,list);if(!match){root.dataset.swGlossarySignature=sig;return}
+      const walker=document.createTreeWalker(root,NodeFilter.SHOW_TEXT,{acceptNode:n=>!shouldSkip(n)&&String(n.nodeValue||'').trim()?NodeFilter.FILTER_ACCEPT:NodeFilter.FILTER_REJECT});
+      const nodes=[];while(walker.nextNode())nodes.push(walker.currentNode);
+      let total=0;
+      nodes.forEach(node=>{
+        if(total>=160)return;
+        const raw=node.nodeValue||'';match.rx.lastIndex=0;let m,last=0,hit=false;const frag=document.createDocumentFragment();
+        while((m=match.rx.exec(raw))&&total<160){
+          const shown=m[0],entry=match.byKey.get(norm(shown));if(!entry)continue;
+          const before=raw[m.index-1]||'',after=raw[m.index+shown.length]||'';
+          if(/^[A-Za-z0-9]$/.test(shown[0]||'')&&/[A-Za-z0-9]/.test(before))continue;
+          if(/[A-Za-z0-9]$/.test(shown.slice(-1))&&/[A-Za-z0-9]/.test(after))continue;
+          frag.appendChild(document.createTextNode(raw.slice(last,m.index)));
+          const span=document.createElement('span');span.className='sw-med-term';span.dataset.swTermId=entry.id;span.tabIndex=0;span.setAttribute('role','button');span.setAttribute('aria-label','長按查看醫學詞卡：'+shown);span.textContent=shown;frag.appendChild(span);
+          last=m.index+shown.length;hit=true;total++;
+        }
+        if(hit){frag.appendChild(document.createTextNode(raw.slice(last)));node.replaceWith(frag)}
+      });
+      root.dataset.swGlossarySignature=sig;
+    }finally{delete root.dataset.swGlossaryBusy}
+  }
+  function scan(){
+    clearTimeout(annotateTimer);annotateTimer=setTimeout(()=>{
+      document.querySelectorAll('.article-body').forEach(annotate);
+      currentSignature=signature(glossary());
+    },45);
+  }
+  document.addEventListener('pointerdown',e=>{
+    const el=e.target.closest?.('.sw-med-term');if(!el)return;
+    clearTimeout(pressTimer);pressStart={el,id:e.pointerId,x:e.clientX,y:e.clientY};
+    pressTimer=setTimeout(()=>{if(pressStart?.el===el){openCard(el);pressStart=null}},440);
+  },{passive:true});
+  document.addEventListener('pointermove',e=>{if(!pressStart||e.pointerId!==pressStart.id)return;if(Math.hypot(e.clientX-pressStart.x,e.clientY-pressStart.y)>9){clearTimeout(pressTimer);pressStart=null}},{passive:true});
+  ['pointerup','pointercancel'].forEach(type=>document.addEventListener(type,e=>{if(!pressStart||e.pointerId!==pressStart.id)return;clearTimeout(pressTimer);pressStart=null},{passive:true}));
+  document.addEventListener('contextmenu',e=>{if(e.target.closest?.('.sw-med-term'))e.preventDefault()});
+  document.addEventListener('keydown',e=>{const el=e.target.closest?.('.sw-med-term');if(el&&(e.key==='Enter'||e.key===' ')){e.preventDefault();openCard(el)}});
+  const mo=new MutationObserver(records=>{if(records.some(r=>[...r.addedNodes].some(n=>n.nodeType===1&&(n.matches?.('.article-body')||n.querySelector?.('.article-body')))))scan()});
+  mo.observe(document.documentElement,{childList:true,subtree:true});
+  ['pageshow','hashchange','popstate','focus'].forEach(ev=>addEventListener(ev,scan,{passive:true}));
+  addEventListener('signwell:glossary-updated',scan);
+  document.addEventListener('visibilitychange',()=>{if(!document.hidden)scan()},{passive:true});
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',scan,{once:true});else scan();
 })();

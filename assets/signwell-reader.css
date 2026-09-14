@@ -1,5 +1,5 @@
 
-/* SIGN WELL v23.9.0 · Reader trust / continuity layer */
+/* SIGN WELL v23.9.37 · Reader trust / continuity layer */
 .article-meta .sw-updated{font-weight:700;color:#4c7190}
 .sw-stale-note{margin:0 0 22px;padding:13px 15px;border-radius:16px;background:rgba(255,238,191,.56);border:1px solid rgba(174,130,49,.16);color:#7a5b1e;font-size:12px;line-height:1.65}
 .sw-reader-tools{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:14px}
@@ -8,9 +8,9 @@
 .sw-font-controls button,.sw-reader-tools>button{min-height:38px;border:1px solid rgba(255,255,255,.9);background:rgba(255,255,255,.72);color:#20384d;border-radius:11px;padding:0 11px;font-size:11px;font-weight:800;cursor:pointer}
 .sw-font-controls button.active{background:#23445d;color:#fff;border-color:transparent}
 /* Reader scale: SMALL is intentionally the pre-existing article size. */
-.article-view[data-font-size="small"] .article-body{font-size:17px;line-height:1.94}
-.article-view[data-font-size="medium"] .article-body{font-size:18.5px;line-height:1.97}
-.article-view[data-font-size="large"] .article-body{font-size:20px;line-height:2.02}
+.article-view[data-font-size="small"] .article-body{font-size:17px!important;line-height:1.94!important}
+.article-view[data-font-size="medium"] .article-body{font-size:18.5px!important;line-height:1.97!important}
+.article-view[data-font-size="large"] .article-body{font-size:20px!important;line-height:2.02!important}
 .article-view .article-body{transition:font-size .24s cubic-bezier(.2,.8,.2,1),line-height .24s ease}
 .article-view .article-body table{font-size:.84em!important}
 .article-view .article-body :is(figcaption,.caption){font-size:.82em!important}
@@ -143,7 +143,7 @@ body.dark .sw-font-dock button.active{color:#fff!important;-webkit-text-fill-col
   .sw-font-dock{
     width:188px;
     height:54px;
-    bottom:calc(env(safe-area-inset-bottom) + 82px);
+    bottom:calc(env(safe-area-inset-bottom) + 98px);
     border-radius:27px;
     -webkit-backdrop-filter:blur(18px) saturate(150%);
     backdrop-filter:blur(18px) saturate(150%);
@@ -181,3 +181,62 @@ body.dark .sw-font-dock button.active{color:#fff!important;-webkit-text-fill-col
   .sw-reader-tools>button{width:100%!important}
   .sw-continue-card{box-shadow:0 12px 34px rgba(23,53,78,.12)!important}
 }
+
+
+/* ============================================================
+   v23.9.37 · Reader font dock reliability fix
+   - Desktop: beat later .article-body !important base rule.
+   - Mobile: keep clear air above the lower liquid pager.
+   ============================================================ */
+.article-view[data-font-size="small"] .article-body{font-size:17px!important;line-height:1.94!important}
+.article-view[data-font-size="medium"] .article-body{font-size:18.5px!important;line-height:1.97!important}
+.article-view[data-font-size="large"] .article-body{font-size:20px!important;line-height:2.02!important}
+@media(max-width:760px),(pointer:coarse){
+  .article-view[data-font-size="small"] .article-body{font-size:16.5px!important;line-height:1.90!important}
+  .article-view[data-font-size="medium"] .article-body{font-size:18px!important;line-height:1.94!important}
+  .article-view[data-font-size="large"] .article-body{font-size:19.5px!important;line-height:1.98!important}
+  .sw-font-dock{bottom:calc(env(safe-area-inset-bottom) + 98px)!important}
+}
+
+
+/* ============================================================
+   SIGN WELL v23.9.38 · desktop reader dock enter / exit
+   Transform + opacity only: spring-in when article opens,
+   softly retract when leaving the article. Mobile is unchanged.
+   ============================================================ */
+@keyframes swFontDockEnter23938{
+  0%{opacity:0;transform:translate3d(-50%,16px,0) scale(.92)}
+  68%{opacity:1;transform:translate3d(-50%,-2px,0) scale(1.018)}
+  100%{opacity:1;transform:translate3d(-50%,0,0) scale(1)}
+}
+@keyframes swFontDockExit23938{
+  0%{opacity:1;transform:translate3d(-50%,0,0) scale(1)}
+  100%{opacity:0;transform:translate3d(-50%,12px,0) scale(.94)}
+}
+@media(min-width:761px) and (pointer:fine){
+  .sw-font-dock.sw-font-enter{
+    animation:swFontDockEnter23938 .44s cubic-bezier(.16,1,.3,1) both;
+  }
+  .sw-font-dock.sw-font-exit{
+    pointer-events:none!important;
+    animation:swFontDockExit23938 .24s cubic-bezier(.4,0,.8,.2) both;
+  }
+  .sw-font-dock button.active{
+    animation:swFontChoiceIn23938 .28s cubic-bezier(.16,1,.3,1) both;
+  }
+}
+@keyframes swFontChoiceIn23938{
+  0%{transform:scale(.90);opacity:.62}
+  72%{transform:scale(1.075);opacity:1}
+  100%{transform:scale(1.05);opacity:1}
+}
+@media(prefers-reduced-motion:reduce){
+  .sw-font-dock.sw-font-enter,.sw-font-dock.sw-font-exit,.sw-font-dock button.active{animation:none!important}
+}
+
+
+/* SIGN WELL v23.9.52 · tables, charts and statistical data blocks */
+.article-body .sw-data-block{margin:32px 0;padding:20px;border:1px solid rgba(108,139,164,.13);border-radius:22px;background:linear-gradient(145deg,rgba(255,255,255,.74),rgba(242,248,255,.58));box-shadow:0 20px 52px rgba(70,101,127,.08),inset 0 1px 0 rgba(255,255,255,.94);overflow:hidden}
+.article-body .sw-data-kicker{font-size:8px;letter-spacing:.16em;font-weight:900;color:#7891a3}.article-body .sw-data-block>h3{margin:6px 0 16px!important;font:700 20px/1.2 Georgia,"Noto Serif TC",serif!important;color:#2c4d64!important}.article-body .sw-data-table-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:0 -3px}.article-body .sw-data-table{width:100%;min-width:480px;border-collapse:collapse;font-size:13px;margin:0}.article-body .sw-data-table th,.article-body .sw-data-table td{padding:11px 13px;text-align:left;border-bottom:1px solid rgba(98,129,153,.12)}.article-body .sw-data-table th{background:rgba(226,240,252,.48);font-weight:850}.article-body .sw-data-bars{display:grid;gap:12px}.article-body .sw-data-bar-row{display:grid;grid-template-columns:minmax(82px,1fr) minmax(140px,2.5fr) auto;gap:10px;align-items:center}.article-body .sw-data-bar-label{font-size:12px;color:#5f7281}.article-body .sw-data-bar-track{height:12px;border-radius:999px;background:rgba(109,145,173,.11);overflow:hidden}.article-body .sw-data-bar-track i{display:block;width:var(--sw-bar,0%);height:100%;border-radius:inherit;background:linear-gradient(90deg,rgba(142,199,242,.82),rgba(244,184,208,.76));box-shadow:inset 0 1px 0 rgba(255,255,255,.64)}.article-body .sw-data-bar-row strong{font-size:12px;color:#354f62;white-space:nowrap}.article-body .sw-stat-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.article-body .sw-stat-item{padding:15px;border-radius:17px;background:rgba(255,255,255,.62);border:1px solid rgba(255,255,255,.88)}.article-body .sw-stat-item span,.article-body .sw-stat-item small{display:block;color:#788a98;font-size:10px;line-height:1.45}.article-body .sw-stat-item strong{display:block;margin:6px 0 3px;color:#2e536c;font-size:23px;line-height:1.05;letter-spacing:-.02em}.article-body .sw-data-source{margin-top:15px;color:#81919d;font-size:10px;line-height:1.55}.article-body .sw-data-source a{font-size:inherit}
+body.dark .article-body .sw-data-block{background:linear-gradient(145deg,rgba(40,57,70,.84),rgba(27,42,54,.74));border-color:rgba(255,255,255,.08);box-shadow:0 20px 52px rgba(0,0,0,.14),inset 0 1px 0 rgba(255,255,255,.06)}body.dark .article-body .sw-data-block>h3{color:#eef6fb!important}body.dark .article-body .sw-data-kicker,body.dark .article-body .sw-data-source,body.dark .article-body .sw-stat-item span,body.dark .article-body .sw-stat-item small,body.dark .article-body .sw-data-bar-label{color:#a8bac7!important}body.dark .article-body .sw-data-bar-row strong,body.dark .article-body .sw-stat-item strong{color:#edf7ff!important}body.dark .article-body .sw-stat-item,body.dark .article-body .sw-data-table th{background:rgba(255,255,255,.05)}
+@media(max-width:640px){.article-body .sw-data-block{padding:16px;margin:26px 0}.article-body .sw-stat-grid{grid-template-columns:1fr 1fr}.article-body .sw-data-bar-row{grid-template-columns:78px minmax(120px,1fr) auto;gap:8px}.article-body .sw-data-bar-label,.article-body .sw-data-bar-row strong{font-size:10.5px}}
