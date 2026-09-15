@@ -240,3 +240,72 @@ body.dark .sw-font-dock button.active{color:#fff!important;-webkit-text-fill-col
 .article-body .sw-data-kicker{font-size:8px;letter-spacing:.16em;font-weight:900;color:#7891a3}.article-body .sw-data-block>h3{margin:6px 0 16px!important;font:700 20px/1.2 Georgia,"Noto Serif TC",serif!important;color:#2c4d64!important}.article-body .sw-data-table-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:0 -3px}.article-body .sw-data-table{width:100%;min-width:480px;border-collapse:collapse;font-size:13px;margin:0}.article-body .sw-data-table th,.article-body .sw-data-table td{padding:11px 13px;text-align:left;border-bottom:1px solid rgba(98,129,153,.12)}.article-body .sw-data-table th{background:rgba(226,240,252,.48);font-weight:850}.article-body .sw-data-bars{display:grid;gap:12px}.article-body .sw-data-bar-row{display:grid;grid-template-columns:minmax(82px,1fr) minmax(140px,2.5fr) auto;gap:10px;align-items:center}.article-body .sw-data-bar-label{font-size:12px;color:#5f7281}.article-body .sw-data-bar-track{height:12px;border-radius:999px;background:rgba(109,145,173,.11);overflow:hidden}.article-body .sw-data-bar-track i{display:block;width:var(--sw-bar,0%);height:100%;border-radius:inherit;background:linear-gradient(90deg,rgba(142,199,242,.82),rgba(244,184,208,.76));box-shadow:inset 0 1px 0 rgba(255,255,255,.64)}.article-body .sw-data-bar-row strong{font-size:12px;color:#354f62;white-space:nowrap}.article-body .sw-stat-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.article-body .sw-stat-item{padding:15px;border-radius:17px;background:rgba(255,255,255,.62);border:1px solid rgba(255,255,255,.88)}.article-body .sw-stat-item span,.article-body .sw-stat-item small{display:block;color:#788a98;font-size:10px;line-height:1.45}.article-body .sw-stat-item strong{display:block;margin:6px 0 3px;color:#2e536c;font-size:23px;line-height:1.05;letter-spacing:-.02em}.article-body .sw-data-source{margin-top:15px;color:#81919d;font-size:10px;line-height:1.55}.article-body .sw-data-source a{font-size:inherit}
 body.dark .article-body .sw-data-block{background:linear-gradient(145deg,rgba(40,57,70,.84),rgba(27,42,54,.74));border-color:rgba(255,255,255,.08);box-shadow:0 20px 52px rgba(0,0,0,.14),inset 0 1px 0 rgba(255,255,255,.06)}body.dark .article-body .sw-data-block>h3{color:#eef6fb!important}body.dark .article-body .sw-data-kicker,body.dark .article-body .sw-data-source,body.dark .article-body .sw-stat-item span,body.dark .article-body .sw-stat-item small,body.dark .article-body .sw-data-bar-label{color:#a8bac7!important}body.dark .article-body .sw-data-bar-row strong,body.dark .article-body .sw-stat-item strong{color:#edf7ff!important}body.dark .article-body .sw-stat-item,body.dark .article-body .sw-data-table th{background:rgba(255,255,255,.05)}
 @media(max-width:640px){.article-body .sw-data-block{padding:16px;margin:26px 0}.article-body .sw-stat-grid{grid-template-columns:1fr 1fr}.article-body .sw-data-bar-row{grid-template-columns:78px minmax(120px,1fr) auto;gap:8px}.article-body .sw-data-bar-label,.article-body .sw-data-bar-row strong{font-size:10.5px}}
+
+
+/* SIGN WELL v23.9.75 · Mobile article vertical-scroll guard
+   Article reading on phones is intentionally one-axis: vertical only.
+   Wide media/tables/code are fitted or wrapped so the document itself never pans sideways. */
+@media (max-width:760px), (hover:none) and (pointer:coarse){
+  html.article-reading,
+  body.article-reading{
+    width:100%!important;
+    max-width:100vw!important;
+    overflow-x:hidden!important;
+    overscroll-behavior-x:none!important;
+    touch-action:pan-y pinch-zoom;
+  }
+  body.article-reading #app,
+  body.article-reading .article-view,
+  body.article-reading .article-top,
+  body.article-reading .article-layout,
+  body.article-reading .sw-article-main,
+  body.article-reading .article-body,
+  body.article-reading .sw-trust-panel,
+  body.article-reading .sw-related{
+    min-width:0!important;
+    max-width:100%!important;
+    overflow-x:clip!important;
+  }
+  body.article-reading .article-view,
+  body.article-reading .article-body{
+    touch-action:pan-y pinch-zoom;
+  }
+  body.article-reading .article-body :is(img,video,iframe,svg,canvas,figure,picture){
+    max-width:100%!important;
+    height:auto;
+  }
+  body.article-reading .article-body :is(pre,code,kbd,samp){
+    max-width:100%!important;
+    white-space:pre-wrap!important;
+    overflow-wrap:anywhere!important;
+    word-break:break-word!important;
+  }
+  body.article-reading .article-body :where(div,section,aside,figure,blockquote,pre,table){
+    max-width:100%!important;
+  }
+  body.article-reading .article-body .sw-data-table-scroll{
+    width:100%!important;
+    max-width:100%!important;
+    margin-left:0!important;
+    margin-right:0!important;
+    overflow-x:visible!important;
+    -webkit-overflow-scrolling:auto!important;
+  }
+  body.article-reading .article-body table,
+  body.article-reading .article-body .sw-data-table{
+    width:100%!important;
+    min-width:0!important;
+    max-width:100%!important;
+    table-layout:fixed!important;
+    overflow:visible!important;
+  }
+  body.article-reading .article-body :is(th,td){
+    min-width:0!important;
+    overflow-wrap:anywhere!important;
+    word-break:break-word!important;
+  }
+  body.article-reading .article-body :is(a,p,li,dd,dt,figcaption,blockquote){
+    overflow-wrap:anywhere!important;
+    word-break:break-word;
+  }
+}

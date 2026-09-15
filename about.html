@@ -2,7 +2,7 @@
 <html lang="zh-Hant">
 <head>
 <meta charset="utf-8">
-<meta name="signwell-release" content="23.9.58">
+<meta name="signwell-release" content="23.9.82">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="robots" content="index,follow,max-snippet:-1,max-image-preview:large,max-video-preview:-1">
 <meta name="googlebot" content="index,follow,max-snippet:-1,max-image-preview:large,max-video-preview:-1">
@@ -4552,7 +4552,7 @@ body.dark .ambient{opacity:.84!important;filter:blur(82px) saturate(122%)!import
 <link rel="apple-touch-icon" href="assets/signwell-app-icon-192.png">
 <meta property="og:image" content="https://980510linz.github.io/-/assets/signwell-share.png">
 <meta name="twitter:image" content="https://980510linz.github.io/-/assets/signwell-share.png">
-<link rel="stylesheet" href="assets/signwell-reader.css?build=23.9.52">
+<link rel="stylesheet" href="assets/signwell-reader.css?build=23.9.75">
 <link rel="stylesheet" href="assets/signwell-contrast.css?build=23.9.0">
 <link rel="stylesheet" href="assets/signwell-uiux.css?build=23.9.50">
 <link rel="stylesheet" href="assets/signwell-dialogs.css?build=23.9.1">
@@ -4976,7 +4976,9 @@ body.dark .newsletter-terms-agree-label{
   -webkit-text-fill-color:#101216!important;
 }
 </style>
-<link rel="stylesheet" href="assets/signwell-wabi-dark.css?build=23.9.56">
+<link rel="stylesheet" href="assets/signwell-wabi-dark.css?build=23.9.64">
+<link rel="stylesheet" href="assets/signwell-easter-egg.css?build=23.9.81">
+<link rel="stylesheet" href="assets/signwell-newsletter-otp.css?v=23.9.82">
 </head>
 <body class="boot-preparing" data-page="about">
 <div class="sw-page-loader" id="swPageLoader" role="status" aria-live="polite" aria-label="頁面載入進度"><div class="sw-page-loader-card"><div class="sw-page-loader-brand">SIGN WELL</div><div class="sw-page-loader-sub">欣緯生醫</div><div class="sw-page-loader-track" aria-hidden="true"><i class="sw-page-loader-bar"></i></div><div class="sw-page-loader-meta"><span class="sw-page-loader-stage">準備頁面</span><strong class="sw-page-loader-pct">6%</strong></div></div></div>
@@ -5011,7 +5013,7 @@ body.dark .newsletter-terms-agree-label{
 <main id="app"></main>
 
 <footer class="footer">
-  <div><strong id="footerBrand">SIGN WELL · 欣緯生醫</strong><div id="footerTagline">若有問題，請聯絡 <a href="mailto:signwell.com@gmail.com">signwell.com@gmail.com</a></div></div>
+  <div><strong id="footerBrand">SIGN WELL · 欣緯生醫</strong><div id="footerTagline">若有問題，請聯絡 <a href="mailto:signwell.com.tw@gmail.com">signwell.com.tw@gmail.com</a></div></div>
   <div id="footerDisclaimer">本站不提供醫療服務、不招攬醫療業務；內容僅供醫學教育與資訊整理，不構成個別醫療建議。</div>
 </footer>
 
@@ -5585,19 +5587,28 @@ function sanitizeHTML(html=''){
   return d.body.firstElementChild?.innerHTML||'';
 }
 function swIsMedicalNewsArticle(a){return a?.sourceWorkspace?.type==='medical-news-workspace'||String(a?.category||'')==='時事探討'}
-function swStripPrivatePubMedHTML(a,html=''){
-  if(!swIsMedicalNewsArticle(a))return html;
+function swPubmedIdFromReference(r){
+  const direct=String(r?.pmid||'').match(/\d+/);if(direct)return direct[0];
+  const m=String(r?.url||'').match(/pubmed\.ncbi\.nlm\.nih\.gov\/(\d+)/i);return m?m[1]:'';
+}
+function swFilterPublicCitationsHTML(a,html=''){
+  const refs=(Array.isArray(a?.references)?a.references:[]).filter(r=>r&&['news','government','literature'].includes(r.type));
+  const allowedPmids=new Set(refs.filter(r=>r.type==='literature').map(swPubmedIdFromReference).filter(Boolean));
   const d=new DOMParser().parseFromString(`<div id="sw-public-content">${html}</div>`,'text/html');
   const root=d.getElementById('sw-public-content');
-  root.querySelectorAll('a[href*="pubmed.ncbi.nlm.nih.gov"]')?.forEach(link=>{
-    const li=link.closest('li');
-    if(li)li.remove(); else link.remove();
+  root.querySelectorAll('a[href*="pubmed.ncbi.nlm.nih.gov"]').forEach(link=>{
+    const m=String(link.getAttribute('href')||'').match(/pubmed\.ncbi\.nlm\.nih\.gov\/(\d+)/i),pmid=m?m[1]:'';
+    if(pmid&&allowedPmids.has(pmid))return;
+    const li=link.closest('li');if(li)li.remove();else link.remove();
   });
-  root.querySelectorAll('li').forEach(li=>{if(/\bPMID\b/i.test(li.textContent||''))li.remove()});
+  root.querySelectorAll('li').forEach(li=>{
+    const m=String(li.textContent||'').match(/\bPMID\s*[:：]?\s*(\d+)/i);
+    if(m&&!allowedPmids.has(m[1]))li.remove();
+  });
   root.querySelectorAll('sup').forEach(sup=>{if(!sup.textContent.trim()&&!sup.querySelector('a'))sup.remove()});
   return root.innerHTML;
 }
-function renderContent(a){return swStripPrivatePubMedHTML(a,sanitizeHTML(a?.content||''))}
+function renderContent(a){return swFilterPublicCitationsHTML(a,sanitizeHTML(a?.content||''))}
 function excerpt(a){
   if(a.excerpt)return a.excerpt;
   const d=document.createElement('div');d.innerHTML=a.content?renderContent(a):'';
@@ -5615,13 +5626,13 @@ function applyChrome(){
   $('#brandEnglish').textContent=t('brandEnglish');
   $('#brandChinese').textContent=t('brandChinese');
   $('#footerBrand').textContent=t('siteTitle');
-  $('#footerTagline').textContent='若有問題，請聯絡 signwell.com@gmail.com';
+  $('#footerTagline').textContent='若有問題，請聯絡 signwell.com.tw@gmail.com';
   $('#footerDisclaimer').textContent=t('footerDisclaimer');
   $('#searchInput').placeholder=t('searchPlaceholder');
 }
 function route(){
   const h=(location.hash||'').replace(/^#/,'');
-  if(h.startsWith('article/'))return{page:'article',slug:decodeURIComponent(h.slice(8))};
+  if(h.startsWith('article/')){const slug=decodeURIComponent(h.slice(8));if(!window.__swLegacyArticleRedirectPending){window.__swLegacyArticleRedirectPending=true;location.replace(articleUrl(slug))}return{page:'article',slug}};
   if(h.startsWith('topic/'))return{page:'topicDetail',slug:decodeURIComponent(h.slice(6))};
   const file=(location.pathname.split('/').pop()||'index.html').toLowerCase();
   if(file==='topics.html')return{page:'topics'};
@@ -5683,7 +5694,7 @@ function goto(page){
   else if(page==='about')url=pageUrl(PAGE_FILE.about);
   else if(page==='share')url=pageUrl(PAGE_FILE.share);
   else if(page==='newsletter')url=pageUrl(PAGE_FILE.newsletter);
-  else if(page.startsWith('article/'))url=pageUrl(PAGE_FILE.home,page);
+  else if(page.startsWith('article/'))url=articleUrl(decodeURIComponent(page.slice(8)));
   else if(page.startsWith('topic/'))url=pageUrl(PAGE_FILE.topics,page);
   else return;
   markInternalNav();
@@ -5713,7 +5724,7 @@ const glassLayers='<span class="sheen-layer"></span>';
 function enforceFooterContact(){
   const el=document.getElementById('footerTagline');
   if(!el)return;
-  el.innerHTML='若有問題，請聯絡 <a href="mailto:signwell.com@gmail.com">signwell.com@gmail.com</a>';
+  el.innerHTML='若有問題，請聯絡 <a href="mailto:signwell.com.tw@gmail.com">signwell.com.tw@gmail.com</a>';
 }
 
 function categoryHue(name=''){
@@ -6161,11 +6172,11 @@ function ensureNewsletterTermsModal(){
 
       <div class="newsletter-terms-body">
         <section class="newsletter-legal-panel" id="legalTermsPanel" role="tabpanel" aria-labelledby="legalTermsTab" data-legal-panel="terms">
-          <div class="legal-meta"><span>適用：SIGN WELL／欣緯生醫網站</span><span>更新：2026-09-14</span></div>
+          <div class="legal-meta"><span>適用：SIGN WELL／欣緯生醫網站</span><span>更新：2026-09-15</span></div>
           <p class="legal-intro">使用 SIGN WELL 網站或訂閱 SIGN WELL Letter，即表示你理解本站提供的是醫學、健康與運動相關的一般資訊整理服務；本站不提供醫療服務、不建立醫病關係，也不招攬醫療業務。</p>
           <h3>1. 服務內容與醫療聲明</h3><p>本站提供知識文章、主題整理與電子報。內容僅供教育與資訊用途，不構成個別醫療建議、診斷、治療或醫病關係，也不能取代合格醫療專業人員的正式評估。</p>
           <h3>2. 內容來源與研究資訊</h3><p>本站會盡力核對來源，但研究、法規與第三方網站可能更新。文章提及研究效果量、風險、案例、產品或技術時，屬來源整理或評論，不代表本站對任何療程、醫療機構或服務作成效果保證、推薦或招攬。</p>
-          <h3>3. 電子報訂閱與取消</h3><p>SIGN WELL Letter 目前免費。送出 Email 後仍須點擊確認信連結才正式生效；每封正式電子報提供取消訂閱方式。本站不出售或出租訂閱者電子郵件名單。</p>
+          <h3>3. 電子報訂閱與取消</h3><p>SIGN WELL Letter 目前免費。送出 Email 後仍須輸入信箱收到的 6 位數驗證碼才正式生效；每封正式電子報提供取消訂閱方式。本站不出售或出租訂閱者電子郵件名單。</p>
           <h3>4. 未成年人</h3><p>未滿 18 歲者如欲訂閱或提供個人資料，應由法定代理人閱讀並同意相關條款與隱私權政策，或依適用法律取得必要同意。</p>
           <h3>5. 使用規範</h3><p>不得以自動化攻擊、惡意請求、繞過安全機制、冒用本站身分或其他足以影響服務正常運作的方式使用本站。</p>
           <h3>6. 智慧財產與第三方素材</h3><p>本站原創文字、編排與設計受法律保護；第三方研究、圖片、圖表、商標與資料的權利仍屬原權利人。本站以文字改寫、摘要與評論為主；第三方圖片或圖表原則上僅在自有、已取得授權、公眾領域或符合開放授權條件時使用。單純標示來源不等於取得重製權。</p>
@@ -6174,17 +6185,17 @@ function ensureNewsletterTermsModal(){
           <h3>9. 隱私與資料處理</h3><p>訂閱及使用網站時涉及的個人資料與瀏覽器儲存機制，依下方「隱私權政策」處理。</p>
           <h3>10. 準據法與管轄</h3><p>本條款以中華民國（臺灣）法律為準據法；如法律允許合意定管轄，原則上以服務提供者主要營業地所在地之地方法院為第一審管轄法院。法律另有強制規定者，從其規定。</p>
           <h3>11. 可分割性</h3><p>任一條款被認定無效、違法或不可執行時，不影響其他條款在法律允許範圍內繼續有效。</p>
-          <h3>12. 條款修訂與聯絡</h3><p>本站可能因服務、技術或法規變更更新條款並標示日期。如有疑問或權利主張，可聯絡 <a href="mailto:signwell.com@gmail.com">signwell.com@gmail.com</a>。</p>
+          <h3>12. 條款修訂與聯絡</h3><p>本站可能因服務、技術或法規變更更新條款並標示日期。如有疑問或權利主張，可聯絡 <a href="mailto:signwell.com.tw@gmail.com">signwell.com.tw@gmail.com</a>。</p>
         </section>
 
         <div class="newsletter-legal-divider" aria-hidden="true"><span>隱私權與個人資料</span></div>
         <section class="newsletter-legal-panel newsletter-legal-panel-privacy" id="legalPrivacyPanel" data-legal-panel="privacy">
-          <div class="legal-meta"><span>依台灣個資法原則設計</span><span>更新：2026-09-14</span></div>
+          <div class="legal-meta"><span>依台灣個資法原則設計</span><span>更新：2026-09-15</span></div>
           <p class="legal-intro">SIGN WELL／欣緯生醫尊重使用者的個人資料與隱私。本政策依本站目前實際功能撰寫，說明我們蒐集哪些資料、為何使用、保存多久、可能由哪些技術服務協助處理，以及你可以如何行使個人資料相關權利。</p>
 
           <h3>一、個人資料的取得</h3>
           <p>本站目前主要由你主動提供電子郵件地址以訂閱 SIGN WELL Letter；系統同時會建立訂閱狀態、訂閱／取消訂閱時間、來源與寄送紀錄。公開網站並不要求你提供身分證字號、信用卡資料、銀行帳戶或個人病歷。</p>
-          <p>網站亦可能記錄不直接識別個人的彙總瀏覽統計，並在你的瀏覽器使用 localStorage 或 sessionStorage 保存主題偏好、介面狀態、暫時快取與重複計數防護資料。</p>
+          <p>網站亦可能記錄不直接識別個人的彙總瀏覽統計，並在你的瀏覽器使用 localStorage 或 sessionStorage 保存主題偏好、介面狀態與暫時快取。電子報防濫用會建立一組隨機 First-party Device ID，保存於本機儲存與 first-party cookie 最長約 180 天；後端僅保存其雜湊，作為 60 秒重寄冷卻與每日 5 次發送上限的依據，不使用 Canvas、字型或硬體指紋。</p>
 
           <h3>二、資料蒐集之目的與類別</h3>
           <p><strong>蒐集目的：</strong>處理電子報訂閱與退訂、寄送內容與必要通知、維護網站功能、改善閱讀體驗、統計網站整體使用情形、除錯及維護服務安全。</p>
@@ -6197,7 +6208,7 @@ function ensureNewsletterTermsModal(){
 
           <h3>四、你的個人資料權利</h3>
           <p>依中華民國個人資料保護法第 3 條及其他適用規定，你得依法請求查詢或閱覽、製給複製本、補充或更正、停止蒐集／處理／利用，以及刪除你的個人資料。法律另有規定或技術上必須保留的最少資料除外。</p>
-          <p>如欲行使上述權利，可來信 <a href="mailto:signwell.com@gmail.com">signwell.com@gmail.com</a>，並提供足以確認訂閱信箱的必要資訊。</p>
+          <p>如欲行使上述權利，可來信 <a href="mailto:signwell.com.tw@gmail.com">signwell.com.tw@gmail.com</a>，並提供足以確認訂閱信箱的必要資訊。</p>
 
           <h3>五、個人資料利用與第三方服務</h3>
           <p>本站不會出售或出租你的電子郵件名單。為完成訂閱、寄送、資料保存、網站託管及系統運作，必要資料可能交由受委託的雲端或基礎服務提供者處理；其處理亦可能受該服務商自身隱私政策及法令要求約束。</p>
@@ -6215,9 +6226,9 @@ function ensureNewsletterTermsModal(){
           <p>本站目前的網站分析以頁面瀏覽等彙總計數為主，後端不以此建立可持續識別個別讀者的廣告追蹤檔案，也不將電子報 Email 與頁面瀏覽紀錄合併成個人化廣告輪廓。</p>
 
           <h3>十、未成年人</h3><p>未滿 18 歲者如欲訂閱電子報或提供個人資料，應由法定代理人閱讀並同意本政策及相關服務條款，或依適用法律取得必要同意。</p><h3>十一、政策修訂與聯絡</h3>
-          <p>本政策可能因網站功能、第三方服務或法令調整而更新。重大變更會盡可能於網站或電子報中說明。對隱私權政策或個人資料處理有疑問，可聯絡 <a href="mailto:signwell.com@gmail.com">signwell.com@gmail.com</a>。</p>
+          <p>本政策可能因網站功能、第三方服務或法令調整而更新。重大變更會盡可能於網站或電子報中說明。對隱私權政策或個人資料處理有疑問，可聯絡 <a href="mailto:signwell.com.tw@gmail.com">signwell.com.tw@gmail.com</a>。</p>
 
-          <div class="legal-contact"><strong>個資／隱私聯絡</strong><br><a href="mailto:signwell.com@gmail.com">signwell.com@gmail.com</a></div>
+          <div class="legal-contact"><strong>個資／隱私聯絡</strong><br><a href="mailto:signwell.com.tw@gmail.com">signwell.com.tw@gmail.com</a></div>
         </section>
 
         <div class="newsletter-terms-note">按下「我同意」代表你已閱讀並同意本頁的「服務條款」與「隱私權政策」。</div>
@@ -6370,23 +6381,32 @@ async function subscribeNewsletter(){
   if(!newsletterEnabled()){
     status.textContent='訂閱服務尚未啟用。';status.classList.add('error');return;
   }
-  if(newsletterTurnstileSiteKey()&&!newsletterTurnstileToken){
-    status.textContent='請先完成人機驗證。';status.classList.add('error');
-    mountNewsletterTurnstile();return;
+  if(!window.SignwellNewsletterOtp){
+    status.textContent='Email 驗證元件尚未載入，請重新整理後再試。';status.classList.add('error');return;
   }
 
   newsletterOptimisticBusy=true;btn.disabled=true;
-  const old=btn.textContent;btn.textContent='送出確認信…';status.textContent='';
+  const old=btn.textContent;btn.textContent='寄送 6 位數驗證碼…';status.textContent='';
   try{
-    await runNewsletterOptimistic4s(email,'signwell-public');
+    await window.SignwellNewsletterOtp.start({
+      email,
+      source:'signwell-public',
+      honeypot:String(document.getElementById('sw-company')?.value||''),
+      elapsed:Math.max(0,Date.now()-newsletterFormLoadedAt),
+      onVerified:()=>{
+        try{localStorage.setItem('signwell-newsletter-subscribed','1')}catch(_){}
+      }
+    });
     emailEl.value='';if(consent)consent.checked=false;
-    status.textContent='請到信箱點擊確認連結；完成確認前不會收到正式電子報。';
+    status.textContent='✓ Email 驗證完成，你已正式加入 SIGN WELL Letter。';
     status.classList.add('success');
   }catch(err){
-    hideNewsletterFlow();
-    status.textContent=String(err?.message||'確認信暫時無法寄送，請稍後再試。');
-    status.classList.add('error');
-    resetNewsletterTurnstile();
+    const msg=String(err?.message||'').trim();
+    if(msg&&msg!=='已取消 Email 驗證'){
+      status.textContent=msg;status.classList.add('error');
+    }else{
+      status.textContent='尚未完成 Email 驗證。';
+    }
   }finally{
     btn.disabled=false;btn.textContent=old;newsletterOptimisticBusy=false;
   }
@@ -6419,7 +6439,7 @@ function renderNewsletter(){
         <div class="check">✓</div>
         <div>
           <strong>等待 Email 確認</strong>
-          <div data-success-copy>完成信箱確認後才會正式加入 SIGN WELL Letter。</div>
+          <div data-success-copy>輸入正確的 6 位數驗證碼後才會正式加入 SIGN WELL Letter。</div>
         </div>
       </div>
 
@@ -6434,7 +6454,7 @@ function renderNewsletter(){
     e.preventDefault();e.stopPropagation();
     showNewsletterTermsModal();
   });
-  if(newsletterTurnstileSiteKey())requestAnimationFrame(()=>mountNewsletterTurnstile());
+  // Turnstile is intentionally lazy: first send is frictionless; resend #2+ mounts it on demand.
 
   try{
     const q=new URLSearchParams(location.search);
@@ -6532,7 +6552,7 @@ function swRelatedArticles(a){
   return `<section class="sw-related"><div class="sw-related-head"><h2>延伸閱讀</h2><span>同主題內容</span></div><div class="sw-related-grid">${same.map(x=>`<article class="sw-related-card" data-related="${escapeHTML(x.slug)}" tabindex="0"><small>${escapeHTML(x.category||'醫學筆記')} · ${readingTime(x)} 分鐘</small><b>${escapeHTML(x.title||'未命名文章')}</b><p>${escapeHTML(excerpt(x).slice(0,92))}</p></article>`).join('')}</div></section>`;
 }
 function swArticleSectionUrl(slug,sectionId=''){
-  const u=new URL(pageUrl(PAGE_FILE.home,'article/'+encodeURIComponent(slug)));
+  const u=new URL(articleUrl(slug));
   if(sectionId)u.searchParams.set('s',sectionId);else u.searchParams.delete('s');
   return u.href;
 }
@@ -6659,7 +6679,15 @@ async function renderArticle(slug){
   $$('[data-related]').forEach(el=>{const open=()=>goto('article/'+encodeURIComponent(el.dataset.related));el.onclick=open;el.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();open()}}});
   const shareUrl=articleUrl(a.slug);
   $('#copyArticle').onclick=()=>copyText(shareUrl);
-  $('#shareArticle').onclick=async()=>{try{if(navigator.share)await navigator.share({title:a.title,text:excerpt(a),url:shareUrl});else await copyText(shareUrl)}catch(e){if(e?.name!=='AbortError')showToast('這個瀏覽器不支援系統分享，連結已可手動複製')}};
+  $('#shareArticle').onclick=async()=>{
+    const shareText=`我在欣緯生醫看到了一篇超棒的文章：${a.title||'SIGN WELL 文章'}`;
+    try{
+      if(navigator.share)await navigator.share({title:shareText,text:shareText,url:shareUrl});
+      else{await copyText(`${shareText}\n${shareUrl}`);showToast('分享文字與連結已複製')}
+    }catch(e){
+      if(e?.name!=='AbortError'){await copyText(`${shareText}\n${shareUrl}`);showToast('系統分享不可用，分享文字與連結已複製')}
+    }
+  };
   $('#continueArticle').onclick=()=>swOpenContinueQR(a);
   $('#emailSelfArticle').onclick=()=>{const u=encodeURIComponent(swArticleSectionUrl(a.slug,swCurrentSection()));const subject=encodeURIComponent('稍後閱讀｜'+(a.title||'SIGN WELL'));location.href=`mailto:?subject=${subject}&body=${u}`};
   const view=document.querySelector('.article-view');const fontDock=swMountArticleFontDock(view);let fs='small';try{fs=localStorage.getItem('signwell-reader-font-v2')||'small'}catch(_){}swApplyReaderFont(view,fs);fontDock?.querySelectorAll('[data-font-size]').forEach(b=>b.onclick=()=>swApplyReaderFont(view,b.dataset.fontSize));
@@ -6686,6 +6714,8 @@ function bindScrollCue(){
 /* ---------- render orchestration ---------- */
 async function paint(){
   const r=route();
+  document.documentElement.classList.toggle('article-reading',r.page==='article');
+  document.body.classList.toggle('article-reading',r.page==='article');
   if(r.page!=='article')swDismissArticleFontDock();
   setNav(routeIndex(r));
   if(r.page==='home')renderHome();
@@ -6841,7 +6871,7 @@ function pagerPageURL(page){
   if(page==='about')return pageUrl(PAGE_FILE.about);
   if(page==='share')return pageUrl(PAGE_FILE.share);
   if(page==='newsletter')return pageUrl(PAGE_FILE.newsletter);
-  if(page.startsWith('article/'))return pageUrl(PAGE_FILE.home,page);
+  if(page.startsWith('article/'))return articleUrl(decodeURIComponent(page.slice(8)));
   if(page.startsWith('topic/'))return pageUrl(PAGE_FILE.topics,page);
   return '';
 }
@@ -7314,6 +7344,7 @@ function openSearch(){document.body.classList.add('search-open');
   ov.classList.add('show');
   document.body.style.overflow='hidden';
   $('#searchInput').value='';
+  if(window.SignWellEasterEgg)SignWellEasterEgg.reset();
   renderSearch('');
   setTimeout(()=>$('#searchInput').focus(),90);
 }
@@ -7367,10 +7398,23 @@ function applyTheme(){
   document.body.classList.toggle('dark',dark);
   $('#themeColorMeta')?.setAttribute('content',dark?'#1a1814':'#eef7ff');
 }
-function toggleTheme(){
+function toggleTheme(ev){
+  const btn=$('#themeBtn');
+  const rect=btn?.getBoundingClientRect?.();
+  const x=Number.isFinite(ev?.clientX)&&ev.clientX>0?ev.clientX:(rect?rect.left+rect.width/2:innerWidth*.92);
+  const y=Number.isFinite(ev?.clientY)&&ev.clientY>0?ev.clientY:(rect?rect.top+rect.height/2:innerHeight*.08);
+  document.documentElement.style.setProperty('--sw-theme-x',x+'px');
+  document.documentElement.style.setProperty('--sw-theme-y',y+'px');
   localStorage.setItem('signwell-theme',document.body.classList.contains('dark')?'light':'dark');
   const run=()=>applyTheme();
-  if(document.startViewTransition&&!reduceMotion())document.startViewTransition(run);else run();
+  document.documentElement.classList.add('sw-theme-changing');
+  if(document.startViewTransition&&!reduceMotion()){
+    const vt=document.startViewTransition(run);
+    vt.finished.finally(()=>document.documentElement.classList.remove('sw-theme-changing'));
+  }else{
+    run();
+    setTimeout(()=>document.documentElement.classList.remove('sw-theme-changing'),460);
+  }
 }
 
 
@@ -7495,7 +7539,7 @@ function ensureIdleSubscribePrompt(){
         <input type="email" autocomplete="email" inputmode="email" placeholder="your@email.com" aria-label="Email" required>
         <button type="submit">免費訂閱 SIGN WELL</button>
       </form>
-      <div class="idle-subscribe-note">完全免費；送出後請到信箱點擊確認連結，確認後才會正式加入。你可以隨時取消訂閱。</div>
+      <div class="idle-subscribe-note">完全免費；送出後請到信箱查看 6 位數驗證碼，5 分鐘內輸入正確後才會正式加入。你可以隨時取消訂閱。</div>
     </div>`;
   document.body.appendChild(el);
 
@@ -7523,13 +7567,17 @@ function ensureIdleSubscribePrompt(){
       button.textContent='訂閱中…';
       note.textContent='正在建立訂閱…';
 
-      await runNewsletterOptimistic4s(email,'signwell-idle-prompt');
-
-      note.textContent='確認信已寄出。請到信箱點擊確認連結完成免費訂閱。';
-      button.textContent='等待確認';
-      markIdleSubscribeHandled(true);
-
-      setTimeout(()=>el.classList.remove('show'),900);
+      try{
+        hideIdleSubscribePrompt(false);
+        await window.SignwellNewsletterOtp.start({email,source:'signwell-idle-prompt',honeypot:'',elapsed:Math.max(0,Date.now()-newsletterFormLoadedAt)});
+        note.textContent='✓ Email 驗證完成，已正式加入 SIGN WELL Letter。';
+        button.textContent='已完成訂閱';
+        markIdleSubscribeHandled(true);
+      }catch(err){
+        button.disabled=false;button.textContent='免費訂閱 SIGN WELL';
+        note.textContent=String(err?.message||'尚未完成 Email 驗證。');
+        requestAnimationFrame(()=>el.classList.add('show'));
+      }
     });
   });
 
@@ -7647,7 +7695,7 @@ $('#brandHome').onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault(
 $('#searchBtn').onclick=openSearch;
 $('#searchClose').onclick=closeSearch;
 $('#searchOverlay').onclick=e=>{if(e.target===$('#searchOverlay'))closeSearch()};
-$('#searchInput').oninput=e=>renderSearch(e.target.value);
+$('#searchInput').oninput=e=>{renderSearch(e.target.value);if(window.SignWellEasterEgg)SignWellEasterEgg.handleSearch(e.target.value)};
 $('#themeBtn').onclick=toggleTheme;
 
 document.addEventListener('keydown',e=>{
@@ -7835,6 +7883,7 @@ window.addEventListener('pagehide',()=>{
 
 </script>
 
+<script src="assets/signwell-easter-egg.js?build=23.9.81"></script>
 <script src="assets/signwell-common.js?build=23.9.58"></script>
 
 
@@ -7851,5 +7900,6 @@ window.addEventListener('pagehide',()=>{
 
 <script src="assets/signwell-runtime.js?build=23.9.20"></script>
 <script src="assets/signwell-dialogs.js?build=23.9.1"></script>
+<script src="assets/signwell-newsletter-otp.js?v=23.9.82"></script>
 </body>
 </html>
