@@ -1,8 +1,9 @@
 <!doctype html>
+<!-- v23.9.90-STAGING -->
 <html lang="zh-Hant">
 <head>
 <meta charset="utf-8">
-<meta name="signwell-release" content="23.9.82">
+<meta name="signwell-release" content="23.9.89-STAGING">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="robots" content="index,follow,max-snippet:-1,max-image-preview:large,max-video-preview:-1">
 <meta name="googlebot" content="index,follow,max-snippet:-1,max-image-preview:large,max-video-preview:-1">
@@ -4976,9 +4977,10 @@ body.dark .newsletter-terms-agree-label{
   -webkit-text-fill-color:#101216!important;
 }
 </style>
-<link rel="stylesheet" href="assets/signwell-wabi-dark.css?build=23.9.64">
 <link rel="stylesheet" href="assets/signwell-easter-egg.css?build=23.9.81">
 <link rel="stylesheet" href="assets/signwell-newsletter-otp.css?v=23.9.82">
+<link rel="stylesheet" href="assets/signwell-liquid-glass-motion.css?build=23.9.90-STAGING">
+<link rel="stylesheet" href="assets/signwell-wabi-dark.css?build=23.9.90-STAGING">
 </head>
 <body class="boot-preparing" data-page="about">
 <div class="sw-page-loader" id="swPageLoader" role="status" aria-live="polite" aria-label="頁面載入進度"><div class="sw-page-loader-card"><div class="sw-page-loader-brand">SIGN WELL</div><div class="sw-page-loader-sub">欣緯生醫</div><div class="sw-page-loader-track" aria-hidden="true"><i class="sw-page-loader-bar"></i></div><div class="sw-page-loader-meta"><span class="sw-page-loader-stage">準備頁面</span><strong class="sw-page-loader-pct">6%</strong></div></div></div>
@@ -5039,6 +5041,8 @@ body.dark .newsletter-terms-agree-label{
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <script src="analytics-config.js"></script>
+<script src="assets/signwell-math-engine.js?build=23.9.90-STAGING"></script>
+<script src="assets/signwell-liquid-glass-motion.js?build=23.9.90-STAGING"></script>
 <script>
 (()=>{
 'use strict';
@@ -7246,6 +7250,7 @@ function initPointerFX(){
 
   const glow=$('#cursorGlow');
   let gx=innerWidth/2,gy=innerHeight/2,tx=gx,ty=gy,idle=0,looping=false;
+  const useTrigGlass=Boolean(window.SignWellLiquidGlassMotion);
   let card=null,cx=0,cy=0,pending=false;
 
   const loop=()=>{
@@ -7269,10 +7274,12 @@ function initPointerFX(){
   document.addEventListener('pointermove',e=>{
     tx=e.clientX;ty=e.clientY;idle=0;
     if(!looping){looping=true;raf(loop)}
-    const el=e.target.closest?.('.hero-card,.article-card,.topic-card,.share-card');
-    if(el!==card&&card)resetCard(card);
-    card=el;cx=e.clientX;cy=e.clientY;
-    if(card&&!pending){pending=true;raf(applyCard)}
+    if(!useTrigGlass){
+      const el=e.target.closest?.('.hero-card,.article-card,.topic-card,.share-card');
+      if(el!==card&&card)resetCard(card);
+      card=el;cx=e.clientX;cy=e.clientY;
+      if(card&&!pending){pending=true;raf(applyCard)}
+    }
   },{passive:true});
 
   document.addEventListener('pointerleave',()=>{if(card)resetCard(card);card=null},{passive:true});
