@@ -1,0 +1,39 @@
+/* ---------- boot ---------- */
+(async()=>{
+  window.SignWellErrors?.installGlobal?.({surface:'PUB',module:'public-runtime',homeUrl:'https://signwell.com.tw/'});
+  optimize();applyTheme();applyChrome();initGlobalVisualPause();initAdaptiveVisualQuality();
+  preparePagerRouteEntrance();
+
+  /* Use the welcome screen as a real warm-up window. */
+  const warmPromise=warmStartupCache();
+  initWelcome();prefetchSiblingPages();
+
+  Slider.init();initPointerFX();initScrollFX();initPressFX();
+  setNav(routeIndex(route()),true);
+
+  /* Begin network work in parallel while the splash is still visible. */
+  const articlePromise=loadArticles();
+  const bundlePromise=loadPublicBundle();
+
+  await paint();
+  await articlePromise;
+  const bundleLoaded=await bundlePromise;
+  if(!bundleLoaded)await loadTopics();
+
+  ready=true;
+  applyChrome();
+  await paint();
+  playPagerRouteEntrance();
+  preloadVisibleCovers();
+  initReveal();
+  initIdleSubscriptionPrompt();
+
+  warmPromise.catch(()=>{});
+  schedulePublicRevalidate((!swBootArticlesFromCache&&!swBootBundleFromCache)?12000:260);
+})();
+})();
+
+window.addEventListener('pagehide',()=>{
+  document.body.classList.add('visual-paused');
+},{passive:true});
+

@@ -1,0 +1,587 @@
+
+(()=>{
+'use strict';
+
+/* ---------- helpers ---------- */
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)],app=$('#app');
+const raf=requestAnimationFrame;
+const reduceMotion=()=>matchMedia('(prefers-reduced-motion:reduce)').matches;
+const lite=()=>document.body.classList.contains('lite');
+
+
+function signwellPublicBackendBase(){
+  const a=window.SIGNWELL_ANALYTICS||{};
+  const n=window.SIGNWELL_NEWSLETTER||{};
+  return String(n.endpoint||a.endpoint||'').replace(/\/+$/,'');
+}
+function signwellPublicBackendEnabled(){
+  const a=window.SIGNWELL_ANALYTICS||{};
+  const n=window.SIGNWELL_NEWSLETTER||{};
+  const enabled=a.enabled===true||n.enabled===true;
+  return enabled&&/^https:\/\//i.test(signwellPublicBackendBase());
+}
+function signwellPublicGasBridge(action,payload={},timeoutMs=22000){
+  return new Promise((resolve,reject)=>{
+    if(!signwellPublicBackendEnabled()){const e=window.SignWellErrors?.bridgeError?.('SIGN WELL Backend 尚未啟用',{status:503,errorCode:'SW-PUB-503-BACKEND-DISABLED',module:'backend-bridge',action})||new Error('SIGN WELL Backend 尚未啟用');return reject(e);}
+
+    const endpoint=signwellPublicBackendBase();
+    const requestId='swp_'+Date.now().toString(36)+'_'+Math.random().toString(36).slice(2);
+    const frameName='swpframe_'+requestId;
+    const iframe=document.createElement('iframe');
+    iframe.name=frameName;
+    iframe.title='SIGN WELL Backend';
+    iframe.tabIndex=-1;
+    iframe.setAttribute('aria-hidden','true');
+    Object.assign(iframe.style,{
+      position:'fixed',width:'1px',height:'1px',opacity:'0',
+      pointerEvents:'none',left:'-9999px',top:'-9999px'
+    });
+
+    const form=document.createElement('form');
+    form.method='POST';
+    form.action=endpoint;
+    form.target=frameName;
+    form.style.display='none';
+
+    const add=(name,value)=>{
+      const input=document.createElement('input');
+      input.type='hidden';
+      input.name=name;
+      input.value=String(value??'');
+      form.appendChild(input);
+    };
+    add('transport','iframe');
+    add('requestId',requestId);
+    add('returnOrigin',location.origin);
+    add('action',action);
+    add('payload',JSON.stringify(payload||{}));
+
+    let timer=null;
+    const cleanup=()=>{
+      clearTimeout(timer);
+      window.removeEventListener('message',onMessage);
+      form.remove();
+      setTimeout(()=>iframe.remove(),50);
+    };
+    const onMessage=e=>{
+      const d=e.data;
+      if(!d||d.source!=='SIGNWELL_GAS'||d.requestId!==requestId)return;
+      cleanup();
+      d.ok?resolve(d.data||{}):reject(window.SignWellErrors?.bridgeError?.(d.error||'SIGN WELL Backend error',{status:d.status,errorCode:d.errorCode,errorId:d.errorId,requestId:d.errorRequestId||d.requestId,module:d.errorModule||'backend-bridge',action:d.errorAction||action,reason:d.errorReason,retryable:d.retryable})||new Error(d.error||'SIGN WELL Backend error'));
+    };
+
+    window.addEventListener('message',onMessage);
+    timer=setTimeout(()=>{
+      cleanup();
+      reject(window.SignWellErrors?.bridgeError?.('SIGN WELL Backend 連線逾時',{status:504,errorCode:'SW-PUB-504-BRIDGE-TIMEOUT',requestId,module:'backend-bridge',action,reason:'iframe bridge 未在指定時間內完成 postMessage handshake',retryable:true})||new Error('SIGN WELL Backend 連線逾時'));
+    },timeoutMs);
+
+    document.body.appendChild(iframe);
+    document.body.appendChild(form);
+    form.submit();
+  });
+}
+
+const ANALYTICS_KEY='signwell-analytics-v1';
+const ANALYTICS_CHANNEL='signwell-analytics';
+
+const ANALYTICS_CFG=()=>window.SIGNWELL_ANALYTICS||{};
+function analyticsEndpoint(){
+  return signwellPublicBackendBase();
+}
+function remoteAnalyticsEnabled(){
+  const a=ANALYTICS_CFG(),n=window.SIGNWELL_NEWSLETTER||{};
+  const enabled=a.enabled===true||n.enabled===true;
+  return enabled&&/^https:\/\//i.test(signwellPublicBackendBase());
+}
+function sendRemoteView(kind,key,eventId){
+  if(!remoteAnalyticsEnabled())return;
+  signwellPublicGasBridge('analytics.track',{
+    kind:String(kind||''),
+    key:String(key||''),
+    eventId:String(eventId||''),
+    path:location.pathname+location.hash,
+    referrer:document.referrer?String(document.referrer).slice(0,240):''
+  },16000).catch(()=>{});
+}
+
+function analyticsToday(){
+  try{
+    const parts=new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Taipei',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(new Date());
+    const m=Object.fromEntries(parts.map(x=>[x.type,x.value]));
+    return `${m.year}-${m.month}-${m.day}`;
+  }catch(_){return new Date().toISOString().slice(0,10)}
+}
+function readPublicAnalytics(){
+  try{
+    const a=JSON.parse(localStorage.getItem(ANALYTICS_KEY)||'{}');
+    return {
+      version:1,
+      total:Number(a.total||0),
+      daily:a.daily&&typeof a.daily==='object'?a.daily:{},
+      articles:a.articles&&typeof a.articles==='object'?a.articles:{}
+    };
+  }catch(_){return{version:1,total:0,daily:{},articles:{}}}
+}
+function writePublicAnalytics(a){
+  try{
+    localStorage.setItem(ANALYTICS_KEY,JSON.stringify(a));
+    try{const bc=new BroadcastChannel(ANALYTICS_CHANNEL);bc.postMessage({type:'view'});bc.close()}catch(_){}
+  }catch(_){}
+}
+function trackPublicView(kind,key){
+  const clean=String(key||'').trim();
+  if(!clean)return;
+
+  const eventId=makeAnalyticsEventId(kind,clean);
+  sendRemoteView(kind,clean,eventId);
+
+  /* local fallback mirrors the actual route transition count.
+     It is no longer the canonical CMS number once Google Sheet Analytics is enabled. */
+  const a=readPublicAnalytics(),day=analyticsToday();
+  a.total+=1;
+  a.daily[day]=Number(a.daily[day]||0)+1;
+
+  if(kind==='article'){
+    const item=a.articles[clean]&&typeof a.articles[clean]==='object'
+      ?a.articles[clean]
+      :{total:0,daily:{}};
+
+    item.total=Number(item.total||0)+1;
+    item.daily=item.daily&&typeof item.daily==='object'?item.daily:{};
+    item.daily[day]=Number(item.daily[day]||0)+1;
+    item.lastAt=new Date().toISOString();
+    a.articles[clean]=item;
+  }
+
+  writePublicAnalytics(a);
+}
+
+let lastTrackedViewSignature='';
+
+function makeAnalyticsEventId(kind,key){
+  try{
+    return 'pv_'+crypto.randomUUID();
+  }catch(_){
+    return 'pv_'+Date.now().toString(36)+'_'+Math.random().toString(36).slice(2)+'_'+String(kind)+'_'+String(key).slice(0,36);
+  }
+}
+
+function trackRouteView(r){
+  let kind='',key='';
+  if(r.page==='article'&&ready){kind='article';key=r.slug}
+  else if(r.page==='topicDetail'&&ready){kind='page';key='topic:'+r.slug}
+  else if(['home','topics','about','share','newsletter'].includes(r.page)){kind='page';key=r.page}
+  if(!kind||!key)return;
+
+  const sig=kind+':'+key;
+  if(sig===lastTrackedViewSignature)return;
+  lastTrackedViewSignature=sig;
+  trackPublicView(kind,key);
+}
+
+function defaultCoverMarkup(a,large=false){
+  const title=escapeHTML(a?.title||'SIGN WELL');
+  const cat=escapeHTML(a?.category||'醫學筆記');
+  return `<div class="${large?'article-cover ':''}${large?'':'card-cover '}default-cover" aria-label="${title} 預設封面">
+    <div class="default-cover-mark">SIGN WELL</div>
+    <div class="default-cover-copy"><span>${cat}</span><span>SIGN WELL</span></div>
+  </div>`;
+}
+
+
+const DEFAULT_SITE_TEXT={siteTitle:'SIGN WELL · 欣緯生醫',brandEnglish:'SIGN WELL',brandChinese:'欣緯生醫',homeEyebrow:'SIGN WELL BIOMED · 欣緯生醫',homeTitle1:'從臨床出發，',homeTitle2:'把值得留下的醫學寫清楚。',homeSubtitle:'以臨床推理、醫學教育與自費醫療觀察為核心的知識平台。從一個問題開始，整理成下一次真正用得上的答案。',homeCardTitle:'醫學不只是答案，而是理解答案從哪裡來。',homeCardBody:'把床邊問題、閱讀與思考整理成可回顧的知識，讓資訊回到臨床情境。',dailyEyebrow:'每日更新',dailyTitle:'每日新文章',dailyDescription:'最新整理與近期發布',topicsEyebrow:'主題探討',topicsTitle:'從一個主題，深入理解一整套問題。',topicsSubtitle:'依領域整理文章、臨床問題與延伸閱讀。',shareEyebrow:'分享我們',shareTitle:'把 SIGN WELL 分享給需要的人。',shareSubtitle:'複製網站連結，或使用 QR Code 讓另一台裝置快速開啟。',aboutEyebrow:'ABOUT SIGN WELL · 關於我們',aboutTitle:'關於我們',aboutBody:'SIGN WELL 是一個以臨床推理、醫學教育與健康知識為核心的出版空間。從問題出發，整理脈絡、證據與真正值得留下的判斷。',aboutManifestoTitle:'把複雜的醫學，整理成真正能被理解與使用的知識。',aboutManifestoBody:'我們重視推理、脈絡與長期可回顧性，而不只是快速堆疊資訊。',aboutFocusLabel:'核心',aboutFocusValue:'臨床推理',aboutFormatLabel:'形式',aboutFormatValue:'筆記 · 深度整理',aboutPrincipleLabel:'原則',aboutPrincipleValue:'清楚勝過複雜',aboutPeopleEyebrow:'PEOPLE',aboutPeopleTitle:'我們是誰',aboutPeopleSubtitle:'以不同背景與專長，共同整理值得留下的醫學與健康知識。',aboutDisclaimer:'本站不提供醫療服務、不招攬醫療業務；內容僅供醫學教育與資訊整理，不構成個別醫療建議，也不能取代正式臨床評估。',articleCountSuffix:'篇文章',minutesReadSuffix:'分鐘閱讀',shareLabel:'分享',copyLinkLabel:'複製連結',tocTitle:'本頁內容',footerTagline:'臨床筆記、醫學推理，以及值得留下的知識。',footerDisclaimer:'本站不提供醫療服務、不招攬醫療業務；內容僅供醫學教育與資訊整理，不構成個別醫療建議。',searchPlaceholder:'搜尋文章、主題、關鍵字…'};
+let siteText={...DEFAULT_SITE_TEXT,...(window.SIGNWELL_SITE_TEXT||{})};
+const t=(k,fb='')=>siteText[k]??fb;
+
+let articles=[],topics=[],people=[],articleCache=new Map(),ready=false;
+
+function escapeHTML(s=''){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]))}
+
+function iconSvg(name,cls='ui-icon'){
+  const icons={
+    share:'<circle cx="6" cy="12" r="2.3"/><circle cx="18" cy="6" r="2.3"/><circle cx="18" cy="18" r="2.3"/><path d="m8.1 10.9 7.7-3.8M8.1 13.1l7.7 3.8"/>',
+    copy:'<rect x="8" y="8" width="10" height="10" rx="1.8"/><path d="M6 15H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h7a2 2 0 0 1 2 2v1"/>',
+    link:'<path d="M10 13a5 5 0 0 0 7.1.1l2-2a5 5 0 0 0-7.1-7.1l-1.1 1.1"/><path d="M14 11a5 5 0 0 0-7.1-.1l-2 2A5 5 0 0 0 12 20l1.1-1.1"/>'
+  };
+  return `<span class="${cls}" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false">${icons[name]||icons.link}</svg></span>`;
+}
+
+function slugify(s=''){return String(s).toLowerCase().replace(/[^\p{L}\p{N}]+/gu,'-').replace(/^-|-$/g,'').slice(0,70)}
+
+/* ---------- data ---------- */
+function parseLegacy(text=''){const m=String(text).match(/window\.BLOG_ARTICLES\s*=\s*([\s\S]*);\s*$/);if(!m)return[];try{return JSON.parse(m[1]).filter(x=>x&&x.status==='Published')}catch(_){return[]}}
+
+const SW_ARTICLES_CACHE='signwell-public-articles-v23-9-42';
+const SW_TOPICS_CACHE='signwell-public-topics-v22-2';
+const SW_BUNDLE_CACHE='signwell-public-bundle-v22-2';
+const SW_REVISION_KEY='signwell-public-data-revision';
+const PUBLIC_BUNDLE_PATH='public-data.json';
+const PUBLIC_RAW_BUNDLE='https://raw.githubusercontent.com/980510linz/-/main/public-data.json';
+const PUBLIC_RAW_INDEX='https://raw.githubusercontent.com/980510linz/-/main/articles/index.json';
+const PUBLIC_RAW_BASE='https://raw.githubusercontent.com/980510linz/-/main/';
+let publicBundleRevision=0;
+let swLastRefresh=0;
+const SW_IS_SHARE_DOCUMENT=(location.pathname.split('/').pop()||'').toLowerCase()==='share.html';
+
+function readSessionJSON(key){
+  try{const v=sessionStorage.getItem(key);return v?JSON.parse(v):null}catch(_){return null}
+}
+function writeSessionJSON(key,value){
+  try{sessionStorage.setItem(key,JSON.stringify(value))}catch(_){}
+}
+function stableJSON(v){try{return JSON.stringify(v)}catch(_){return''}}
+function sortArticles(){articles.sort((a,b)=>String(b.publishedAt||'').localeCompare(String(a.publishedAt||'')))}
+function sortTopics(){topics.sort((a,b)=>(a.order??999)-(b.order??999)||String(a.name).localeCompare(String(b.name),'zh-Hant'))}
+
+
+
+function normalizePeople(list){
+  return (Array.isArray(list)?list:[])
+    .filter(x=>x&&x.active!==false)
+    .map((x,i)=>({
+      id:String(x.id||('person-'+i)),
+      name:String(x.name||'未命名'),
+      role:String(x.role||''),
+      bio:String(x.bio||''),
+      photo:String(x.photo||''),
+      expertise:Array.isArray(x.expertise)
+        ?x.expertise.map(String).filter(Boolean)
+        :String(x.expertise||'').split(',').map(s=>s.trim()).filter(Boolean),
+      education:Array.isArray(x.education)
+        ?x.education.map(String).filter(Boolean)
+        :String(x.education||'').split(/\n+/).map(s=>s.trim()).filter(Boolean),
+      experience:Array.isArray(x.experience)
+        ?x.experience.map(String).filter(Boolean)
+        :String(x.experience||'').split(/\n+/).map(s=>s.trim()).filter(Boolean),
+      order:Number.isFinite(Number(x.order))?Number(x.order):i,
+      active:x.active!==false
+    }))
+    .sort((a,b)=>(a.order??999)-(b.order??999)||String(a.name).localeCompare(String(b.name),'zh-Hant'));
+}
+function personInitials(name=''){
+  const clean=String(name).trim();
+  if(!clean)return 'SW';
+  const words=clean.split(/\s+/).filter(Boolean);
+  if(words.length>1)return (words[0][0]+words[words.length-1][0]).toUpperCase();
+  return clean.slice(0,2).toUpperCase();
+}
+function personListHTML(items=[]){
+  if(!items.length)return '<div class="about-empty">目前尚未新增公開人物。可從 CMS → 網站文字 → 關於我們新增。</div>';
+  return items.map(person=>{
+    const education=person.education||[];
+    const experience=person.experience||[];
+    const expertise=person.expertise||[];
+    return `<article class="person-card glass lightcard sheen">${glassLayers}
+      <div class="person-top">
+        <div class="person-avatar">${person.photo?`<img src="${escapeHTML(person.photo)}" alt="${escapeHTML(person.name)}" loading="lazy" decoding="async">`:escapeHTML(personInitials(person.name))}</div>
+        <div>
+          <div class="person-kicker">SIGN WELL · PROFILE</div>
+          <h3 class="person-name">${escapeHTML(person.name)}</h3>
+          ${person.role?`<div class="person-role">${escapeHTML(person.role)}</div>`:''}
+        </div>
+      </div>
+      ${person.bio?`<p class="person-bio">${escapeHTML(person.bio)}</p>`:''}
+      ${expertise.length?`<div class="person-tags">${expertise.map(x=>`<span class="person-tag">${escapeHTML(x)}</span>`).join('')}</div>`:''}
+      ${(education.length||experience.length)?`<div class="person-history">
+        <div>
+          <h4>EDUCATION · 學歷</h4>
+          ${education.length?`<ul>${education.map(x=>`<li>${escapeHTML(x)}</li>`).join('')}</ul>`:'<div class="person-role">—</div>'}
+        </div>
+        <div>
+          <h4>EXPERIENCE · 經歷</h4>
+          ${experience.length?`<ul>${experience.map(x=>`<li>${escapeHTML(x)}</li>`).join('')}</ul>`:'<div class="person-role">—</div>'}
+        </div>
+      </div>`:''}
+    </article>`;
+  }).join('');
+}
+
+
+function validBundle(v){
+  return v&&typeof v==='object'
+    &&Array.isArray(v.topics)
+    &&v.siteText&&typeof v.siteText==='object';
+}
+function bundleRevision(v){
+  const n=Number(v?.revision||0);
+  return Number.isFinite(n)?n:0;
+}
+function normalizeTopics(list){
+  return (Array.isArray(list)?list:[])
+    .filter(x=>x&&x.active!==false)
+    .map((x,i)=>({
+      id:String(x.id||('topic-'+i)),
+      name:String(x.name||'未命名主題'),
+      slug:String(x.slug||slugify(x.name||('topic-'+i))),
+      description:String(x.description||''),
+      order:Number.isFinite(Number(x.order))?Number(x.order):i,
+      active:x.active!==false
+    }))
+    .sort((a,b)=>(a.order??999)-(b.order??999)||String(a.name).localeCompare(String(b.name),'zh-Hant'));
+}
+function applyPublicBundle(bundle,{paintNow=true}={}){
+  if(!validBundle(bundle))return false;
+  const rev=bundleRevision(bundle);
+  publicBundleRevision=Math.max(publicBundleRevision,rev);
+  siteText={...DEFAULT_SITE_TEXT,...bundle.siteText};
+  topics=normalizeTopics(bundle.topics);
+  people=normalizePeople(bundle.people);
+  window.SIGNWELL_GLOSSARY=Array.isArray(bundle.glossary)?bundle.glossary.filter(g=>g&&g.active!==false):[];
+  try{window.dispatchEvent(new CustomEvent('signwell:glossary-updated'))}catch(_){}
+  writeSessionJSON(SW_BUNDLE_CACHE,bundle);
+  writeSessionJSON(SW_TOPICS_CACHE,topics);
+  applyChrome();
+  if(ready&&paintNow){
+    paint().then(()=>initReveal()).catch(()=>{});
+  }
+  return true;
+}
+function readCachedPublicBundle(){
+  const b=readSessionJSON(SW_BUNDLE_CACHE);
+  if(validBundle(b)){applyPublicBundle(b,{paintNow:false});return true}
+  return false;
+}
+async function fetchBundleCandidate(url){
+  try{
+    const r=await fetch(url+(url.includes('?')?'&':'?')+'sw='+Date.now(),{
+      cache:'no-store',
+      headers:{'Accept':'application/json'}
+    });
+    if(!r.ok)throw 0;
+    const v=await r.json();
+    return validBundle(v)?v:null;
+  }catch(_){return null}
+}
+async function fetchPublicBundleFresh(){
+  /* Read both GitHub Pages and raw main. Raw main lets CMS changes appear
+     before Pages deployment catches up. We choose the newest revision. */
+  const [pageRes,rawRes]=await Promise.allSettled([
+    fetchBundleCandidate(PUBLIC_BUNDLE_PATH),
+    fetchBundleCandidate(PUBLIC_RAW_BUNDLE)
+  ]);
+  const candidates=[
+    pageRes.status==='fulfilled'?pageRes.value:null,
+    rawRes.status==='fulfilled'?rawRes.value:null
+  ].filter(validBundle);
+  if(!candidates.length)return null;
+  candidates.sort((a,b)=>bundleRevision(b)-bundleRevision(a));
+  return candidates[0];
+}
+async function loadPublicBundle(){
+  if(!SW_IS_SHARE_DOCUMENT)readCachedPublicBundle();
+  const fresh=await fetchPublicBundleFresh();
+  if(!fresh)return false;
+  applyPublicBundle(fresh,{paintNow:false});
+  return true;
+}
+
+async function fetchArticleIndexCandidate(url){
+  try{
+    const r=await fetch(url+(url.includes('?')?'&':'?')+'sw='+Date.now(),{cache:'no-store',headers:{'Accept':'application/json'}});
+    if(!r.ok)throw 0;
+    const a=await r.json();
+    if(!Array.isArray(a))throw 0;
+    return a.filter(x=>x&&x.status==='Published');
+  }catch(_){return null}
+}
+async function fetchArticlesFresh(){
+  /* Raw main is authoritative for delete visibility: GitHub Pages can lag behind a commit.
+     Fall back to the Pages copy only when raw main is temporarily unavailable. */
+  const raw=await fetchArticleIndexCandidate(PUBLIC_RAW_INDEX);
+  if(Array.isArray(raw))return {ok:true,data:raw,source:'raw'};
+  const page=await fetchArticleIndexCandidate('articles/index.json');
+  return Array.isArray(page)?{ok:true,data:page,source:'pages'}:{ok:false,data:[]};
+}
+
+function swReconcileArticleCache(next){
+  const live=new Set((Array.isArray(next)?next:[]).map(x=>String(x&&x.slug||'')).filter(Boolean));
+  for(const slug of articleCache.keys())if(!live.has(String(slug)))articleCache.delete(slug);
+  articles=(Array.isArray(next)?next:[]).filter(x=>x&&x.status==='Published');
+  sortArticles();
+  return articles;
+}
+async function loadArticles(){
+  const cached=SW_IS_SHARE_DOCUMENT?null:readSessionJSON(SW_ARTICLES_CACHE);
+  if(Array.isArray(cached)){
+    articles=cached.filter(x=>x&&x.status==='Published');
+    sortArticles();
+  }
+  const fresh=await fetchArticlesFresh();
+  if(fresh.ok){
+    swReconcileArticleCache(fresh.data);
+    writeSessionJSON(SW_ARTICLES_CACHE,articles);
+  }else if(!Array.isArray(cached)){
+    articles=[];
+    sortArticles();
+  }
+}
+
+async function fetchTopicsFresh(){
+  try{
+    /* Unique query + no-store prevents Safari/GitHub Pages from serving the previous topic file. */
+    const r=await fetch('topics/index.json?sw='+Date.now(),{cache:'no-store'});
+    if(!r.ok)throw 0;
+    const a=await r.json();
+    if(!Array.isArray(a))throw 0;
+    return {ok:true,data:a.filter(x=>x&&x.active!==false)};
+  }catch(_){
+    return {ok:false,data:[]};
+  }
+}
+
+function topicFallbackFromArticles(){
+  const seen=new Set();
+  return articles.map(a=>a.category).filter(Boolean).filter(n=>!seen.has(n)&&seen.add(n))
+    .map((name,i)=>({id:'auto-'+i,name,slug:slugify(name),description:'瀏覽 '+name+' 相關文章與延伸整理。',order:i,active:true}));
+}
+
+async function loadTopics(){
+  const cached=readSessionJSON(SW_TOPICS_CACHE);
+  if(Array.isArray(cached)){
+    /* Empty [] is valid: CMS is allowed to publish zero visible topics. */
+    topics=cached.filter(x=>x&&x.active!==false);
+    sortTopics();
+    return;
+  }
+  const fresh=await fetchTopicsFresh();
+  topics=fresh.ok?fresh.data:topicFallbackFromArticles();
+  sortTopics();
+  if(fresh.ok)writeSessionJSON(SW_TOPICS_CACHE,topics);
+}
+
+/* Stale-while-revalidate that actually updates the current screen.
+   v13.2 refreshed only the cache in the background, so the visible topic page
+   could stay stale until another navigation. */
+async function revalidatePublicData(force=false){
+  const now=Date.now();
+  if(!force && now-swLastRefresh<2500)return false;
+  swLastRefresh=now;
+
+  const beforeArticles=stableJSON(articles);
+  const beforeTopics=stableJSON(topics);
+  const beforeSite=stableJSON(siteText);
+  const beforePeople=stableJSON(people);
+
+  const [af,bundle]=await Promise.all([
+    fetchArticlesFresh(),
+    fetchPublicBundleFresh()
+  ]);
+
+  let changed=false;
+
+  if(af.ok){
+    const nextA=af.data.filter(x=>x&&x.status==='Published');
+    nextA.sort((a,b)=>String(b.publishedAt||'').localeCompare(String(a.publishedAt||'')));
+    if(stableJSON(nextA)!==beforeArticles){
+      swReconcileArticleCache(nextA);
+      changed=true;
+    }
+    writeSessionJSON(SW_ARTICLES_CACHE,nextA);
+  }
+
+  if(bundle){
+    const nextTopics=normalizeTopics(bundle.topics);
+    const nextSite={...DEFAULT_SITE_TEXT,...bundle.siteText};
+    const nextPeople=normalizePeople(bundle.people);
+    if(stableJSON(nextTopics)!==beforeTopics||stableJSON(nextSite)!==beforeSite||stableJSON(nextPeople)!==beforePeople)changed=true;
+    applyPublicBundle(bundle,{paintNow:false});
+  }else{
+    /* Compatibility fallback for old repositories before public-data.json exists. */
+    const tf=await fetchTopicsFresh();
+    if(tf.ok){
+      const nextT=normalizeTopics(tf.data);
+      if(stableJSON(nextT)!==beforeTopics){
+        topics=nextT;
+        changed=true;
+      }
+      writeSessionJSON(SW_TOPICS_CACHE,nextT);
+    }
+  }
+
+  if(changed&&ready){
+    applyChrome();
+    await paint();
+    initReveal();
+  }
+  return changed;
+}
+function schedulePublicRevalidate(delay=180){
+  setTimeout(()=>revalidatePublicData(true).catch(()=>{}),delay);
+}
+async function refreshArticleAvailability(slug){
+  const fresh=await fetchArticlesFresh();
+  if(!fresh.ok)return true;
+  const next=fresh.data.slice().sort((a,b)=>String(b.publishedAt||'').localeCompare(String(a.publishedAt||'')));
+  const stillLive=next.some(a=>String(a.slug)===String(slug));
+  swReconcileArticleCache(next);writeSessionJSON(SW_ARTICLES_CACHE,articles);
+  if(!stillLive)articleCache.delete(slug);
+  return stillLive;
+}
+async function getFullArticle(slug){
+  const stillLive=await refreshArticleAvailability(slug);
+  if(!stillLive)return null;
+  if(articleCache.has(slug))return articleCache.get(slug);
+  const meta=articles.find(a=>a.slug===slug);
+  if(!meta)return null;
+  if(meta.content){articleCache.set(slug,meta);return meta}
+  const file=meta.file||`articles/${encodeURIComponent(slug)}.json`;
+  const candidates=[PUBLIC_RAW_BASE+file,file];
+  for(const source of candidates){
+    try{
+      const r=await fetch(source+(source.includes('?')?'&':'?')+'v='+encodeURIComponent(meta.revision||Date.now()),{cache:'no-store'});
+      if(!r.ok)continue;
+      const full={...meta,...await r.json()};
+      articleCache.set(slug,full);
+      return full;
+    }catch(_){}
+  }
+  return meta;
+}
+
+function sanitizeHTML(html=''){
+  const d=new DOMParser().parseFromString(`<div>${html}</div>`,'text/html');
+  d.querySelectorAll('script,style,iframe,object,embed,form,input,button,meta,link').forEach(n=>n.remove());
+  d.querySelectorAll('*').forEach(el=>[...el.attributes].forEach(a=>{
+    if(a.name.toLowerCase().startsWith('on')||((a.name==='src'||a.name==='href')&&/^javascript:/i.test(a.value)))el.removeAttribute(a.name);
+  }));
+  d.body.querySelectorAll('img').forEach(im=>{im.loading='lazy';im.decoding='async'});
+  const used=new Set();let i=0;
+  d.body.querySelectorAll('h2,h3,h4').forEach(h=>{
+    if(h.id){used.add(h.id);return}
+    const base='section-'+(slugify(h.textContent||'')||String(++i));
+    let id=base,n=2;while(used.has(id))id=base+'-'+(n++);used.add(id);h.id=id;
+  });
+  return d.body.firstElementChild?.innerHTML||'';
+}
+function swIsMedicalNewsArticle(a){return a?.sourceWorkspace?.type==='medical-news-workspace'||String(a?.category||'')==='時事探討'}
+function swPubmedIdFromReference(r){
+  const direct=String(r?.pmid||'').match(/\d+/);if(direct)return direct[0];
+  const m=String(r?.url||'').match(/pubmed\.ncbi\.nlm\.nih\.gov\/(\d+)/i);return m?m[1]:'';
+}
+function swFilterPublicCitationsHTML(a,html=''){
+  const refs=(Array.isArray(a?.references)?a.references:[]).filter(r=>r&&['news','government','literature'].includes(r.type));
+  const allowedPmids=new Set(refs.filter(r=>r.type==='literature').map(swPubmedIdFromReference).filter(Boolean));
+  const d=new DOMParser().parseFromString(`<div id="sw-public-content">${html}</div>`,'text/html');
+  const root=d.getElementById('sw-public-content');
+  root.querySelectorAll('a[href*="pubmed.ncbi.nlm.nih.gov"]').forEach(link=>{
+    const m=String(link.getAttribute('href')||'').match(/pubmed\.ncbi\.nlm\.nih\.gov\/(\d+)/i),pmid=m?m[1]:'';
+    if(pmid&&allowedPmids.has(pmid))return;
+    const li=link.closest('li');if(li)li.remove();else link.remove();
+  });
+  root.querySelectorAll('li').forEach(li=>{
+    const m=String(li.textContent||'').match(/\bPMID\s*[:：]?\s*(\d+)/i);
+    if(m&&!allowedPmids.has(m[1]))li.remove();
+  });
+  root.querySelectorAll('sup').forEach(sup=>{if(!sup.textContent.trim()&&!sup.querySelector('a'))sup.remove()});
+  return root.innerHTML;
+}
+function renderContent(a){return swFilterPublicCitationsHTML(a,sanitizeHTML(a?.content||''))}
+function excerpt(a){
+  if(a.excerpt)return a.excerpt;
+  const d=document.createElement('div');d.innerHTML=a.content?renderContent(a):'';
+  return(d.textContent||a.searchText||'').replace(/\s+/g,' ').trim().slice(0,150);
+}
+function readingTime(a){return Number(a.readingTime)||Math.max(1,Math.round((a.searchText||excerpt(a)).replace(/\s/g,'').length/450))}
+function topicCount(tp){return articles.filter(a=>a.category===tp.name||slugify(a.category||'')===tp.slug).length}
+

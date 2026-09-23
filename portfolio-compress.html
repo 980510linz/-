@@ -1,0 +1,32 @@
+<!doctype html><html lang="zh-Hant"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#f4f7f8" id="themeColorMeta">
+<meta name="description" content="SIGN WELL 學習歷程壓縮工具：在瀏覽器本機將圖片或 PDF 合併並壓縮成 4 MB 以下 PDF。">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; worker-src 'self' https://cdnjs.cloudflare.com blob:; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; connect-src 'self' https://cdnjs.cloudflare.com; font-src 'self' data:; object-src 'none'; base-uri 'self';">
+<title>學習歷程壓縮 · SIGN WELL</title>
+<link rel="stylesheet" href="assets/signwell-dark-reset-v24.0.13.css?build=24.0.13-STAGING">
+<link rel="stylesheet" href="assets/signwell-portfolio-compress.css?build=24.0.20-STAGING">
+<link rel="stylesheet" href="assets/signwell-taiwan-theme-v24.0.26.css?build=24.0.26-STAGING">
+<link rel="stylesheet" href="assets/signwell-liquid-slider-v24.2.0.css?build=24.8.0-STAGING">
+<link rel="stylesheet" href="assets/components/shared/14-signwell-error-experience-v24.10.0.css?build=24.10.0-STAGING">
+<link rel="stylesheet" href="assets/signwell-fluid-loader.css?build=24.11.0">
+<link rel="stylesheet" href="assets/signwell-liquid-glass-v24.12.css">
+<link rel="stylesheet" href="assets/signwell-newsletter-script-loader-v24.14.css?build=24.14.0-STAGING">
+<link rel="stylesheet" href="assets/signwell-mobile-guard.css">
+</head><body>
+<header class="topbar"><a class="brand" href="index.html"><i>SW</i><span>SIGN WELL<small>學習歷程工具</small></span></a><button class="theme" id="themeBtn" type="button" aria-label="切換至台灣主題色">◐</button></header>
+<main class="shell">
+<section class="hero"><div class="eyebrow">Student Portfolio Utility</div><h1>學習歷程<br>一鍵壓縮。</h1><p>把 PDF、JPG、PNG、WebP 依選取順序合併成一份 PDF，並自動把檔案控制在 4 MB 以下。系統會先保留畫質，只有超標時才逐步降低壓縮品質與解析度。</p><div class="target">目標輸出 PDF ≤ 4 MB</div></section>
+<section class="card drop"><div class="dropzone" id="dropzone"><div><div class="drop-icon">⇩</div><strong>拖曳檔案到這裡</strong><p>或從手機／電腦選取多個檔案<br>支援 PDF、JPG、PNG、WebP</p><button class="pick" id="pickBtn" type="button">選擇檔案</button><input id="fileInput" type="file" accept="application/pdf,image/jpeg,image/png,image/webp,image/*" multiple></div></div><div class="small-note">檔案只在你的瀏覽器中處理，不會上傳到 SIGN WELL。最多 40 個檔案／120 頁。</div><div class="files" id="fileList"></div><div class="actions"><button class="primary" id="compressBtn" type="button" disabled>一鍵壓成 4 MB PDF</button><button class="ghost" id="clearBtn" type="button" disabled>清除</button></div></section>
+<section class="card panel hidden" id="progressPanel" aria-live="polite"><div class="progress-head"><div><strong>正在處理</strong><div class="status" id="progressStatus">準備中…</div></div><span id="progressPct">0%</span></div><div class="bar"><i id="progressBar"></i></div></section>
+<section class="card panel hidden" id="resultPanel"><div class="result-ok"><span class="check">✓</span><div><div id="resultTitle">壓縮完成</div><div class="status" id="resultText">已轉成 PDF。</div></div></div><div class="result-grid"><div class="metric"><small>原始總大小</small><b id="outOriginal">-</b></div><div class="metric"><small>輸出大小</small><b id="outSize">-</b></div><div class="metric"><small>頁數</small><b id="outPages">-</b></div></div><div class="download-row"><a class="download" id="downloadBtn" href="#" download="學習歷程_4MB.pdf">下載 PDF</a><button class="ghost" id="resetBtn" type="button">重新製作</button></div></section>
+<section class="card privacy"><span>🔒</span><div><b>本機壓縮</b><br>圖片與 PDF 不會送到 Apps Script、Notion、Gemini、GitHub 或其他 SIGN WELL 後端。PDF 超過 4 MB 時，瀏覽器才會進行重採樣；單一 PDF 若本來就已低於限制，會直接保留原始檔。</div></section>
+<div class="foot">SIGN WELL · 欣緯生醫 · <a href="index.html">返回首頁</a><br>此工具只處理檔案格式與大小，不會修改學習歷程內容。</div>
+</main>
+<script src="assets/signwell-portfolio-compress.js?build=24.0.26-STAGING" defer></script>
+<script src="assets/signwell-liquid-slider-v24.2.0.js?build=24.8.0-STAGING"></script>
+<script src="assets/bundles/error-experience-v24.10.0.js?build=24.10.0-STAGING"></script>
+<script src="assets/signwell-fluid-loader.js?build=24.11.0" defer></script>
+<script src="assets/signwell-liquid-glass-v24.12.js" defer></script>
+<script src="assets/signwell-newsletter-script-loader-v24.14.js?build=24.14.0-STAGING" defer></script>
+</body></html>

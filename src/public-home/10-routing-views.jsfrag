@@ -1,0 +1,903 @@
+/* ---------- chrome & routing ---------- */
+function swSeoSetCanonical(url){let el=document.querySelector('link[rel=\"canonical\"]');if(!el){el=document.createElement('link');el.rel='canonical';document.head.appendChild(el)}el.href=url}
+function swSeoPrimaryCanonical(){const f=(location.pathname.split('/').pop()||'index.html').toLowerCase();const m={"index.html":"https://signwell.com.tw/","topics.html":"https://signwell.com.tw/topics.html","about.html":"https://signwell.com.tw/about.html","share.html":"https://signwell.com.tw/share.html","newsletter.html":"https://signwell.com.tw/newsletter.html"};return m[f]||'https://signwell.com.tw/'}
+function applyChrome(){
+  swSeoSetCanonical(swSeoPrimaryCanonical());
+  document.title=t('siteTitle');
+  $('#brandEnglish').textContent=t('brandEnglish');
+  $('#brandChinese').textContent=t('brandChinese');
+  $('#footerBrand').textContent=t('siteTitle');
+  $('#footerTagline').textContent='若有問題，請聯絡 signwell.com.tw@gmail.com';
+  $('#footerDisclaimer').textContent=t('footerDisclaimer');
+  $('#searchInput').placeholder=t('searchPlaceholder');
+}
+function route(){
+  const h=(location.hash||'').replace(/^#/,'');
+  if(h.startsWith('article/')){const slug=decodeURIComponent(h.slice(8));if(!window.__swLegacyArticleRedirectPending){window.__swLegacyArticleRedirectPending=true;location.replace(articleUrl(slug))}return{page:'article',slug}};
+  if(h.startsWith('topic/'))return{page:'topicDetail',slug:decodeURIComponent(h.slice(6))};
+  const file=(location.pathname.split('/').pop()||'index.html').toLowerCase();
+  if(file==='topics.html')return{page:'topics'};
+  if(file==='about.html')return{page:'about'};
+  if(file==='share.html')return{page:'share'};
+  if(file==='newsletter.html')return{page:'newsletter'};
+  return{page:'home'};
+}
+function routeIndex(r){return r.page==='topics'||r.page==='topicDetail'?1:r.page==='about'?2:r.page==='share'?3:r.page==='newsletter'?4:0}
+/* canonical cross-page links + fast internal routing */
+const APP_BASE=new URL('./',location.href);
+const PAGE_FILE=Object.freeze({home:'index.html',topics:'topics.html',about:'about.html',share:'share.html',newsletter:'newsletter.html'});
+const INTERNAL_NAV_KEY='signwell-internal-nav-v13';
+function pageUrl(file,hash=''){
+  const u=new URL(file,APP_BASE);
+  u.search='';
+  u.hash=hash;
+  return u.href;
+}
+function markInternalNav(){
+  try{sessionStorage.setItem(INTERNAL_NAV_KEY,String(Date.now()))}catch(_){}
+}
+function sameDocument(url){
+  try{
+    const u=new URL(url,location.href);
+    return u.origin===location.origin && u.pathname===location.pathname;
+  }catch(_){return false}
+}
+function softRoute(url){
+  if(!sameDocument(url))return false;
+  try{
+    history.pushState({signwell:true},'',url);
+    if(document.startViewTransition&&!reduceMotion()&&!document.body.classList.contains('page-route-fx')){
+      document.startViewTransition(()=>render()).finished.catch(()=>{});
+    }else{
+      render();
+    }
+    return true;
+  }catch(_){return false}
+}
+function isPrimaryPublicPage(page){
+  return page==='home'||page==='topics'||page==='about'||page==='share'||page==='newsletter';
+}
+function softPrimaryRoute(url,page){
+  if(!isPrimaryPublicPage(page))return false;
+  try{
+    const u=new URL(url,location.href);
+    if(u.origin!==location.origin)return false;
+    history.pushState({signwell:true,page},'',u.href);
+    document.body.dataset.page=page;
+    render();
+    return true;
+  }catch(_){return false}
+}
+function goto(page){
+  let url='';
+  if(page==='home')url=pageUrl(PAGE_FILE.home);
+  else if(page==='topics')url=pageUrl(PAGE_FILE.topics);
+  else if(page==='about')url=pageUrl(PAGE_FILE.about);
+  else if(page==='share')url=pageUrl(PAGE_FILE.share);
+  else if(page==='newsletter')url=pageUrl(PAGE_FILE.newsletter);
+  else if(page.startsWith('article/'))url=articleUrl(decodeURIComponent(page.slice(8)));
+  else if(page.startsWith('topic/'))url=pageUrl(PAGE_FILE.topics,page);
+  else return;
+  markInternalNav();
+  /* Share has one canonical renderer only. Never render an embedded stale clone from another primary document. */
+  if(page==='share'&&!SW_IS_SHARE_DOCUMENT){
+    const freshShareUrl=new URL(url,location.href);
+    freshShareUrl.searchParams.set('build','23.9.20');
+    document.body.classList.add('page-switching');
+    location.assign(freshShareUrl.href);
+    return;
+  }
+  if(softPrimaryRoute(url,page))return;
+  if(softRoute(url))return;
+  document.body.classList.add('page-switching');
+  location.assign(url);
+}
+function articleUrl(slug){return 'https://signwell.com.tw/article/'+encodeURIComponent(slug)+'/'}
+
+function setNav(index,instant=false){Slider.set(index,instant)}
+
+/* ---------- view builders ---------- */
+const glassLayers='<span class="sheen-layer"></span>';
+
+
+
+
+function enforceFooterContact(){
+  const el=document.getElementById('footerTagline');
+  if(!el)return;
+  el.innerHTML='若有問題，請聯絡 <a href="mailto:signwell.com.tw@gmail.com">signwell.com.tw@gmail.com</a>';
+}
+
+function categoryHue(name=''){
+  const s=String(name||'醫學筆記');
+  let h=0;
+  for(let i=0;i<s.length;i++)h=((h<<5)-h+s.charCodeAt(i))|0;
+  /* Stay inside SIGN WELL's blue / cyan / blue-violet family. */
+  return 186+(Math.abs(h)%58);
+}
+function categoryChipHTML(name='醫學筆記'){
+  const label=String(name||'醫學筆記');
+  return `<span class="category-chip" style="--cat-h:${categoryHue(label)}">${escapeHTML(label)}</span>`;
+}
+
+function publicPersonById(id){
+  const key=String(id||'').trim();
+  return key?(people||[]).find(p=>String(p.id||'')===key&&p.active!==false)||null:null;
+}
+function publisherForArticle(a){
+  const p=publicPersonById(a?.publisherId);
+  if(p)return p;
+  const override=String(a?.publisherName||'').trim();
+  if(override)return {id:'',name:override,role:'',photo:String(a?.publisherPhoto||'')};
+  return {
+    id:'',
+    name:t('articleBrand')||'SIGN WELL · 欣緯生醫',
+    role:'',
+    photo:''
+  };
+}
+function publisherInitials(name=''){
+  const clean=String(name||'').trim();
+  if(!clean)return 'SW';
+  const parts=clean.split(/\s+/).filter(Boolean);
+  if(parts.length>1)return (parts[0][0]+parts[parts.length-1][0]).toUpperCase();
+  return clean.slice(0,2).toUpperCase();
+}
+function publisherAvatarHTML(person,compact=false){
+  const cls=compact?'article-publisher-avatar':'article-publisher-avatar';
+  return `<span class="${cls}">${
+    person?.photo
+      ?`<img src="${escapeHTML(person.photo)}" alt="" loading="lazy" decoding="async">`
+      :escapeHTML(publisherInitials(person?.name||'SIGN WELL'))
+  }</span>`;
+}
+function swPublicSummary10s(a){
+  let text=String(a?.summary10s||a?.excerpt||'').replace(/\s+/g,' ').trim();
+  if(text.length>120)text=text.slice(0,119).replace(/[，、；：,:;\s]+$/,'')+'…';
+  return text;
+}
+function swSummary10sHTML(a){const text=swPublicSummary10s(a);return text?`<aside class="sw-summary10s"><b>10 秒摘要</b><p>${escapeHTML(text)}</p></aside>`:''}
+
+function articleCard(a){
+  const publisher=publisherForArticle(a);
+  return `<article class="article-card glass lightcard sheen" data-open="${escapeHTML(a.slug)}" tabindex="0" role="link">${glassLayers}${
+    a.cover?`<div class="card-cover"><img src="${escapeHTML(a.cover)}" alt="" loading="lazy" decoding="async"></div>`:defaultCoverMarkup(a,false)
+  }<div class="kicker">${categoryChipHTML(a.category||'醫學筆記')} <span aria-hidden="true">·</span> ${escapeHTML(a.type||'文章')}</div>
+    ${swVerdictBadgeHTML(a)}
+    <h3>${escapeHTML(a.title||'未命名文章')}</h3>
+    <p>${escapeHTML(excerpt(a))}</p>
+    <div class="card-publisher"><i class="card-publisher-dot"></i>${escapeHTML(publisher.name||'SIGN WELL')}</div>
+    <div class="meta"><span>${escapeHTML(a.publishedAt||'')}</span><span>${readingTime(a)} ${escapeHTML(t('minutesReadSuffix'))}</span></div>
+  </article>`;
+}
+function bindArticleCards(){
+  $$('[data-open]').forEach(el=>{
+    const open=()=>goto('article/'+encodeURIComponent(el.dataset.open));
+    el.onclick=open;
+    el.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();open()}};
+  });
+}
+function skeletonGrid(n=6){
+  return `<div class="article-grid">${Array.from({length:n}).map(()=>
+    '<div class="skeleton"><div class="sk-cover"></div><div class="sk-bar sk-1"></div><div class="sk-bar sk-2"></div><div class="sk-bar sk-3"></div><div class="sk-bar sk-4"></div></div>').join('')}</div>`;
+}
+function skeletonTopics(n=6){
+  return `<div class="topic-grid">${Array.from({length:n}).map(()=>
+    '<div class="skeleton sk-topic"><div class="sk-bar sk-1"></div><div class="sk-bar sk-2"></div><div class="sk-bar sk-3"></div></div>').join('')}</div>`;
+}
+function skeletonArticle(){
+  return `<article class="article-view"><header class="article-top"><div class="skeleton sk-line" style="width:120px;height:16px"></div><div class="skeleton sk-line" style="width:min(680px,90%);height:58px;margin-top:22px"></div><div class="skeleton sk-line" style="width:220px;height:13px;margin-top:18px"></div></header><div class="skeleton" style="height:300px;border-radius:30px;margin:22px 0"></div></article>`;
+}
+
+
+let homeFXRAF=0;
+let homeFXBound=false;
+
+function updateHomeScrollFX(){
+  homeFXRAF=0;
+  const scene=$('.home-scroll-scene');
+  const next=$('.home-next-stage');
+  if(!scene||!next)return;
+
+  const max=Math.max(320,Math.min(innerHeight*.70,560));
+  const raw=Math.max(0,Math.min(1,scrollY/max));
+  const ease=1-Math.pow(1-raw,2.35);
+
+  const root=document.documentElement.style;
+  root.setProperty('--home-hero-y',(-10*ease).toFixed(2)+'px');
+  root.setProperty('--home-card-y',(-6*ease).toFixed(2)+'px');
+  root.setProperty('--home-hero-opacity',(1-.10*ease).toFixed(3));
+
+  root.setProperty('--home-next-y',((1-ease)*32).toFixed(2)+'px');
+  root.setProperty('--home-next-opacity',(.42+.58*ease).toFixed(3));
+
+}
+
+function queueHomeScrollFX(){
+  if(homeFXRAF)return;
+  homeFXRAF=requestAnimationFrame(updateHomeScrollFX);
+}
+
+
+let signwellRibbonRAF=0;
+let signwellRibbonBound=false;
+let signwellRibbonTracks=[];
+let signwellRibbonPeriods=[];
+let signwellRibbonPhase=0;
+let signwellRibbonLastFrame=0;
+
+/* v24.0.07 · constant cruise ribbon.
+   Motion is autonomous only: scroll / touch velocity never changes ribbon speed or color. */
+function swRibbonConfig(){
+  const mobile=matchMedia('(max-width:700px)').matches;
+  return {speed:mobile?6.5:8.0}; // px/s · intentionally calm and constant
+}
+
+function prepareSignwellRibbonTracks(){
+  const ribbon=document.querySelector('[data-signwell-ribbon]');
+  const tracks=[...document.querySelectorAll('[data-signwell-ribbon-track]')];
+  if(!ribbon||!tracks.length)return null;
+
+  /* Two identical blocks keep the endless wrap seamless. */
+  tracks.forEach(track=>{
+    if(track.dataset.loopReady==='1')return;
+    const unit='SIGN WELL\u00a0\u00a0 ';
+    const block=unit.repeat(10);
+    track.textContent=block+block;
+    track.dataset.loopReady='1';
+  });
+
+  signwellRibbonTracks=tracks;
+  signwellRibbonPeriods=tracks.map(track=>Math.max(1,track.scrollWidth/2));
+  return ribbon;
+}
+
+function applySignwellRibbonTransform(){
+  signwellRibbonTracks.forEach((track,i)=>{
+    const period=signwellRibbonPeriods[i]||1;
+    const offset=i?period*.075:0;
+    const wrapped=((signwellRibbonPhase+offset)%period+period)%period;
+    track.style.transform=`translate3d(${-wrapped.toFixed(3)}px,0,0)`;
+  });
+}
+
+function stepSignwellRibbon(now){
+  signwellRibbonRAF=0;
+  const ribbon=document.querySelector('[data-signwell-ribbon]');
+  if(!ribbon||!document.documentElement.contains(ribbon)){
+    signwellRibbonTracks=[];
+    signwellRibbonPeriods=[];
+    signwellRibbonLastFrame=0;
+    return;
+  }
+  if(reduceMotion()){
+    signwellRibbonTracks.forEach((track,i)=>track.style.transform=`translate3d(${i?-76:-24}px,0,0)`);
+    signwellRibbonLastFrame=0;
+    return;
+  }
+
+  const cfg=swRibbonConfig();
+  const dt=Math.min(.05,Math.max(.001,signwellRibbonLastFrame?(now-signwellRibbonLastFrame)/1000:.016));
+  signwellRibbonLastFrame=now;
+
+  /* No acceleration, braking, reverse impulse, or scroll-linked color mutation. */
+  signwellRibbonPhase+=cfg.speed*dt;
+  applySignwellRibbonTransform();
+  signwellRibbonRAF=requestAnimationFrame(stepSignwellRibbon);
+}
+
+function onSignwellRibbonResize(){
+  const ribbon=prepareSignwellRibbonTracks();
+  if(!ribbon)return;
+  applySignwellRibbonTransform();
+  if(!signwellRibbonRAF&&!reduceMotion())signwellRibbonRAF=requestAnimationFrame(stepSignwellRibbon);
+}
+
+function initSignwellRibbonFX(){
+  const ribbon=prepareSignwellRibbonTracks();
+  if(!ribbon)return;
+  applySignwellRibbonTransform();
+  if(!reduceMotion()&&!signwellRibbonRAF){
+    signwellRibbonLastFrame=performance.now();
+    signwellRibbonRAF=requestAnimationFrame(stepSignwellRibbon);
+  }
+  if(signwellRibbonBound)return;
+  signwellRibbonBound=true;
+  /* Deliberately no scroll listener: the ribbon is an independent ambient animation. */
+  addEventListener('resize',onSignwellRibbonResize,{passive:true});
+  if(window.visualViewport){
+    window.visualViewport.addEventListener('resize',onSignwellRibbonResize,{passive:true});
+  }
+}
+
+
+function initHomeScrollScene(){
+  const scene=$('.home-scroll-scene');
+  if(!scene)return;
+  requestAnimationFrame(()=>scene.classList.add('home-fx-ready'));
+
+  const lowMotion=reduceMotion() || matchMedia('(pointer:coarse)').matches;
+  if(lowMotion){
+    const root=document.documentElement.style;
+    root.setProperty('--home-hero-y','0px');
+    root.setProperty('--home-card-y','0px');
+    root.setProperty('--home-hero-opacity','1');
+    root.setProperty('--home-next-y','0px');
+    root.setProperty('--home-next-opacity','1');
+    return;
+  }
+
+  queueHomeScrollFX();
+  if(!homeFXBound){
+    homeFXBound=true;
+    addEventListener('scroll',queueHomeScrollFX,{passive:true});
+    addEventListener('resize',queueHomeScrollFX,{passive:true});
+  }
+}
+
+/* Restore native scrolling for smoothness. */
+const SoftWheel={
+  reset(){}
+};
+
+
+
+function renderHome(){
+  const latest=articles.slice(0,9);
+  app.innerHTML=`<div class="shell">
+    <div class="sw-home-visual-zone sw-origin-hero" data-sw-origin-hero>
+      <canvas class="sw-origin-canvas" data-sw-origin-canvas aria-hidden="true"></canvas>
+      <div class="sw-origin-wash" aria-hidden="true"></div>
+      <section class="hero home-scroll-scene sw-origin-content">
+        <div class="home-hero-copy">
+          <div class="eyebrow"><i></i>${escapeHTML(t('homeEyebrow'))}</div>
+          <h1>${escapeHTML(t('homeTitle1'))}<br>${escapeHTML(t('homeTitle2'))}</h1>
+          <p class="hero-sub">${escapeHTML(t('homeSubtitle'))}</p>
+        </div>
+        <aside class="sw-origin-note" aria-label="SIGN WELL 主頁介紹">
+          <b>${escapeHTML(t('homeCardTitle'))}</b>
+          <p>${escapeHTML(t('homeCardBody'))}</p>
+        </aside>
+      </section>
+      <a class="sw-origin-scroll" href="#daily" data-scroll="daily" aria-label="向下閱讀最新文章"><span>SCROLL TO EXPLORE</span><i></i></a>
+    </div>
+    <section class="section home-next-stage" id="daily">
+      <div class="section-head">
+        <div><p>${escapeHTML(t('dailyEyebrow'))}</p><h2>${escapeHTML(t('dailyTitle'))}</h2></div>
+        <p>${escapeHTML(t('dailyDescription'))}</p>
+      </div>
+      ${ready?`<div class="article-grid">${latest.length?latest.map(articleCard).join(''):'<div class="empty">還沒有文章。發布第一篇之後，它會出現在這裡。</div>'}</div>`:skeletonGrid()}
+    </section>
+  </div>`;
+  bindArticleCards();bindScrollCue();initReveal();initHomeScrollScene();initSignwellRibbonFX();window.SignWellOriginHero?.mount?.();
+}
+
+function renderTopics(){
+  const magazineItems=topics.map(tp=>({
+    slug:tp.slug,
+    name:tp.name,
+    description:tp.description||'瀏覽這個主題的相關文章與延伸整理。',
+    count:topicCount(tp),
+    hue:categoryHue(tp.name)
+  }));
+  const magazineMarkup=window.SWTopicMagazine?.markup
+    ?window.SWTopicMagazine.markup(magazineItems,{articleCountSuffix:t('articleCountSuffix')})
+    :`<section class="topic-grid">${topics.length?topics.map((tp,i)=>`<article class="topic-card glass lightcard sheen" style="--topic-stack-i:${i};--cat-h:${categoryHue(tp.name)}" data-topic-open="${escapeHTML(tp.slug)}" tabindex="0" role="link">${glassLayers}<span class="topic-signal" style="--cat-h:${categoryHue(tp.name)}" aria-hidden="true"></span><div class="topic-no">${topicCount(tp)} ${escapeHTML(t('articleCountSuffix'))}</div><h3>${escapeHTML(tp.name)}</h3><p>${escapeHTML(tp.description||'瀏覽這個主題的相關文章與延伸整理。')}</p><div class="topic-count">進入主題 →</div></article>`).join(''):'<div class="empty">還沒有建立公開主題。請從 CMS 的「主題管理」建立並同步。</div>'}</section>`;
+  app.innerHTML=`<div class="shell">
+    <section class="page-hero sw-topic-hero">
+      <div class="eyebrow"><i></i>${escapeHTML(t('topicsEyebrow'))}</div>
+      <h1>${escapeHTML(t('topicsTitle'))}</h1>
+      <p>${escapeHTML(t('topicsSubtitle'))}</p>
+    </section>
+    ${!ready?skeletonTopics():magazineMarkup}
+  </div>`;
+  const magRoot=document.querySelector('[data-sw-topic-magazine]');
+  if(magRoot&&window.SWTopicMagazine?.mount){
+    window.SWTopicMagazine.mount(magRoot,{onOpen:(slug)=>goto('topic/'+encodeURIComponent(slug))});
+  }else{
+    $$('[data-topic-open]').forEach(el=>{
+      const open=()=>goto('topic/'+encodeURIComponent(el.dataset.topicOpen));
+      el.onclick=open;
+      el.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();open()}};
+    });
+  }
+  initReveal();
+}
+
+function renderTopicDetail(slug){
+  const tp=topics.find(x=>x.slug===slug)||{name:decodeURIComponent(slug),slug,description:''};
+  const list=articles.filter(a=>a.category===tp.name||slugify(a.category||'')===tp.slug);
+  app.innerHTML=`<div class="shell">
+    <section class="page-hero">
+      <button class="backlink" data-back="topics.html">← 返回主題探討</button>
+      <div class="topic-detail-badge" style="--cat-h:${categoryHue(tp.name)}"><i></i>主題探討 · ${escapeHTML(tp.name)}</div>
+      <div class="topic-detail-head">
+        <div><h1>${escapeHTML(tp.name)}</h1><p>${escapeHTML(tp.description||'')}</p></div>
+        <p>${list.length} ${escapeHTML(t('articleCountSuffix'))}</p>
+      </div>
+    </section>
+    <section class="article-grid">${list.length?list.map(articleCard).join(''):'<div class="empty">這個主題還沒有公開文章。</div>'}</section>
+  </div>`;
+  bindArticleCards();bindBack();initReveal();
+}
+
+function renderShare(){
+  const url=location.origin+location.pathname.replace(/[^/]*$/,'');
+  app.innerHTML=`<div class="shell share-wrap">
+    <section class="share-card glass lightcard sheen">${glassLayers}
+      <div class="share-grid">
+        <div>
+          <div class="eyebrow"><i></i>${escapeHTML(t('shareEyebrow'))}</div>
+          <h1>${escapeHTML(t('shareTitle'))}</h1>
+          <p>${escapeHTML(t('shareSubtitle'))}</p>
+          <div class="share-url"><input id="shareUrl" value="${escapeHTML(url)}" readonly aria-label="網站連結"><button class="primarybtn" id="copySite">複製連結</button></div>
+        </div>
+        <div class="qr-box" id="qrcode"><div class="qr-fallback">正在產生 QR Code…</div></div>
+      </div>
+    </section>
+  </div>`;
+  $('#shareUrl').onclick=e=>e.target.select();
+  $('#copySite').onclick=()=>copyText(url);
+  makeQR(url);initReveal();
+}
+
+
+let qrLibPromise=null;
+function ensureQRCodeLib(){
+  if(window.QRCode)return Promise.resolve(true);
+  if(qrLibPromise)return qrLibPromise;
+  qrLibPromise=new Promise(resolve=>{
+    const s=document.createElement('script');
+    s.src='https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js';
+    s.async=true;
+    s.onload=()=>resolve(Boolean(window.QRCode));
+    s.onerror=()=>resolve(false);
+    document.head.appendChild(s);
+  });
+  return qrLibPromise;
+}
+
+async function makeQR(url){
+  const box=$('#qrcode');
+  if(!box)return;
+  box.innerHTML='<div class="qr-fallback">正在產生 QR Code…</div>';
+  const ok=await ensureQRCodeLib();
+  if(!ok||!window.QRCode){
+    box.innerHTML='<div class="qr-fallback">QR Code 產生器沒有載入。<br>用上方「複製連結」一樣可以分享。</div>';
+    return;
+  }
+  box.innerHTML='';
+  new QRCode(box,{text:url,width:190,height:190,correctLevel:QRCode.CorrectLevel.M});
+}
+
+
+function renderAbout(){
+  app.innerHTML=`<div class="shell about-wrap">
+    <section class="about-hero">
+      <div>
+        <div class="eyebrow"><i></i>${escapeHTML(t('aboutEyebrow','ABOUT SIGN WELL'))}</div>
+        <h1>${escapeHTML(t('aboutTitle','關於我們'))}</h1>
+        <p class="about-hero-copy">${escapeHTML(t('aboutBody','SIGN WELL 是一個以醫學、健康與臨床思考為核心的知識平台。'))}</p>
+      </div>
+      <aside class="about-manifesto glass lightcard sheen">${glassLayers}
+        <strong>${escapeHTML(t('aboutManifestoTitle','把複雜的醫學，整理成真正能被理解與使用的知識。'))}</strong>
+        <p>${escapeHTML(t('aboutManifestoBody','我們重視推理、脈絡與長期可回顧性，而不只是快速堆疊資訊。'))}</p>
+      </aside>
+    </section>
+
+    <section class="about-values">
+      <div class="about-value glass"><span>${escapeHTML(t('aboutFocusLabel','核心'))}</span><b>${escapeHTML(t('aboutFocusValue','臨床推理'))}</b></div>
+      <div class="about-value glass"><span>${escapeHTML(t('aboutFormatLabel','形式'))}</span><b>${escapeHTML(t('aboutFormatValue','筆記 · 深度整理'))}</b></div>
+      <div class="about-value glass"><span>${escapeHTML(t('aboutPrincipleLabel','原則'))}</span><b>${escapeHTML(t('aboutPrincipleValue','清楚勝過複雜'))}</b></div>
+    </section>
+
+    <section class="about-team">
+      <div class="about-team-head">
+        <div>
+          <p>${escapeHTML(t('aboutPeopleEyebrow','PEOPLE'))}</p>
+          <h2>${escapeHTML(t('aboutPeopleTitle','我們是誰'))}</h2>
+        </div>
+        <span>${escapeHTML(t('aboutPeopleSubtitle','每一位成員的學歷、經歷與專長，都可以直接從 SIGN WELL CMS 維護。'))}</span>
+      </div>
+      <div class="people-grid">${personListHTML(people)}</div>
+    </section>
+
+    <div class="about-disclaimer glass">${escapeHTML(t('aboutDisclaimer','本站不提供醫療服務、不招攬醫療業務；內容僅供醫學教育與資訊整理，不構成個別醫療建議。'))}</div>
+  </div>`;
+  initReveal();
+}
+
+
+
+let newsletterOptimisticBusy=false;
+let newsletterFormLoadedAt=Date.now();
+let newsletterTurnstileToken='';
+let newsletterTurnstileWidgetId=null;
+let newsletterTurnstileLoader=null;
+
+function ensureNewsletterFlowUI(){
+  if(document.getElementById('newsletterFlowOverlay'))return;
+  const wrap=document.createElement('div');
+  wrap.className='newsletter-flow-overlay';
+  wrap.id='newsletterFlowOverlay';
+  wrap.setAttribute('role','status');
+  wrap.setAttribute('aria-live','polite');
+  wrap.innerHTML=`
+    <div class="newsletter-flow-card">
+      <div class="nl-flow-stage nl-flow-loading">
+        <div class="nl-flow-icon" aria-hidden="true">
+          <span class="nl-flow-orbit"></span>
+          <span class="nl-flow-orbit second"></span>
+          <span class="nl-flow-core">✦</span>
+        </div>
+        <h2 class="nl-flow-title">正在寄送驗證碼</h2>
+        <p class="nl-flow-copy">我們正在寄送 6 位數驗證碼。完成 Email 驗證前，不會加入正式寄送名單。</p>
+        <div class="nl-flow-email" data-nl-flow-email></div>
+        <div class="nl-flow-progress" aria-hidden="true"><i></i></div>
+      </div>
+
+      <div class="nl-flow-stage nl-flow-success">
+        <div class="nl-success-check">✓</div>
+        <h2 class="nl-flow-title">請查看你的驗證碼</h2>
+        <p class="nl-flow-copy">如果這個 Email 尚未完成訂閱，我們會寄出 6 位數驗證碼。回到目前頁面輸入驗證碼並驗證成功後，才會正式加入 SIGN WELL Letter。</p>
+        <div class="nl-success-sub">SIGN WELL Letter · No spam. Just signal.</div>
+        <button class="nl-success-close" type="button">知道了</button>
+      </div>
+    </div>`;
+  document.body.appendChild(wrap);
+  wrap.querySelector('.nl-success-close')?.addEventListener('click',()=>hideNewsletterFlow());
+}
+
+function showNewsletterLoading(email){
+  ensureNewsletterFlowUI();
+  const wrap=document.getElementById('newsletterFlowOverlay');
+  if(!wrap)return;
+  wrap.classList.remove('success');
+  const emailEl=wrap.querySelector('[data-nl-flow-email]');
+  if(emailEl)emailEl.textContent=email||'';
+  /* restart the fixed 4-second progress animation */
+  const bar=wrap.querySelector('.nl-flow-progress i');
+  if(bar){
+    bar.style.animation='none';
+    void bar.offsetWidth;
+    bar.style.animation='';
+  }
+  wrap.classList.add('show');
+}
+
+function showNewsletterOptimisticSuccess(){
+  ensureNewsletterFlowUI();
+  const wrap=document.getElementById('newsletterFlowOverlay');
+  if(!wrap)return;
+  wrap.classList.add('success','show');
+  playNewsletterConfetti();
+}
+
+function hideNewsletterFlow(){
+  const wrap=document.getElementById('newsletterFlowOverlay');
+  if(!wrap)return;
+  wrap.classList.remove('show','success');
+}
+
+function playNewsletterConfetti(){
+  if(matchMedia('(prefers-reduced-motion: reduce)').matches)return;
+  document.getElementById('newsletterConfettiPublic')?.remove();
+
+  const layer=document.createElement('div');
+  layer.id='newsletterConfettiPublic';
+  layer.setAttribute('aria-hidden','true');
+  document.body.appendChild(layer);
+
+  const colors=['#7BC3EF','#A9DBF7','#8FD0BD','#DFF3FD','#FFFFFF','#6FA6C8','#BFDDEA'];
+  const pieces=matchMedia('(pointer:coarse)').matches?38:56;
+  const cx=innerWidth/2,cy=Math.min(innerHeight*.54,innerHeight-120);
+
+  for(let i=0;i<pieces;i++){
+    const el=document.createElement('i');
+    el.className='nl-confetti-piece';
+
+    const angle=(-158+(316*(i/Math.max(1,pieces-1))))*Math.PI/180;
+    const distance=110+Math.random()*Math.min(290,innerWidth*.30);
+    const dx=Math.cos(angle)*distance;
+    const dy=Math.sin(angle)*distance-(60+Math.random()*130)+180+Math.random()*110;
+
+    el.style.setProperty('--x',cx+'px');
+    el.style.setProperty('--y',cy+'px');
+    el.style.setProperty('--dx',dx.toFixed(1)+'px');
+    el.style.setProperty('--dy',dy.toFixed(1)+'px');
+    el.style.setProperty('--w',(5+Math.random()*7).toFixed(1)+'px');
+    el.style.setProperty('--h',(3+Math.random()*8).toFixed(1)+'px');
+    el.style.setProperty('--r',Math.random()<.2?'50%':'2px');
+    el.style.setProperty('--c',colors[i%colors.length]);
+    el.style.setProperty('--rot',(Math.random()*180).toFixed(0)+'deg');
+    el.style.setProperty('--spin',((Math.random()>.5?1:-1)*(260+Math.random()*620)).toFixed(0)+'deg');
+    el.style.setProperty('--dur',(920+Math.random()*760).toFixed(0)+'ms');
+    el.style.setProperty('--delay',(Math.random()*100).toFixed(0)+'ms');
+
+    layer.appendChild(el);
+  }
+
+  try{navigator.vibrate?.([16,22,10])}catch(_){}
+  setTimeout(()=>layer.remove(),2050);
+}
+
+function newsletterTurnstileSiteKey(){
+  return String(window.SIGNWELL_TURNSTILE_SITE_KEY||'').trim();
+}
+
+function loadNewsletterTurnstile(){
+  const key=newsletterTurnstileSiteKey();
+  if(!key)return Promise.resolve(false);
+  if(window.turnstile)return Promise.resolve(true);
+  if(newsletterTurnstileLoader)return newsletterTurnstileLoader;
+  newsletterTurnstileLoader=new Promise((resolve,reject)=>{
+    const existing=document.querySelector('script[data-signwell-turnstile]');
+    if(existing){
+      const wait=()=>window.turnstile?resolve(true):setTimeout(wait,80);
+      wait();return;
+    }
+    const script=document.createElement('script');
+    script.src='https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit';
+    script.async=true;script.defer=true;script.dataset.signwellTurnstile='1';
+    script.onload=()=>resolve(true);script.onerror=()=>reject(new Error('人機驗證元件載入失敗'));
+    document.head.appendChild(script);
+  });
+  return newsletterTurnstileLoader;
+}
+
+async function mountNewsletterTurnstile(){
+  const key=newsletterTurnstileSiteKey();
+  const host=document.getElementById('newsletterTurnstile');
+  if(!key||!host)return;
+  host.hidden=false;
+  try{
+    await loadNewsletterTurnstile();
+    if(!window.turnstile||!document.body.contains(host))return;
+    host.innerHTML='';
+    newsletterTurnstileToken='';
+    newsletterTurnstileWidgetId=window.turnstile.render(host,{
+      sitekey:key,
+      theme:document.body.classList.contains('dark')?'dark':'light',
+      callback:token=>{newsletterTurnstileToken=String(token||'')},
+      'expired-callback':()=>{newsletterTurnstileToken=''},
+      'error-callback':()=>{newsletterTurnstileToken='';return true}
+    });
+  }catch(err){
+    console.warn('SIGN WELL Turnstile:',err?.message||err);
+  }
+}
+
+function resetNewsletterTurnstile(){
+  newsletterTurnstileToken='';
+  try{
+    if(window.turnstile&&newsletterTurnstileWidgetId!=null)window.turnstile.reset(newsletterTurnstileWidgetId);
+  }catch(_){}
+}
+
+function startNewsletterBackgroundRequest(email,source='signwell-public'){
+  return signwellPublicGasBridge('newsletter.subscribe',{
+    email,
+    consent:true,
+    source,
+    page:location.href,
+    honeypot:String(document.getElementById('sw-company')?.value||''),
+    elapsed:Math.max(0,Date.now()-newsletterFormLoadedAt),
+    captchaToken:newsletterTurnstileToken
+  },45000);
+}
+
+async function runNewsletterOptimistic4s(email,source='signwell-public'){
+  // Security v23.1: success UI waits for the backend instead of declaring an
+  // active subscription before the confirmation email request is accepted.
+  showNewsletterLoading(email);
+  const started=Date.now();
+  const result=await startNewsletterBackgroundRequest(email,source);
+  const floor=Math.max(0,950-(Date.now()-started));
+  if(floor)await new Promise(r=>setTimeout(r,floor));
+  showNewsletterOptimisticSuccess();
+  try{
+    localStorage.setItem('signwell-newsletter-last-result',JSON.stringify({
+      ok:true,at:Date.now(),status:result?.status||'pending'
+    }));
+    localStorage.setItem('signwell-newsletter-pending','1');
+    localStorage.setItem('signwell-newsletter-pending-at',String(Date.now()));
+  }catch(_){}
+  resetNewsletterTurnstile();
+  return result;
+}
+
+let newsletterTermsAgreeCallback=null;
+let newsletterTermsPriorFocus=null;
+
+function ensureNewsletterTermsModal(){
+  let modal=document.getElementById('newsletterTermsOverlay');
+  if(modal)return modal;
+
+  modal=document.createElement('div');
+  modal.className='newsletter-terms-overlay';
+  modal.id='newsletterTermsOverlay';
+  modal.setAttribute('aria-hidden','true');
+  modal.innerHTML=`
+    <section class="newsletter-terms-card" role="dialog" aria-modal="true" aria-labelledby="newsletterTermsTitle">
+      <header class="newsletter-terms-head">
+        <div>
+          <div class="newsletter-terms-kicker">SIGN WELL · LEGAL</div>
+          <h2 class="newsletter-terms-title" id="newsletterTermsTitle">訂閱服務與隱私說明</h2>
+        </div>
+        <button class="newsletter-terms-close" type="button" aria-label="關閉">×</button>
+      </header>
+
+      <div class="newsletter-terms-body">
+        <section class="newsletter-legal-panel" id="legalTermsPanel" role="tabpanel" aria-labelledby="legalTermsTab" data-legal-panel="terms">
+          <div class="legal-meta"><span>適用：SIGN WELL／欣緯生醫網站</span><span>更新：2026-09-15</span></div>
+          <p class="legal-intro">使用 SIGN WELL 網站或訂閱 SIGN WELL Letter，即表示你理解本站提供的是醫學、健康與運動相關的一般資訊整理服務；本站不提供醫療服務、不建立醫病關係，也不招攬醫療業務。</p>
+          <h3>1. 服務內容與醫療聲明</h3><p>本站提供知識文章、主題整理與電子報。內容僅供教育與資訊用途，不構成個別醫療建議、診斷、治療或醫病關係，也不能取代合格醫療專業人員的正式評估。</p>
+          <h3>2. 內容來源與研究資訊</h3><p>本站會盡力核對來源，但研究、法規與第三方網站可能更新。文章提及研究效果量、風險、案例、產品或技術時，屬來源整理或評論，不代表本站對任何療程、醫療機構或服務作成效果保證、推薦或招攬。</p>
+          <h3>3. 電子報訂閱與取消</h3><p>SIGN WELL Letter 目前免費。送出 Email 後仍須輸入信箱收到的 6 位數驗證碼才正式生效；每封正式電子報提供取消訂閱方式。本站不出售或出租訂閱者電子郵件名單。</p>
+          <h3>4. 未成年人</h3><p>未滿 18 歲者如欲訂閱或提供個人資料，應由法定代理人閱讀並同意相關條款與隱私權政策，或依適用法律取得必要同意。</p>
+          <h3>5. 使用規範</h3><p>不得以自動化攻擊、惡意請求、繞過安全機制、冒用本站身分或其他足以影響服務正常運作的方式使用本站。</p>
+          <h3>6. 智慧財產與第三方素材</h3><p>本站原創文字、編排與設計受法律保護；第三方研究、圖片、圖表、商標與資料的權利仍屬原權利人。本站以文字改寫、摘要與評論為主；第三方圖片或圖表原則上僅在自有、已取得授權、公眾領域或符合開放授權條件時使用。單純標示來源不等於取得重製權。</p>
+          <h3>7. 責任限制</h3><p>在法律允許的最大範圍內，本站不保證內容或外部連結永遠正確、完整、即時或不中斷。使用者不應僅依本站內容作成重大醫療決策；依法不得排除或限制的責任，不受本條款影響。</p>
+          <h3>8. 服務可用性與變更</h3><p>本站可能因維護、安全、第三方服務、法規或營運需要調整、暫停或終止部分功能、寄送頻率或內容形式。</p>
+          <h3>9. 隱私與資料處理</h3><p>訂閱及使用網站時涉及的個人資料與瀏覽器儲存機制，依下方「隱私權政策」處理。</p>
+          <h3>10. 準據法與管轄</h3><p>本條款以中華民國（臺灣）法律為準據法；如法律允許合意定管轄，原則上以服務提供者主要營業地所在地之地方法院為第一審管轄法院。法律另有強制規定者，從其規定。</p>
+          <h3>11. 可分割性</h3><p>任一條款被認定無效、違法或不可執行時，不影響其他條款在法律允許範圍內繼續有效。</p>
+          <h3>12. 條款修訂與聯絡</h3><p>本站可能因服務、技術或法規變更更新條款並標示日期。如有疑問或權利主張，可聯絡 <a href="mailto:signwell.com.tw@gmail.com">signwell.com.tw@gmail.com</a>。</p>
+        </section>
+
+        <div class="newsletter-legal-divider" aria-hidden="true"><span>隱私權與個人資料</span></div>
+        <section class="newsletter-legal-panel newsletter-legal-panel-privacy" id="legalPrivacyPanel" data-legal-panel="privacy">
+          <div class="legal-meta"><span>依台灣個資法原則設計</span><span>更新：2026-09-15</span></div>
+          <p class="legal-intro">SIGN WELL／欣緯生醫尊重使用者的個人資料與隱私。本政策依本站目前實際功能撰寫，說明我們蒐集哪些資料、為何使用、保存多久、可能由哪些技術服務協助處理，以及你可以如何行使個人資料相關權利。</p>
+
+          <h3>一、個人資料的取得</h3>
+          <p>本站目前主要由你主動提供電子郵件地址以訂閱 SIGN WELL Letter；系統同時會建立訂閱狀態、訂閱／取消訂閱時間、來源與寄送紀錄。公開網站並不要求你提供身分證字號、信用卡資料、銀行帳戶或個人病歷。</p>
+          <p>網站亦可能記錄不直接識別個人的彙總瀏覽統計，並在你的瀏覽器使用 localStorage 或 sessionStorage 保存主題偏好、介面狀態與暫時快取。電子報防濫用會建立一組隨機 First-party Device ID，保存於本機儲存與 first-party cookie 最長約 180 天；後端僅保存其雜湊，作為 60 秒重寄冷卻與每日 5 次發送上限的依據，不使用 Canvas、字型或硬體指紋。</p>
+
+          <h3>二、資料蒐集之目的與類別</h3>
+          <p><strong>蒐集目的：</strong>處理電子報訂閱與退訂、寄送內容與必要通知、維護網站功能、改善閱讀體驗、統計網站整體使用情形、除錯及維護服務安全。</p>
+          <p><strong>主要資料類別：</strong>電子郵件地址，以及與訂閱服務直接相關的狀態、時間與寄送紀錄；另可能包含不直接識別個人的頁面瀏覽計數、介面偏好與瀏覽器端技術資料。</p>
+
+          <h3>三、資料利用期間、地區、對象及方式</h3>
+          <p><strong>期間：</strong>原則上於提供服務所必要期間內保存；你取消訂閱或提出停止利用／刪除請求後，會依實際系統需求及法律義務處理。為避免再次誤寄，系統可能保留最少量的退訂狀態紀錄。</p>
+          <p><strong>地區：</strong>本站主要服務台灣使用者，但因使用雲端基礎設施，資料可能由服務供應商依其全球基礎設施於台灣以外地區進行技術處理或儲存。</p>
+          <p><strong>對象與方式：</strong>資料僅在提供本站功能所需範圍內由 SIGN WELL 及受委託的技術服務提供者處理，例如 Google Apps Script、Google Sheets、Gmail、GitHub Pages 或其後續替代服務。</p>
+
+          <h3>四、你的個人資料權利</h3>
+          <p>依中華民國個人資料保護法第 3 條及其他適用規定，你得依法請求查詢或閱覽、製給複製本、補充或更正、停止蒐集／處理／利用，以及刪除你的個人資料。法律另有規定或技術上必須保留的最少資料除外。</p>
+          <p>如欲行使上述權利，可來信 <a href="mailto:signwell.com.tw@gmail.com">signwell.com.tw@gmail.com</a>，並提供足以確認訂閱信箱的必要資訊。</p>
+
+          <h3>五、個人資料利用與第三方服務</h3>
+          <p>本站不會出售或出租你的電子郵件名單。為完成訂閱、寄送、資料保存、網站託管及系統運作，必要資料可能交由受委託的雲端或基礎服務提供者處理；其處理亦可能受該服務商自身隱私政策及法令要求約束。</p>
+
+          <h3>六、資料安全</h3>
+          <p>本站會在合理範圍內使用存取控制、權限限制、必要的金鑰／後端隔離及其他技術措施保護資料。惟任何網路傳輸或雲端系統均無法保證絕對零風險，因此本站不能保證資料永遠不會遭受未授權存取。</p>
+
+          <h3>七、資料更正、停止使用與退訂</h3>
+          <p>若電子郵件地址有誤、希望停止接收訊息或提出其他資料請求，可使用電子報中的取消訂閱功能，或直接聯絡本站。退訂後，系統不應再將該地址列入一般電子報寄送名單。</p>
+
+          <h3>八、Cookie、localStorage 與 sessionStorage</h3>
+          <p>本站目前主要使用瀏覽器端 localStorage／sessionStorage 保存深淺色模式、頁面狀態、暫存快取、訂閱提示狀態及部分統計防重複資料；部分第三方基礎服務可能依其技術需要使用 Cookie。關閉瀏覽器儲存功能可能使部分介面偏好或流程無法正常保存。</p>
+
+          <h3>九、彙總網站分析</h3>
+          <p>本站目前的網站分析以頁面瀏覽等彙總計數為主，後端不以此建立可持續識別個別讀者的廣告追蹤檔案，也不將電子報 Email 與頁面瀏覽紀錄合併成個人化廣告輪廓。</p>
+
+          <h3>十、未成年人</h3><p>未滿 18 歲者如欲訂閱電子報或提供個人資料，應由法定代理人閱讀並同意本政策及相關服務條款，或依適用法律取得必要同意。</p><h3>十一、政策修訂與聯絡</h3>
+          <p>本政策可能因網站功能、第三方服務或法令調整而更新。重大變更會盡可能於網站或電子報中說明。對隱私權政策或個人資料處理有疑問，可聯絡 <a href="mailto:signwell.com.tw@gmail.com">signwell.com.tw@gmail.com</a>。</p>
+
+          <div class="legal-contact"><strong>個資／隱私聯絡</strong><br><a href="mailto:signwell.com.tw@gmail.com">signwell.com.tw@gmail.com</a></div>
+        </section>
+
+        <div class="newsletter-terms-note">按下「我同意」代表你已閱讀並同意本頁的「服務條款」與「隱私權政策」。</div>
+      </div>
+
+      <footer class="newsletter-terms-actions">
+        <button class="newsletter-terms-decline" type="button">取消</button>
+        <button class="newsletter-terms-agree" type="button" disabled aria-disabled="true"><span class="newsletter-terms-agree-label">我同意</span></button>
+      </footer>
+    </section>`;
+
+  document.body.appendChild(modal);
+
+  const body=modal.querySelector('.newsletter-terms-body');
+  const agree=modal.querySelector('.newsletter-terms-agree');
+  const updateLegalReadGate=()=>{
+    if(!body||!agree)return;
+    const max=Math.max(1,body.scrollHeight-body.clientHeight);
+    const progress=max<=2?1:Math.max(0,Math.min(1,body.scrollTop/max));
+    agree.style.setProperty('--terms-progress',progress.toFixed(3));
+    const progressPct=Math.max(0,Math.min(100,progress*100)).toFixed(1)+'%';
+    agree.style.setProperty('background',`linear-gradient(90deg,#e7606b 0%,#cf4150 ${progressPct},rgba(255,255,255,.94) ${progressPct},rgba(255,255,255,.94) 100%)`,'important');
+    agree.style.setProperty('color','#101216','important');
+    agree.style.setProperty('-webkit-text-fill-color','#101216','important');
+    agree.style.setProperty('text-shadow','none','important');
+    const ready=progress>=0.985;
+    agree.disabled=!ready;
+    agree.classList.toggle('is-ready',ready);
+    agree.setAttribute('aria-disabled',ready?'false':'true');
+    const agreeLabel=agree.querySelector('.newsletter-terms-agree-label');
+    if(agreeLabel)agreeLabel.textContent=ready?'我同意':'請滑至底部';
+  };
+  body?.addEventListener('scroll',updateLegalReadGate,{passive:true});
+  modal._resetLegalScrollGate=()=>{
+    if(body)body.scrollTop=0;
+    if(agree){agree.disabled=true;agree.classList.remove('is-ready');agree.setAttribute('aria-disabled','true');agree.style.setProperty('--terms-progress','0');agree.style.setProperty('background','rgba(255,255,255,.94)','important');agree.style.setProperty('color','#101216','important');agree.style.setProperty('-webkit-text-fill-color','#101216','important');agree.style.setProperty('text-shadow','none','important');const agreeLabel=agree.querySelector('.newsletter-terms-agree-label');if(agreeLabel)agreeLabel.textContent='請滑至底部'}
+    requestAnimationFrame(updateLegalReadGate);
+  };
+
+  const close=()=>{
+    modal.classList.remove('show');
+    modal.setAttribute('aria-hidden','true');
+    document.body.classList.remove('newsletter-terms-open');
+    newsletterTermsAgreeCallback=null;
+    setTimeout(()=>newsletterTermsPriorFocus?.focus?.(),40);
+  };
+
+  modal.querySelector('.newsletter-terms-close')?.addEventListener('click',close);
+  modal.querySelector('.newsletter-terms-decline')?.addEventListener('click',close);
+  modal.addEventListener('click',e=>{
+    if(e.target===modal)close();
+  });
+
+  modal.querySelector('.newsletter-terms-agree')?.addEventListener('click',()=>{
+    const cb=newsletterTermsAgreeCallback;
+    modal.classList.remove('show');
+    modal.setAttribute('aria-hidden','true');
+    document.body.classList.remove('newsletter-terms-open');
+    newsletterTermsAgreeCallback=null;
+    Promise.resolve(cb?.()).catch(()=>{});
+  });
+
+  addEventListener('keydown',e=>{
+    if(!modal.classList.contains('show'))return;
+    if(e.key==='Escape'){close();return}
+    if(e.key==='Tab'){
+      const focusables=[...modal.querySelectorAll('button,[href],input,select,textarea,[tabindex]:not([tabindex="-1"])')]
+        .filter(el=>!el.disabled&&el.offsetParent!==null);
+      if(!focusables.length)return;
+      const first=focusables[0],last=focusables[focusables.length-1];
+      if(e.shiftKey&&document.activeElement===first){e.preventDefault();last.focus()}
+      else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus()}
+    }
+  });
+
+  return modal;
+}
+
+function showNewsletterTermsModal(onAgree){
+  const modal=ensureNewsletterTermsModal();
+  newsletterTermsPriorFocus=document.activeElement;
+  newsletterTermsAgreeCallback=typeof onAgree==='function'?onAgree:null;
+  modal._resetLegalScrollGate?.();
+  document.body.classList.add('newsletter-terms-open');
+  modal.classList.remove('show');
+  void modal.offsetWidth;
+  modal.classList.add('show');
+  modal.setAttribute('aria-hidden','false');
+  setTimeout(()=>modal.querySelector('.newsletter-terms-close')?.focus(),70);
+}
+
+function bindNewsletterConsentTerms(){
+  const checkbox=$('#newsletterConsent');
+  const label=$('#newsletterConsentLabel');
+  if(!checkbox||!label)return;
+
+  label.addEventListener('click',e=>{
+    e.preventDefault();
+
+    if(checkbox.checked){
+      checkbox.checked=false;
+      checkbox.dispatchEvent(new Event('change',{bubbles:true}));
+      return;
+    }
+
+    showNewsletterTermsModal(()=>{
+      checkbox.checked=true;
+      checkbox.dispatchEvent(new Event('change',{bubbles:true}));
+      checkbox.focus({preventScroll:true});
+    });
+  });
+}
+
+
+

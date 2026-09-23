@@ -1,0 +1,481 @@
+/* ---------- theme ---------- */
+function applyTheme(){
+  const p=localStorage.getItem('signwell-theme')||'system';
+  const dark=p==='dark'||(p==='system'&&matchMedia('(prefers-color-scheme:dark)').matches);
+  document.body.classList.toggle('dark',dark);
+  document.body.classList.toggle('taiwan-theme',dark);
+  document.documentElement.dataset.swTheme=dark?'taiwan':'light';
+  $('#themeColorMeta')?.setAttribute('content',dark?'#14251f':'#eef7ff');
+  const themeBtn=$('#themeBtn');
+  if(themeBtn){
+    themeBtn.setAttribute('aria-label',dark?'切換至淺色模式':'切換至台灣主題色');
+    themeBtn.setAttribute('aria-pressed',dark?'true':'false');
+    themeBtn.title=dark?'目前：台灣主題｜切換至淺色模式':'目前：淺色模式｜切換至台灣主題';
+  }
+}
+function swEnsureThemeLightWash(){
+  let wash=document.getElementById('swThemeLightWash');
+  if(wash)return wash;
+  wash=document.createElement('div');
+  wash.id='swThemeLightWash';
+  wash.setAttribute('aria-hidden','true');
+  document.body.appendChild(wash);
+  return wash;
+}
+function toggleTheme(ev){
+  const btn=$('#themeBtn');
+  const rect=btn?.getBoundingClientRect?.();
+  const x=Number.isFinite(ev?.clientX)&&ev.clientX>0?ev.clientX:(rect?rect.left+rect.width/2:innerWidth*.92);
+  const y=Number.isFinite(ev?.clientY)&&ev.clientY>0?ev.clientY:(rect?rect.top+rect.height/2:innerHeight*.08);
+  document.documentElement.style.setProperty('--sw-theme-x',x+'px');
+  document.documentElement.style.setProperty('--sw-theme-y',y+'px');
+
+  const wasDark=document.body.classList.contains('dark');
+  const nextDark=!wasDark;
+  localStorage.setItem('signwell-theme',nextDark?'dark':'light');
+
+  const html=document.documentElement;
+  html.classList.remove('sw-theme-to-light','sw-theme-to-dark','sw-theme-fallback-to-light','sw-theme-fallback-to-taiwan');
+  html.classList.add('sw-theme-changing',nextDark?'sw-theme-to-dark':'sw-theme-to-light');
+  const cleanup=()=>html.classList.remove('sw-theme-changing','sw-theme-to-light','sw-theme-to-dark','sw-theme-fallback-to-light','sw-theme-fallback-to-taiwan');
+  const run=()=>applyTheme();
+
+  if(document.startViewTransition&&!reduceMotion()){
+    const vt=document.startViewTransition(run);
+    vt.finished.finally(cleanup);
+  }else{
+    if(!reduceMotion()){
+      swEnsureThemeLightWash();
+      requestAnimationFrame(()=>html.classList.add(nextDark?'sw-theme-fallback-to-taiwan':'sw-theme-fallback-to-light'));
+    }
+    run();
+    setTimeout(cleanup,720);
+  }
+}
+
+
+/* ---------- startup warm cache · v15.1 ---------- */
+function warmStartupCache(){
+  /*
+   * v16.8:
+   * Do not download the five sibling HTML documents during the critical
+   * startup path. They are already prefetched later during idle time.
+   * This window is only used to keep expensive visual loops paused while
+   * the first paint/data requests settle.
+   */
+  document.body.classList.add('boot-preparing');
+
+  const settle=new Promise(resolve=>setTimeout(resolve,220));
+  settle.finally(()=>{
+    requestAnimationFrame(()=>requestAnimationFrame(()=>{
+      document.body.classList.remove('boot-preparing');
+      document.body.classList.add('visuals-ready');
+    }));
+  });
+
+  return settle;
+}
+
+function preloadVisibleCovers(){
+  const run=()=>{
+    articles.filter(a=>a&&a.cover).slice(0,3).forEach(a=>{
+      try{
+        const im=new Image();
+        im.decoding='async';
+        im.fetchPriority='low';
+        im.src=String(a.cover||'');
+      }catch(_){}
+    });
+  };
+  if('requestIdleCallback' in window)requestIdleCallback(run,{timeout:900});
+  else setTimeout(run,280);
+}
+
+
+
+/* v16.8 · pause non-essential animation work in background tabs */
+function initGlobalVisualPause(){
+  const apply=()=>document.body.classList.toggle('visual-paused',document.hidden);
+  document.addEventListener('visibilitychange',apply,{passive:true});
+  apply();
+}
+
+/* ---------- adaptive desktop visual quality ---------- */
+function initAdaptiveVisualQuality(){
+  if(!matchMedia('(hover:hover) and (pointer:fine) and (min-width:900px)').matches)return;
+
+  const onVisibility=()=>{
+    document.body.classList.toggle('visual-paused',document.hidden);
+  };
+  document.addEventListener('visibilitychange',onVisibility,{passive:true});
+  onVisibility();
+
+  if(reduceMotion())return;
+
+  let frames=0,total=0,last=performance.now();
+  const start=last;
+  const sample=now=>{
+    if(document.hidden)return requestAnimationFrame(sample);
+    const dt=now-last;
+    last=now;
+    if(dt<120){
+      total+=dt;
+      frames++;
+    }
+    if(now-start<2300&&frames<100){
+      requestAnimationFrame(sample);
+      return;
+    }
+    const avg=frames?total/frames:16.7;
+    /* Keep the four desktop orbs. If a machine is struggling, only simplify
+       expensive secondary filters/mix-blend work. */
+    if(avg>24)document.body.classList.add('effects-balanced');
+  };
+  requestAnimationFrame(sample);
+}
+
+
+/* ---------- idle newsletter invitation · v15.4 ---------- */
+const IDLE_SUB_PROMPT_SESSION='signwell-idle-sub-prompt-session-v1';
+const IDLE_SUB_PROMPT_DONE='signwell-newsletter-interested-v1';
+
+function idleSubscribeAlreadyHandled(){
+  try{
+    return sessionStorage.getItem(IDLE_SUB_PROMPT_SESSION)==='1' ||
+           localStorage.getItem(IDLE_SUB_PROMPT_DONE)==='1';
+  }catch(_){return false}
+}
+function markIdleSubscribeHandled(done=false){
+  try{sessionStorage.setItem(IDLE_SUB_PROMPT_SESSION,'1')}catch(_){}
+  if(done){try{localStorage.setItem(IDLE_SUB_PROMPT_DONE,'1')}catch(_){}}
+}
+function hideIdleSubscribePrompt(done=false){
+  const el=document.getElementById('idleSubscribePrompt');
+  if(el)el.classList.remove('show');
+  markIdleSubscribeHandled(done);
+}
+function ensureIdleSubscribePrompt(){
+  if(document.getElementById('idleSubscribePrompt'))return document.getElementById('idleSubscribePrompt');
+
+  const el=document.createElement('aside');
+  el.id='idleSubscribePrompt';
+  el.className='idle-subscribe';
+  el.setAttribute('aria-live','polite');
+  el.innerHTML=`
+    <div class="idle-subscribe-card">
+      <div class="idle-subscribe-head">
+        <div>
+          <div class="idle-subscribe-kicker">SIGN WELL LETTER</div>
+          <div class="idle-subscribe-title">把下一篇值得讀的文章寄給你。</div>
+        </div>
+        <button class="idle-subscribe-close" type="button" aria-label="關閉訂閱邀請">×</button>
+      </div>
+      <p class="idle-subscribe-copy">如果你正在慢慢讀，歡迎留下 Email。新文章與精選內容才會寄出，不做廣告轟炸。</p>
+      <form class="idle-subscribe-form">
+        <input type="email" autocomplete="email" inputmode="email" placeholder="your@email.com" aria-label="Email" required>
+        <button type="submit">免費訂閱 SIGN WELL</button>
+      </form>
+      <div class="idle-subscribe-note">完全免費；送出後請到信箱查看 6 位數驗證碼，5 分鐘內輸入正確後才會正式加入。你可以隨時取消訂閱。</div>
+    </div>`;
+  document.body.appendChild(el);
+
+  el.querySelector('.idle-subscribe-close')?.addEventListener('click',()=>hideIdleSubscribePrompt(false));
+
+  el.querySelector('form')?.addEventListener('submit',e=>{
+    e.preventDefault();
+    const input=el.querySelector('input');
+    const button=el.querySelector('button[type="submit"]');
+    const note=el.querySelector('.idle-subscribe-note');
+    const email=String(input?.value||'').trim().toLowerCase();
+
+    if(!validNewsletterEmail(email)){
+      note.textContent='請先輸入有效的 Email。';
+      input?.focus();
+      return;
+    }
+    if(!newsletterEnabled()){
+      note.textContent='電子報服務目前尚未連線，請稍後再試。';
+      return;
+    }
+
+    showNewsletterTermsModal(async()=>{
+      button.disabled=true;
+      button.textContent='訂閱中…';
+      note.textContent='正在建立訂閱…';
+
+      try{
+        hideIdleSubscribePrompt(false);
+        const subscriptionResult=await window.SignwellNewsletterOtp.start({email,source:'signwell-idle-prompt',honeypot:'',elapsed:Math.max(0,Date.now()-newsletterFormLoadedAt)});
+        note.textContent=subscriptionResult?.status==='already_subscribed'?'✓ 此電子郵件已訂閱 SIGN WELL Letter。':'✓ Email 驗證完成，已正式加入 SIGN WELL Letter。';
+        button.textContent=subscriptionResult?.status==='already_subscribed'?'已訂閱':'已完成訂閱';
+        markIdleSubscribeHandled(true);
+      }catch(err){
+        button.disabled=false;button.textContent='免費訂閱 SIGN WELL';
+        note.textContent=String(err?.message||'尚未完成 Email 驗證。');
+        requestAnimationFrame(()=>el.classList.add('show'));
+      }
+    });
+  });
+
+  return el;
+}
+
+function initIdleSubscriptionPrompt(){
+  if(document.body?.dataset?.page==='newsletter')return;
+  if(idleSubscribeAlreadyHandled())return;
+
+  const IDLE_MS=60000;
+  let timer=0,lastMoveReset=0;
+
+  const schedule=()=>{
+    clearTimeout(timer);
+    if(document.hidden||idleSubscribeAlreadyHandled())return;
+    timer=setTimeout(()=>{
+      if(document.hidden||idleSubscribeAlreadyHandled())return;
+      const el=ensureIdleSubscribePrompt();
+      requestAnimationFrame(()=>el.classList.add('show'));
+      markIdleSubscribeHandled(false);
+    },IDLE_MS);
+  };
+
+  const activity=e=>{
+    const now=performance.now();
+    if(e?.type==='pointermove'&&now-lastMoveReset<900)return;
+    lastMoveReset=now;
+    schedule();
+  };
+
+  ['pointerdown','pointermove','touchstart','wheel','scroll','keydown'].forEach(type=>{
+    window.addEventListener(type,activity,{passive:true});
+  });
+
+  document.addEventListener('visibilitychange',()=>{
+    if(document.hidden)clearTimeout(timer);
+    else schedule();
+  },{passive:true});
+
+  schedule();
+}
+
+/* ---------- performance mode ---------- */
+function optimize(){
+  const touch=matchMedia('(hover:none) and (pointer:coarse)').matches;
+  const weak=Number(navigator.deviceMemory||8)<4
+    ||(innerWidth<480&&navigator.hardwareConcurrency&&navigator.hardwareConcurrency<=4);
+  if(weak||reduceMotion()||touch)document.body.classList.add('lite');
+}
+
+/* ---------- splash ---------- */
+function initWelcome(){
+  const el=$('#welcomeSplash');
+  if(!el)return;
+  const deep=route().page==='article';
+  let seen=false,internal=false;
+  try{
+    seen=sessionStorage.getItem('signwell-welcome-original-v1')==='1';
+    const stamp=Number(sessionStorage.getItem(INTERNAL_NAV_KEY)||0);
+    internal=stamp>0 && Date.now()-stamp<8000;
+    sessionStorage.removeItem(INTERNAL_NAV_KEY);
+    if(!seen)sessionStorage.setItem('signwell-welcome-original-v1','1');
+  }catch(_){seen=false;internal=false}
+  /* Internal page/article navigation must be instant.
+     A direct shared article still keeps the original welcome animation. */
+  if(internal||(seen&&!deep)){el.remove();return}
+  setTimeout(()=>el.classList.add('out'),950);
+  setTimeout(()=>el.remove(),1600);
+}
+
+/* ---------- scroll-driven chrome (one rAF loop) ---------- */
+function initScrollFX(){
+  const bar=$('#readingProgress'),toTop=$('#toTop'),ambient=$('#ambient');
+  const parallax=!lite()&&!reduceMotion();
+  let ticking=false;
+  const update=()=>{
+    ticking=false;
+    const max=document.documentElement.scrollHeight-innerHeight;
+    const y=scrollY;
+    bar.style.transform=`scaleX(${max>0?Math.min(1,y/max):0})`;
+    document.body.classList.toggle('is-scrolled',y>24);
+    toTop.classList.toggle('show',y>560);
+    if(parallax)ambient.style.transform=`translate3d(0,${(-y*.045).toFixed(1)}px,0)`;
+  };
+  addEventListener('scroll',()=>{if(!ticking){ticking=true;raf(update)}},{passive:true});
+  addEventListener('resize',()=>{if(!ticking){ticking=true;raf(update)}},{passive:true});
+  toTop.onclick=()=>scrollTo({top:0,behavior:reduceMotion()?'auto':'smooth'});
+  update();
+}
+
+/* ---------- press feedback: jelly + ripple ---------- */
+function initPressFX(){
+  document.addEventListener('pointerdown',e=>{
+    const b=e.target.closest('button,.article-card,.topic-card,.brand-top');
+    if(!b)return;
+    if(!reduceMotion()){
+      b.classList.remove('jelly');void b.offsetWidth;b.classList.add('jelly');
+      setTimeout(()=>b.classList.remove('jelly'),600);
+    }
+    if(lite()||reduceMotion()||document.body.classList.contains('home-glass-focus'))return;
+    const r=b.getBoundingClientRect(),size=Math.max(r.width,r.height)*2.1;
+    const ink=document.createElement('span');
+    ink.className='ripple';
+    ink.style.cssText=`width:${size}px;height:${size}px;left:${e.clientX-r.left}px;top:${e.clientY-r.top}px`;
+    if(getComputedStyle(b).position==='static')b.style.position='relative';
+    b.appendChild(ink);
+    setTimeout(()=>ink.remove(),660);
+  },{passive:true});
+}
+
+/* ---------- global wiring ---------- */
+$('#brandHome').onclick=()=>goto('home');
+$('#brandHome').onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();goto('home')}};
+$('#searchBtn').onclick=openSearch;
+$('#searchClose').onclick=closeSearch;
+$('#searchOverlay').onclick=e=>{if(e.target===$('#searchOverlay'))closeSearch()};
+$('#searchInput').oninput=e=>{renderSearch(e.target.value);if(window.SignWellEasterEgg)SignWellEasterEgg.handleSearch(e.target.value)};
+$('#themeBtn').onclick=toggleTheme;
+
+document.addEventListener('keydown',e=>{
+  const open=$('#searchOverlay').classList.contains('show');
+  if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==='k'){e.preventDefault();open?closeSearch():openSearch();return}
+  if(e.key==='/'&&!open&&!/^(INPUT|TEXTAREA)$/.test(document.activeElement?.tagName||'')){e.preventDefault();openSearch();return}
+  if(!open)return;
+  if(e.key==='Escape')closeSearch();
+  else if(e.key==='ArrowDown'){e.preventDefault();moveSearch(1)}
+  else if(e.key==='ArrowUp'){e.preventDefault();moveSearch(-1)}
+  else if(e.key==='Enter'){const row=$('#searchResults .search-result.active');if(row){e.preventDefault();row.click()}}
+});
+
+matchMedia('(prefers-color-scheme:dark)').addEventListener?.('change',()=>{
+  if((localStorage.getItem('signwell-theme')||'system')==='system')applyTheme();
+});
+let routeRenderRAF=0;
+function scheduleRouteRender(){
+  if(routeRenderRAF)cancelAnimationFrame(routeRenderRAF);
+  routeRenderRAF=requestAnimationFrame(()=>{
+    routeRenderRAF=0;
+    if(document.startViewTransition&&!reduceMotion()){
+      document.startViewTransition(()=>render()).finished.catch(()=>{});
+    }else{
+      render();
+    }
+  });
+}
+addEventListener('hashchange',scheduleRouteRender);
+addEventListener('popstate',scheduleRouteRender);
+addEventListener('storage',e=>{
+  if(e.key===SW_REVISION_KEY)schedulePublicRevalidate(80);
+});
+addEventListener('pageshow',e=>{
+  if(e.persisted)schedulePublicRevalidate(100);
+});
+document.addEventListener('visibilitychange',()=>{
+  if(document.visibilityState==='visible')revalidatePublicData(false).catch(()=>{});
+});
+
+/* ---------- navigation prefetch ---------- */
+function prefetchSiblingPages(){
+  const current=(location.pathname.split('/').pop()||'index.html').toLowerCase();
+  const pages=['index.html','topics.html','about.html','share.html','newsletter.html'].filter(x=>x!==current);
+  const run=()=>pages.forEach(href=>{
+    const abs=new URL(href,location.href).href;
+    if([...document.querySelectorAll('link[rel="prefetch"]')].some(x=>x.href===abs))return;
+    const l=document.createElement('link');
+    l.rel='prefetch';l.href=href;l.as='document';
+    document.head.appendChild(l);
+  });
+  if('requestIdleCallback' in window)requestIdleCallback(run,{timeout:2200});
+  else setTimeout(run,1400);
+}
+
+
+/* ---------- v18.1 network + navigation governor ---------- */
+let swBootArticlesFromCache=false;
+let swBootBundleFromCache=false;
+let swNetworkSweepAt=0;
+let swNetworkSweepPromise=null;
+
+const swLoadArticlesBase=loadArticles;
+loadArticles=async function(){
+  swBootArticlesFromCache=Array.isArray(readSessionJSON(SW_ARTICLES_CACHE));
+  return swLoadArticlesBase();
+};
+
+const swLoadPublicBundleBase=loadPublicBundle;
+loadPublicBundle=async function(){
+  swBootBundleFromCache=validBundle(readSessionJSON(SW_BUNDLE_CACHE));
+  if(swBootBundleFromCache){
+    readCachedPublicBundle();
+    return true;
+  }
+  return swLoadPublicBundleBase();
+};
+
+const swRevalidatePublicDataBase=revalidatePublicData;
+revalidatePublicData=async function(force=false){
+  if(navigator.onLine===false)return false;
+
+  const now=Date.now();
+  const gap=force?4000:12000;
+  if(!force && now-swNetworkSweepAt<gap)return false;
+  if(swNetworkSweepPromise)return swNetworkSweepPromise;
+
+  swNetworkSweepAt=now;
+  swNetworkSweepPromise=Promise.resolve(swRevalidatePublicDataBase(force))
+    .finally(()=>{swNetworkSweepPromise=null});
+  return swNetworkSweepPromise;
+};
+
+schedulePublicRevalidate=function(delay=180,force=false){
+  setTimeout(()=>revalidatePublicData(force).catch(()=>{}),delay);
+};
+
+/* Prefetch only adjacent pages, and never consume bandwidth when the user
+   has asked for data saving or is on a very slow connection. */
+prefetchSiblingPages=function(){
+  const connection=navigator.connection||navigator.mozConnection||navigator.webkitConnection;
+  const slow=connection?.saveData || /(^|-)2g$|slow-2g/i.test(String(connection?.effectiveType||''));
+  if(slow || document.hidden)return;
+
+  const files=['index.html','topics.html','about.html','share.html','newsletter.html'];
+  const current=(location.pathname.split('/').pop()||'index.html').toLowerCase();
+  const i=Math.max(0,files.indexOf(current));
+  const coarse=matchMedia('(pointer:coarse)').matches;
+
+  let targets=[];
+  if(i+1<files.length)targets.push(files[i+1]);
+  if(!coarse && i-1>=0)targets.push(files[i-1]);
+  targets=[...new Set(targets)].filter(x=>x!==current);
+
+  const addOne=(href,delay=0)=>{
+    setTimeout(()=>{
+      if(document.hidden)return;
+      const abs=new URL(href,location.href).href;
+      if([...document.querySelectorAll('link[rel="prefetch"]')].some(x=>x.href===abs))return;
+      const l=document.createElement('link');
+      l.rel='prefetch';
+      l.href=href;
+      l.as='document';
+      document.head.appendChild(l);
+    },delay);
+  };
+
+  const run=()=>targets.forEach((href,n)=>addOne(href,n*240));
+  if('requestIdleCallback' in window)requestIdleCallback(run,{timeout:2400});
+  else setTimeout(run,1500);
+};
+
+function hardenRenderedArticleMedia(){
+  document.querySelectorAll('.article-body img').forEach(img=>{
+    img.loading='lazy';
+    img.decoding='async';
+    try{img.fetchPriority='low'}catch(_){}
+
+    if(img.closest('.sw-source-figure')){
+      const drop=()=>img.closest('.sw-source-figure')?.remove();
+      img.addEventListener('error',drop,{once:true});
+      if(img.complete && !img.naturalWidth)drop();
+    }
+  });
+}
+
+

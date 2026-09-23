@@ -1,0 +1,155 @@
+/* ---------- pointer-reactive effects (rAF batched) ---------- */
+function initPointerFX(){
+  if(!matchMedia('(pointer:fine)').matches||lite()||reduceMotion())return;
+  document.body.classList.add('has-pointer');
+
+  const glow=$('#cursorGlow');
+  let gx=innerWidth/2,gy=innerHeight/2,tx=gx,ty=gy,idle=0,looping=false;
+  const useTrigGlass=Boolean(window.SignWellLiquidGlassMotion);
+  let card=null,cx=0,cy=0,pending=false;
+
+  const loop=()=>{
+    gx+=(tx-gx)*.14;gy+=(ty-gy)*.14;
+    glow.style.transform=`translate3d(${gx}px,${gy}px,0)`;
+    if(Math.abs(tx-gx)<.4&&Math.abs(ty-gy)<.4&&++idle>12){looping=false;return}
+    raf(loop);
+  };
+
+  const applyCard=()=>{
+    pending=false;
+    if(!card)return;
+    const r=card.getBoundingClientRect();
+    const x=(cx-r.left)/r.width,y=(cy-r.top)/r.height;
+    card.style.setProperty('--px',(x*100).toFixed(1)+'%');
+    card.style.setProperty('--py',(y*100).toFixed(1)+'%');
+    card.style.setProperty('--ry',((x-.5)*7).toFixed(2)+'deg');
+    card.style.setProperty('--rx',((.5-y)*5).toFixed(2)+'deg');
+  };
+
+  document.addEventListener('pointermove',e=>{
+    tx=e.clientX;ty=e.clientY;idle=0;
+    if(!looping){looping=true;raf(loop)}
+    if(!useTrigGlass){
+      const el=e.target.closest?.('.hero-card,.article-card,.topic-card,.share-card');
+      if(el!==card&&card)resetCard(card);
+      card=el;cx=e.clientX;cy=e.clientY;
+      if(card&&!pending){pending=true;raf(applyCard)}
+    }
+  },{passive:true});
+
+  document.addEventListener('pointerleave',()=>{if(card)resetCard(card);card=null},{passive:true});
+  function resetCard(el){el.style.setProperty('--rx','0deg');el.style.setProperty('--ry','0deg')}
+}
+
+/* ---------- reveal on scroll · repeatable ---------- */
+let revealObserver=null;
+function initReveal(){
+  if(reduceMotion()){
+    app.querySelectorAll('.reveal').forEach(e=>e.classList.add('in'));
+    return;
+  }
+
+  revealObserver?.disconnect();
+
+  revealObserver=new IntersectionObserver(entries=>{
+    entries.forEach(entry=>{
+      /* Enter: play. Leave: reset so a later re-entry can play again.
+         We do NOT unobserve, so scrolling back up keeps the effect alive. */
+      entry.target.classList.toggle('in',entry.isIntersecting);
+    });
+  },{
+    threshold:[0,.09,.22],
+    rootMargin:'-2% 0px -6% 0px'
+  });
+
+  app.querySelectorAll('.section-head,.article-card,.topic-card,.hero-card,.share-card,.article-cover,.skeleton,.empty,.person-card')
+    .forEach((el,i)=>{
+      el.classList.add('reveal');
+      if(!el.dataset.revealDelay){
+        el.dataset.revealDelay=String(Math.min(i%6,5)*45);
+      }
+      el.style.transitionDelay=el.dataset.revealDelay+'ms';
+      revealObserver.observe(el);
+    });
+}
+
+function setupToc(){
+  const bs=$$('[data-toc]'),hs=bs.map(b=>document.getElementById(b.dataset.toc)).filter(Boolean);
+  if(!hs.length)return;
+  const o=new IntersectionObserver(es=>es.forEach(e=>{
+    if(e.isIntersecting)bs.forEach(b=>b.classList.toggle('active',b.dataset.toc===e.target.id));
+  }),{rootMargin:'-20% 0px -70% 0px'});
+  hs.forEach(h=>o.observe(h));
+}
+
+/* ---------- toast & clipboard ---------- */
+function showToast(msg){
+  const el=$('#toast');el.textContent=msg;el.classList.add('show');
+  clearTimeout(showToast.t);
+  showToast.t=setTimeout(()=>el.classList.remove('show'),1900);
+}
+async function copyText(v){
+  try{await navigator.clipboard.writeText(v);showToast('連結已複製')}
+  catch(_){
+    try{
+      const ta=document.createElement('textarea');ta.value=v;ta.style.cssText='position:fixed;opacity:0';
+      document.body.appendChild(ta);ta.select();document.execCommand('copy');ta.remove();
+      showToast('連結已複製');
+    }catch(__){showToast('無法自動複製，請長按網址手動複製')}
+  }
+}
+
+/* ---------- search ---------- */
+let searchIndex=-1;
+function openSearch(){document.body.classList.add('search-open');
+  const ov=$('#searchOverlay');
+  ov.classList.add('show');
+  document.body.style.overflow='hidden';
+  $('#searchInput').value='';
+  if(window.SignWellEasterEgg)SignWellEasterEgg.reset();
+  renderSearch('');
+  setTimeout(()=>$('#searchInput').focus(),90);
+}
+function closeSearch(){document.body.classList.remove('search-open');
+  $('#searchOverlay').classList.remove('show');
+  document.body.style.overflow='';
+  searchIndex=-1;
+}
+function searchArticleRow(a,i){
+  return `<div class="search-result" data-search="${escapeHTML(a.slug)}" style="animation-delay:${Math.min(i,8)*24}ms"><div class="search-result-cover ${a.cover?'':'noimg'}">${a.cover?`<img src="${escapeHTML(a.cover)}" alt="" loading="lazy">`:'SIGN WELL'}</div><div class="search-result-copy"><strong>${escapeHTML(a.title)}</strong><span>${escapeHTML(a.category||'醫學筆記')} · ${readingTime(a)} 分鐘閱讀${a.excerpt?' · '+escapeHTML(a.excerpt):''}</span></div><div class="search-result-arrow">›</div></div>`;
+}
+function searchTopicRow(tp,i){
+  return `<div class="search-result search-topic-result" data-search-topic="${escapeHTML(tp.slug)}" style="animation-delay:${Math.min(i,8)*24}ms"><div class="search-topic-icon">主</div><div class="search-result-copy"><strong>${escapeHTML(tp.name)}</strong><span>${escapeHTML(tp.description||'瀏覽這個主題的相關文章與延伸整理。')} · ${topicCount(tp)} 篇</span></div><div class="search-result-arrow">›</div></div>`;
+}
+function renderSearch(q){
+  const s=q.trim().toLowerCase();
+  let foundArticles,foundTopics;
+  if(!s){
+    foundArticles=articles.slice(0,6);foundTopics=topics.slice(0,3);
+    $('#searchHint').textContent='最近發布與主題';
+  }else{
+    foundArticles=articles.filter(a=>[a.title,a.category,(a.tags||[]).join(' '),a.searchText,excerpt(a)].join(' ').toLowerCase().includes(s)).slice(0,10);
+    foundTopics=topics.filter(tp=>[tp.name,tp.description,tp.slug].join(' ').toLowerCase().includes(s)).slice(0,5);
+    $('#searchHint').textContent=`搜尋「${q.trim()}」`;
+  }
+  const total=foundArticles.length+foundTopics.length;
+  $('#searchCount').textContent=total?`${total} 個結果`:'';
+  let html='';
+  if(foundArticles.length)html+=`<div class="search-section-label">文章</div>${foundArticles.map(searchArticleRow).join('')}`;
+  if(foundTopics.length)html+=`<div class="search-section-label">主題</div>${foundTopics.map(searchTopicRow).join('')}`;
+  if(!total)html='<div class="search-empty">沒有符合的內容。<br>換個短一點的關鍵字，或直接瀏覽主題。</div>';
+  $('#searchResults').innerHTML=html;
+  searchIndex=-1;
+  $$('[data-search]').forEach(el=>el.onclick=()=>{closeSearch();goto('article/'+encodeURIComponent(el.dataset.search))});
+  $$('[data-search-topic]').forEach(el=>el.onclick=()=>{closeSearch();goto('topic/'+encodeURIComponent(el.dataset.searchTopic))});
+}
+function moveSearch(dir){
+  const rows=$$('#searchResults .search-result');
+  if(!rows.length)return;
+  rows.forEach(r=>r.classList.remove('active'));
+  searchIndex=(searchIndex+dir+rows.length)%rows.length;
+  const row=rows[searchIndex];
+  row.classList.add('active');
+  row.scrollIntoView({block:'nearest'});
+}
+

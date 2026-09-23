@@ -1,0 +1,346 @@
+/* ---------- page slider: compositor-first liquid glass ---------- */
+const Slider=(()=>{
+  const rail=$('#pager'),thumb=$('#navThumb'),items=$$('.nav-item');
+  const N=items.length,LAST=N-1;
+  const clamp=(v,a,b)=>v<a?a:v>b?b:v;
+
+  let vert=false,step=1,base={x:0,y:0},size={w:1,h:1};
+  let railRect={left:0,top:0};
+  let pos=0,vel=0,goal=0,anim=0;
+  let dragging=false,grab=0,travel=0,lastP=0,lastT=0,startIndex=0,index=0;
+  let pendingPoint=null,moveRAF=0,navTimer=0,changeTimer=0;
+  const coarse=matchMedia('(hover:none) and (pointer:coarse)').matches;
+
+  function pulseSegment(){
+    if(reduceMotion())return;
+    clearTimeout(changeTimer);
+    rail.classList.remove('is-changing');
+    void rail.offsetWidth;
+    rail.classList.add('is-changing');
+    changeTimer=setTimeout(()=>rail.classList.remove('is-changing'),260);
+  }
+
+  function cacheGeometry(){
+    const rr=rail.getBoundingClientRect();
+    const rects=items.map(el=>el.getBoundingClientRect());
+    const a=rects[0],b=rects[1]||rects[0];
+    vert=Math.abs(b.top-a.top)>Math.abs(b.left-a.left);
+    step=vert?(b.top-a.top):(b.left-a.left);
+    if(!step)step=vert?a.height:a.width;
+    base={x:a.left-rr.left,y:a.top-rr.top};
+    size={w:a.width,h:a.height};
+    railRect={left:rr.left,top:rr.top};
+
+    const thumbInsetX=vert?6:6;
+    const thumbInsetY=vert?6:5;
+    const thumbW=Math.max(56,size.w-thumbInsetX*2);
+    const thumbH=Math.max(44,size.h-thumbInsetY*2);
+    thumb.style.width=thumbW+'px';
+    thumb.style.height=thumbH+'px';
+    thumb.style.left=(base.x+(size.w-thumbW)/2)+'px';
+    thumb.style.top=(base.y+(size.h-thumbH)/2)+'px';
+    thumb.style.borderRadius=(Math.min(thumbW,thumbH)*.5)+'px';
+
+    pos=goal=index*step;
+    draw(0,true);
+  }
+
+  function refreshRailRect(){
+    const rr=rail.getBoundingClientRect();
+    railRect.left=rr.left;
+    railRect.top=rr.top;
+  }
+
+  function draw(stretch=0,forceDecor=false){
+    /* v17.2: translation only.
+       Removing velocity-based scale/stretch eliminates the visible wobble
+       that made the liquid slider feel like it was "jumping". */
+    /* v23.9.93: segmented-control motion. Position is independent from size.
+       No velocity-driven stretch: the thumb keeps a stable geometry and
+       gets its Small/Medium/Large-style pulse from the `scale` property. */
+    thumb.style.transform=vert
+      ? `translate3d(0,${pos.toFixed(3)}px,0)`
+      : `translate3d(${pos.toFixed(3)}px,0,0)`;
+
+    if(!coarse || forceDecor || !dragging){
+      thumb.style.setProperty('--spec','0px');
+      if(!coarse && !dragging && !anim){
+        rail.style.setProperty('--rim',(140+(pos/(step*LAST||1))*180)+'deg');
+      }
+    }
+
+    const near=clamp(Math.round(pos/step),0,LAST);
+    if(near!==index){
+      index=near;
+      highlight(near);
+      pulseSegment();
+    }
+  }
+
+  function highlight(i){
+    for(let n=0;n<N;n++){
+      const b=items[n],on=n===i;
+      if(b.classList.contains('active')!==on)b.classList.toggle('active',on);
+      if(on)b.setAttribute('aria-current','page');
+      else if(b.hasAttribute('aria-current'))b.removeAttribute('aria-current');
+    }
+    rail.setAttribute('aria-valuenow',String(i));
+    rail.setAttribute('aria-valuetext',items[i].querySelector('span')?.textContent||'');
+  }
+
+  let tweenFrom=0,tweenStart=0,tweenDuration=160,tweenPrev=0,tweenPrevTs=0;
+
+  function easePager(t){
+    /* Smooth, quick, non-overshooting ease. */
+    return 1-Math.pow(1-t,3);
+  }
+
+  function tween(ts){
+    if(!tweenStart){
+      tweenStart=ts;
+      tweenPrev=pos;
+      tweenPrevTs=ts;
+    }
+
+    const t=clamp((ts-tweenStart)/Math.max(1,tweenDuration),0,1);
+    const next=tweenFrom+(goal-tweenFrom)*easePager(t);
+    const dt=Math.max(1,ts-tweenPrevTs);
+
+    vel=(next-tweenPrev)/dt*1000;
+    pos=next;
+    tweenPrev=next;
+    tweenPrevTs=ts;
+    draw(0);
+
+    if(t>=1){
+      pos=goal;
+      vel=0;
+      draw(0,true);
+      anim=0;
+      tweenStart=0;
+      tweenPrevTs=0;
+      return;
+    }
+    anim=raf(tween);
+  }
+
+  function settle(to,duration=160){
+    stop();
+    goal=clamp(to,0,LIMIT());
+    tweenFrom=pos;
+    tweenDuration=clamp(duration,110,220);
+    tweenStart=0;
+    anim=raf(tween);
+  }
+
+  function stop(){
+    if(anim){cancelAnimationFrame(anim);anim=0}
+    tweenStart=0;
+    tweenPrevTs=0;
+  }
+
+  function clearPendingNavigation(){
+    if(navTimer){
+      clearTimeout(navTimer);
+      navTimer=0;
+    }
+    rail.classList.remove('nav-traveling');
+    document.body.classList.remove('pager-programmatic');
+  }
+
+  function animateToRoute(target,page,{tapped=false,from=index}={}){
+    target=clamp(target,0,LAST);
+    clearPendingNavigation();
+    highlight(target);
+    pulseSegment();
+
+    /* Match the Small / Medium / Large selector: crisp snap first,
+       then hand the route to the page transition. */
+    settle(target*step,tapped?168:182);
+
+    if(reduceMotion()){
+      goto(page);
+      return;
+    }
+
+    const soft=pagerWillStayInDocument(page);
+    prefetchPagerPage(page);
+    const direction=Math.sign(target-from);
+    beginPagerRouteFX({persist:!soft,direction});
+
+    const distance=Math.abs(target-from);
+
+    /* Fast enough to feel continuous, long enough for the thumb to visibly
+       arrive at its real slot before the document hand-off. */
+    const wait=tapped
+      ? Math.min(214,176+distance*9)
+      : Math.min(222,186+distance*8);
+
+    rail.classList.add('nav-traveling');
+    document.body.classList.add('pager-programmatic');
+
+    navTimer=setTimeout(()=>{
+      navTimer=0;
+      rail.classList.remove('nav-traveling');
+      document.body.classList.remove('pager-programmatic');
+      goto(page);
+
+      /* A hash/route that stays in this HTML document must explicitly
+         recover from the exit state; this fixes the old "page stays faded"
+         edge case on article → Home / topic → Topics. */
+      if(soft){
+        requestAnimationFrame(()=>requestAnimationFrame(playPagerSoftRouteEntrance));
+      }
+    },wait);
+  }
+
+  function trackClient(clientX,clientY){
+    return vert
+      ? clientY-railRect.top-base.y-size.h/2
+      : clientX-railRect.left-base.x-size.w/2;
+  }
+  const LIMIT=()=>step*LAST;
+  function band(p){
+    /* v17.2: hard clamp. Rubber-band overshoot looked like the whole slider
+       was still drifting after the user's finger stopped. */
+    return clamp(p,0,LIMIT());
+  }
+
+  function processPoint(pt){
+    moveRAF=0;
+    if(!dragging||!pt)return;
+    const p=trackClient(pt.x,pt.y),now=pt.t;
+    const dt=Math.max(8,now-lastT);
+    travel+=Math.abs(p-lastP);
+    /* low-pass velocity removes micro-jitter on 120 Hz touch streams */
+    const instant=(p-lastP)/dt*1000;
+    vel=vel*.55+instant*.45;
+    lastP=p;lastT=now;
+    const desired=band(p-grab);
+
+    /* Position low-pass: suppress 120 Hz micro-jitter while keeping the lens
+       visually under the finger. Coarse pointers get a slightly softer blend. */
+    const follow=coarse?.52:.64;
+    pos+=(desired-pos)*follow;
+    if(Math.abs(desired-pos)<.18)pos=desired;
+
+    draw(0);
+
+    /* Segmented-control behavior: while the finger moves, only the selector
+       moves. The page changes after release, just like the Small/Medium/Large dock. */
+    const candidate=clamp(Math.round(desired/step),0,LAST);
+    prefetchPagerPage(items[candidate].dataset.page);
+  }
+
+  function queuePoint(e){
+    const evs=e.getCoalescedEvents?.();
+    const ev=evs&&evs.length?evs[evs.length-1]:e;
+    pendingPoint={x:ev.clientX,y:ev.clientY,t:ev.timeStamp||performance.now()};
+    if(!moveRAF)moveRAF=raf(()=>processPoint(pendingPoint));
+  }
+
+  rail.addEventListener('pointerdown',e=>{
+    clearPendingNavigation();
+    stop();
+    refreshRailRect();
+    dragging=true;travel=0;startIndex=index;vel=0;
+    document.body.classList.add('pager-dragging');
+    rail.classList.add('grabbing','is-pressing');
+    try{rail.setPointerCapture(e.pointerId)}catch(_){}
+    const p=trackClient(e.clientX,e.clientY);
+    const half=(vert?size.h:size.w)/2;
+    grab=Math.abs(p-pos)<=half?p-pos:0;
+    lastP=p;lastT=e.timeStamp||performance.now();
+
+    const likely=clamp(Math.round(p/step),0,LAST);
+    prefetchPagerPage(items[likely].dataset.page);
+  },{passive:true});
+
+  rail.addEventListener('pointermove',e=>{
+    if(!dragging)return;
+    queuePoint(e);
+  },{passive:true});
+
+  const release=e=>{
+    if(!dragging)return;
+    if(moveRAF){
+      cancelAnimationFrame(moveRAF);moveRAF=0;
+      if(pendingPoint)processPoint(pendingPoint);
+    }
+    dragging=false;
+    document.body.classList.remove('pager-dragging');
+    rail.classList.remove('grabbing','is-pressing');
+
+    const tapped=travel<7;
+    const p=trackClient(e.clientX,e.clientY);
+    const projected=tapped?p:pos+vel*.028;
+    const target=clamp(Math.round(projected/step),0,LAST);
+
+    if(target!==startIndex||routeIndex(route())!==target){
+      animateToRoute(target,items[target].dataset.page,{tapped,from:startIndex});
+    }else{
+      highlight(target);
+      pulseSegment();
+      settle(target*step,138);
+      cancelPagerGestureFX();
+    }
+  };
+
+  rail.addEventListener('pointerup',release,{passive:true});
+  rail.addEventListener('pointercancel',()=>{
+    if(!dragging)return;
+    dragging=false;
+    document.body.classList.remove('pager-dragging');
+    rail.classList.remove('grabbing','is-pressing');
+    if(moveRAF){cancelAnimationFrame(moveRAF);moveRAF=0}
+    settle(startIndex*step,125);
+    cancelPagerGestureFX();
+  },{passive:true});
+
+  rail.addEventListener('keydown',e=>{
+    const map={ArrowDown:1,ArrowRight:1,ArrowUp:-1,ArrowLeft:-1};
+    let next=null;
+    if(e.key in map)next=clamp(index+map[e.key],0,LAST);
+    else if(e.key==='Home')next=0;
+    else if(e.key==='End')next=LAST;
+    else if(e.key==='Enter'||e.key===' ')next=index;
+    if(next===null)return;
+    e.preventDefault();
+    const from=index;
+    if(routeIndex(route())!==next)animateToRoute(next,items[next].dataset.page,{tapped:true,from});
+    else{highlight(next);settle(next*step)};
+  });
+
+  let wheelLock=false;
+  rail.addEventListener('wheel',e=>{
+    e.preventDefault();
+    if(wheelLock)return;
+    wheelLock=true;setTimeout(()=>wheelLock=false,300);
+    const d=Math.abs(e.deltaX)>Math.abs(e.deltaY)?e.deltaX:e.deltaY;
+    const from=index;
+    const next=clamp(index+(d>0?1:-1),0,LAST);
+    if(next!==index)animateToRoute(next,items[next].dataset.page,{tapped:true,from});
+  },{passive:false});
+
+  let resizeRAF=0;
+  const relayout=()=>{
+    if(resizeRAF)cancelAnimationFrame(resizeRAF);
+    resizeRAF=raf(()=>{resizeRAF=0;stop();cacheGeometry()});
+  };
+  addEventListener('resize',relayout,{passive:true});
+  addEventListener('orientationchange',()=>setTimeout(relayout,100),{passive:true});
+
+  return{
+    init(){cacheGeometry();setTimeout(cacheGeometry,80)},
+    set(i,instant){
+      i=clamp(i,0,LAST);
+      highlight(i);
+      if(instant||reduceMotion()){
+        stop();index=i;pos=goal=i*step;vel=0;draw(0,true);
+      }else{
+        index=i;pulseSegment();settle(i*step,168);
+      }
+    }
+  };
+})();
+

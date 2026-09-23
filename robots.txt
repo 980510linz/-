@@ -96,5 +96,5 @@ Disallow: /confirm.html
 Disallow: /unsubscribe.html
 Disallow: /newsletter-test.html
 
-Sitemap: https://980510linz.github.io/-/sitemap.xml
-Sitemap: https://980510linz.github.io/-/news-sitemap.xml
+Sitemap: https://signwell.com.tw/sitemap.xml
+Sitemap: https://signwell.com.tw/news-sitemap.xml
