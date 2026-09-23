@@ -1,0 +1,21 @@
+SIGN WELL PUBLIC · GitHub Pages root repair
+
+IMPORTANT
+1. Unzip this package locally first.
+2. Upload the CONTENTS of this package to the ROOT of the 980510linz.github.io repository.
+3. index.html and assets/ must be at the same repository level.
+4. Do NOT upload this as /PUBLIC/ and do NOT put index.html inside /PUBLIC/.
+5. Preserve the existing /-/CMS/ directory if your CMS is hosted there.
+6. After GitHub Pages finishes deploying, hard refresh Safari or open with ?v=24181.
+
+Expected root layout:
+/index.html
+/assets/...
+/topics.html
+/about.html
+/newsletter.html
+/confirm.html
+/unsubscribe.html
+/robots.txt
+/manifest.webmanifest
+/-/CMS/   (keep existing CMS; not included in this repair zip)
