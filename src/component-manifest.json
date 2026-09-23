@@ -1,0 +1,15 @@
+{
+  "version": 1,
+  "label": "Public home",
+  "bundle": "assets/bundles/public-home-v24.10.0.js",
+  "modules": [
+    "00-core-data.jsfrag",
+    "10-routing-views.jsfrag",
+    "20-newsletter.jsfrag",
+    "30-render-nav.jsfrag",
+    "40-slider.jsfrag",
+    "50-effects-search.jsfrag",
+    "60-theme-performance.jsfrag",
+    "70-boot.jsfrag"
+  ]
+}
