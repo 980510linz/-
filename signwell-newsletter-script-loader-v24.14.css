@@ -1,0 +1,23 @@
+/* SIGN WELL v24.14 · Newsletter Script Bridge Experience */
+html.sw-newsletter-lock,html.sw-newsletter-lock body{overflow:hidden!important;overscroll-behavior:none!important;touch-action:none!important}
+.newsletter-flow-overlay{background:rgba(8,15,29,.66)!important;-webkit-backdrop-filter:blur(18px) saturate(125%)!important;backdrop-filter:blur(18px) saturate(125%)!important;overflow:hidden!important}
+.newsletter-flow-overlay::before{content:"";position:absolute;inset:0;background:linear-gradient(135deg,rgba(244,178,203,.12),rgba(111,185,255,.13));pointer-events:none}
+.newsletter-flow-card{width:min(430px,calc(100vw - 32px))!important;min-height:330px!important;background:rgba(248,250,255,.08)!important;border:1px solid rgba(255,255,255,.20)!important;box-shadow:0 30px 90px rgba(0,0,0,.28),inset 0 1px 0 rgba(255,255,255,.26)!important;-webkit-backdrop-filter:blur(12px) saturate(140%)!important;backdrop-filter:blur(12px) saturate(140%)!important}
+.newsletter-flow-card::before{display:none!important}
+.nl-flow-loading{min-height:258px;display:flex!important;flex-direction:column;align-items:center;justify-content:center}
+.newsletter-flow-overlay.success .nl-flow-loading{display:none!important}
+.nl-flow-icon,.nl-flow-progress{display:none!important}
+.sw-nl-reflect{position:absolute;inset:0;width:100%;height:100%;display:block;pointer-events:none;opacity:.82}
+.sw-nl-arrow-wrap{position:relative;width:128px;height:128px;margin:0 auto 16px;filter:drop-shadow(0 16px 32px rgba(36,115,190,.18));isolation:isolate}
+.sw-nl-arrow{position:absolute;inset:0;width:100%;height:100%;display:block}
+.sw-nl-subcube{position:absolute;left:50%;top:50%;width:38px;height:38px;transform:translate(-50%,-50%) rotateX(-16deg) rotateY(24deg);transform-style:preserve-3d;animation:swNlCubeFloat 2.8s ease-in-out infinite;pointer-events:none}
+.sw-nl-subcube .face{position:absolute;inset:0;border:1px solid rgba(255,255,255,.55);background:linear-gradient(145deg,rgba(244,178,203,.88),rgba(112,184,255,.78));box-shadow:inset 0 1px 7px rgba(255,255,255,.4)}
+.sw-nl-subcube .front{transform:translateZ(19px)}.sw-nl-subcube .back{transform:rotateY(180deg) translateZ(19px)}.sw-nl-subcube .right{transform:rotateY(90deg) translateZ(19px)}.sw-nl-subcube .left{transform:rotateY(-90deg) translateZ(19px)}.sw-nl-subcube .top{transform:rotateX(90deg) translateZ(19px)}.sw-nl-subcube .bottom{transform:rotateX(-90deg) translateZ(19px)}
+.sw-nl-subcube .front::before{content:"";position:absolute;left:8px;right:8px;top:10px;height:16px;border:1.5px solid rgba(255,255,255,.92);border-radius:3px}
+.sw-nl-subcube .front::after{content:"";position:absolute;left:10px;top:10px;width:16px;height:16px;border-left:1.5px solid rgba(255,255,255,.92);border-bottom:1.5px solid rgba(255,255,255,.92);transform:rotate(-45deg) scale(.72)}
+@keyframes swNlCubeFloat{0%,100%{transform:translate(-50%,-50%) rotateX(-16deg) rotateY(24deg) translateY(0)}50%{transform:translate(-50%,-50%) rotateX(-10deg) rotateY(48deg) translateY(-4px)}}
+.newsletter-flow-overlay:not(.success) .nl-flow-title{color:#f5f8ff!important;font:650 24px/1.1 -apple-system,BlinkMacSystemFont,"SF Pro Display","Noto Sans TC",sans-serif!important;letter-spacing:-.035em!important}
+.newsletter-flow-overlay:not(.success) .nl-flow-copy{color:rgba(238,245,255,.72)!important;font-size:12px!important}
+.newsletter-flow-overlay:not(.success) .nl-flow-email{color:rgba(185,220,255,.9)!important}
+@media (prefers-reduced-motion:reduce){.sw-nl-subcube{animation:none}.sw-nl-reflect{opacity:.45}}
+@media (max-width:600px){.newsletter-flow-card{min-height:310px!important}.sw-nl-arrow-wrap{width:112px;height:112px}}

@@ -1,0 +1,164 @@
+/* SIGN WELL v24.0.00 · Public Dark Mode Old Money Master Override
+   Goal: remove residual deep-blue language and unify dark mode into a warm old-money visual.
+   Scope: Public only. Covers article cards, topic cards, default thumbnails, newsletter, sliders,
+   search/share chrome, and dynamic ribbon colors through CSS variables / UI overrides.
+*/
+body.dark{
+  --sw-om-bg:#171715;
+  --sw-om-bg2:#1d1b18;
+  --sw-om-bg3:#241f1b;
+  --sw-om-pearl:#f1eee7;
+  --sw-om-pearl-rgb:241,238,231;
+  --sw-om-stone:#b7b0a4;
+  --sw-om-stone-soft:#8f877c;
+  --sw-om-olive:#5c6350;
+  --sw-om-olive-rgb:92,99,80;
+  --sw-om-walnut:#6f5a47;
+  --sw-om-walnut-rgb:111,90,71;
+  --sw-om-oxblood:#6d4146;
+  --sw-om-oxblood-rgb:109,65,70;
+  --sw-om-champagne:#cabda6;
+  --sw-om-champagne-rgb:202,189,166;
+  --sw-oldmoney-line:rgba(var(--sw-om-pearl-rgb),.13);
+  --sw-oldmoney-line-soft:rgba(var(--sw-om-pearl-rgb),.08);
+  color:var(--sw-om-pearl)!important;
+  --ink:var(--sw-om-pearl)!important;
+  --muted:var(--sw-om-stone)!important;
+  --bg:var(--sw-om-bg)!important;
+  --swui-text:var(--sw-om-pearl)!important;
+  --swui-muted:var(--sw-om-stone)!important;
+  --swui-faint:var(--sw-om-stone-soft)!important;
+  --swui-line:var(--sw-oldmoney-line)!important;
+  --swui-surface:rgba(var(--sw-om-pearl-rgb),.060)!important;
+  --swui-surface-strong:rgba(var(--sw-om-pearl-rgb),.095)!important;
+  background:
+    radial-gradient(84rem 60rem at -10% -8%,rgba(var(--sw-om-olive-rgb),.21),transparent 69%),
+    radial-gradient(70rem 54rem at 112% 4%,rgba(var(--sw-om-oxblood-rgb),.15),transparent 70%),
+    radial-gradient(62rem 48rem at 48% 112%,rgba(var(--sw-om-walnut-rgb),.16),transparent 72%),
+    radial-gradient(38rem 24rem at 88% 24%,rgba(var(--sw-om-champagne-rgb),.08),transparent 74%),
+    linear-gradient(150deg,var(--sw-om-bg) 0%,var(--sw-om-bg2) 48%,var(--sw-om-bg3) 100%)!important;
+}
+body.dark::after{
+  background:
+    linear-gradient(112deg,transparent 0 40%,rgba(var(--sw-om-pearl-rgb),.020) 50%,transparent 60%),
+    radial-gradient(100vmax 40vmax at 50% -10%,rgba(var(--sw-om-champagne-rgb),.03),transparent 75%)!important;
+}
+body.dark .ambient{opacity:.82!important;filter:blur(84px) saturate(108%)!important}
+body.dark .orb.a{background:radial-gradient(circle,rgba(var(--sw-om-olive-rgb),.24),rgba(var(--sw-om-olive-rgb),.08) 42%,transparent 76%)!important}
+body.dark .orb.b{background:radial-gradient(circle,rgba(var(--sw-om-oxblood-rgb),.22),rgba(var(--sw-om-oxblood-rgb),.07) 43%,transparent 78%)!important}
+body.dark .orb.c{background:radial-gradient(circle,rgba(var(--sw-om-walnut-rgb),.19),rgba(var(--sw-om-walnut-rgb),.05) 44%,transparent 78%)!important}
+body.dark .orb.d{background:radial-gradient(circle,rgba(var(--sw-om-champagne-rgb),.15),rgba(var(--sw-om-champagne-rgb),.04) 44%,transparent 78%)!important}
+body.dark .cursor-glow{background:radial-gradient(circle,rgba(var(--sw-om-pearl-rgb),.10),rgba(var(--sw-om-champagne-rgb),.07) 36%,transparent 72%)!important}
+
+/* top chrome / sliders / controls */
+
+body.dark .brand-mark{
+  background:linear-gradient(150deg,rgba(var(--sw-om-olive-rgb),.54),rgba(var(--sw-om-walnut-rgb),.34))!important;
+  border-color:rgba(var(--sw-om-pearl-rgb),.14)!important;
+  box-shadow:inset 0 1px 1px rgba(var(--sw-om-pearl-rgb),.15),0 16px 36px rgba(0,0,0,.20)!important;
+}
+body.dark.is-scrolled .brand-top{background:rgba(23,22,20,.70)!important;box-shadow:0 12px 34px rgba(0,0,0,.24),inset 0 1px 0 rgba(var(--sw-om-pearl-rgb),.08)!important}
+
+
+
+
+
+
+
+
+
+
+/* card system */
+body.dark :is(.glass,.lightcard,.article-card,.topic-card,.share-card,.newsletter-card,.person-card,.about-value,.about-team-card,.article-view,.article-layout,.toc,.search-panel,.share-sheet,.hero-card,.about-manifesto,.sw-trust-panel,.sw-related-card,.sw-continue-card,.sw-article-join-card){
+  background:
+    radial-gradient(118% 94% at 8% -10%,rgba(var(--sw-om-pearl-rgb),.10),transparent 49%),
+    radial-gradient(95% 105% at 105% 110%,rgba(var(--sw-om-champagne-rgb),.06),transparent 61%),
+    linear-gradient(150deg,rgba(var(--sw-om-pearl-rgb),.078),rgba(var(--sw-om-pearl-rgb),.032))!important;
+  border-color:var(--sw-oldmoney-line-soft)!important;
+  box-shadow:0 4px 14px rgba(0,0,0,.12),0 30px 82px rgba(0,0,0,.17),0 82px 170px rgba(0,0,0,.08),inset 0 1px 0 rgba(var(--sw-om-pearl-rgb),.11)!important;
+  backdrop-filter:blur(16px) saturate(78%)!important;
+  -webkit-backdrop-filter:blur(16px) saturate(78%)!important;
+}
+body.dark :is(.article-card,.topic-card,.about-value,.about-team-card,.person-card,.sw-related-card):nth-child(3n/**/+1){background:radial-gradient(108% 90% at 104% 105%,rgba(var(--sw-om-oxblood-rgb),.062),transparent 62%),linear-gradient(150deg,rgba(var(--sw-om-pearl-rgb),.078),rgba(var(--sw-om-pearl-rgb),.032))!important}
+body.dark :is(.article-card,.topic-card,.about-value,.about-team-card,.person-card,.sw-related-card):nth-child(3n/**/+2){background:radial-gradient(108% 90% at 104% 105%,rgba(var(--sw-om-walnut-rgb),.072),transparent 62%),linear-gradient(150deg,rgba(var(--sw-om-pearl-rgb),.078),rgba(var(--sw-om-pearl-rgb),.032))!important}
+body.dark :is(.article-card,.topic-card,.about-value,.about-team-card,.person-card,.sw-related-card):nth-child(3n){background:radial-gradient(108% 90% at 104% 105%,rgba(var(--sw-om-olive-rgb),.072),transparent 62%),linear-gradient(150deg,rgba(var(--sw-om-pearl-rgb),.078),rgba(var(--sw-om-pearl-rgb),.032))!important}
+body.dark :is(.article-card,.topic-card,.about-value,.about-team-card,.person-card,.sw-related-card):hover{border-color:rgba(var(--sw-om-pearl-rgb),.16)!important}
+
+/* default cover / fallback thumb / image-mimic default */
+body.dark :is(.default-cover,.card-cover,.search-result-cover){
+  background:
+    radial-gradient(140% 110% at 10% 0%,rgba(var(--sw-om-pearl-rgb),.11),transparent 42%),
+    radial-gradient(95% 100% at 100% 100%,rgba(var(--sw-om-oxblood-rgb),.22),transparent 60%),
+    linear-gradient(135deg,rgba(var(--sw-om-olive-rgb),.34),rgba(var(--sw-om-walnut-rgb),.24) 54%,rgba(var(--sw-om-oxblood-rgb),.24))!important;
+  border-color:rgba(var(--sw-om-pearl-rgb),.12)!important;
+}
+body.dark .default-cover::before{background:linear-gradient(135deg,rgba(var(--sw-om-pearl-rgb),.10),transparent 44%,rgba(var(--sw-om-champagne-rgb),.08) 72%,transparent)!important}
+body.dark .default-cover-mark{
+  background:linear-gradient(145deg,rgba(var(--sw-om-pearl-rgb),.16),rgba(var(--sw-om-pearl-rgb),.06))!important;
+  border-color:rgba(var(--sw-om-pearl-rgb),.18)!important;
+  color:var(--sw-om-pearl)!important;
+  box-shadow:inset 0 1px 0 rgba(var(--sw-om-pearl-rgb),.16),0 18px 42px rgba(0,0,0,.18)!important;
+}
+body.dark .default-cover-copy{color:#d0c6ba!important}
+body.dark :is(.article-card h3,.topic-card h3,.article-view h1,.article-top h1,.share-title,.newsletter-card h1,.about-manifesto h2,.about-team-head h2,.hero h1,.page-hero h1,.about-hero h1,.person-name,.section-head h2){color:var(--sw-om-pearl)!important;-webkit-text-fill-color:var(--sw-om-pearl)!important;background:none!important;text-shadow:none!important}
+body.dark :is(p,li,dd,dt,small,label,.hero p,.page-hero p,.about-hero p,.newsletter-lead,.search-result-copy span,.article-meta,.footer-copy,.brand-copy span,.empty,.search-empty,.article-body p,.article-body li,.article-body td,.article-body th,.article-body figcaption,.share-desc,.newsletter-note,.newsletter-status,.newsletter-consent,.article-card p,.topic-card p,.person-role,.topic-count,.about-value p){color:var(--sw-om-stone)!important;-webkit-text-fill-color:var(--sw-om-stone)!important}
+body.dark :is(.eyebrow,.kicker,.meta,.article-meta,.topic-count,.sw-related-card small,.brand-copy span){color:var(--sw-om-stone-soft)!important;-webkit-text-fill-color:var(--sw-om-stone-soft)!important}
+
+body.dark .article-body blockquote{background:rgba(var(--sw-om-walnut-rgb),.10)!important;border-color:rgba(var(--sw-om-walnut-rgb),.24)!important}
+body.dark .article-body :is(pre,code,table,th){background:rgba(0,0,0,.18)!important;border-color:var(--sw-oldmoney-line-soft)!important;color:var(--sw-om-stone)!important}
+body.dark .article-body mark,
+body.dark .article-body span[style*="background-color"],
+body.dark .article-body span[style*="background:"]{
+  background:rgba(var(--sw-om-champagne-rgb),.22)!important;
+  color:var(--sw-om-pearl)!important;
+}
+body.dark .toc button:hover,
+body.dark .toc button.active{background:rgba(var(--sw-om-olive-rgb),.15)!important;color:var(--sw-om-pearl)!important}
+
+/* newsletter / email subscribe visual */
+body.dark .newsletter-card{
+  background:
+    radial-gradient(460px 220px at 0% 0%,rgba(var(--sw-om-pearl-rgb),.16),transparent 74%),
+    radial-gradient(320px 220px at 100% 0%,rgba(var(--sw-om-champagne-rgb),.14),transparent 72%),
+    linear-gradient(150deg,rgba(var(--sw-om-pearl-rgb),.10),rgba(var(--sw-om-pearl-rgb),.04))!important;
+}
+body.dark .newsletter-card::after,
+body.dark .idle-subscribe-card::after{
+  background:radial-gradient(circle,rgba(var(--sw-om-oxblood-rgb),.18),rgba(var(--sw-om-champagne-rgb),.08) 44%,transparent 72%)!important;
+}
+body.dark .newsletter-form,
+body.dark .newsletter-form input,
+body.dark .share-url input,
+body.dark .search-input,
+body.dark .search-input input{
+  background:rgba(var(--sw-om-pearl-rgb),.055)!important;
+  border-color:rgba(var(--sw-om-pearl-rgb),.10)!important;
+  color:var(--sw-om-pearl)!important;
+}
+body.dark .newsletter-form input::placeholder,
+body.dark .share-url input::placeholder,
+body.dark .search-input input::placeholder{color:#a79f92!important;opacity:1}
+body.dark .newsletter-success{background:rgba(var(--sw-om-olive-rgb),.18)!important;border-color:rgba(var(--sw-om-olive-rgb),.24)!important;color:#e9e4db!important}
+body.dark .newsletter-status.success{color:#dfd9cd!important}
+body.dark .newsletter-status.error{color:#e0c0c2!important}
+
+/* misc */
+body.dark .search-kbd kbd{background:rgba(var(--sw-om-pearl-rgb),.065)!important;border-color:rgba(var(--sw-om-pearl-rgb),.10)!important;color:var(--sw-om-stone)!important}
+body.dark .overlay{background:rgba(11,11,10,.64)!important}
+body.dark .qr-box{background:rgba(var(--sw-om-pearl-rgb),.88)!important;border-color:rgba(var(--sw-om-pearl-rgb),.22)!important}
+body.dark .toast{background:rgba(var(--sw-om-pearl-rgb),.92)!important;color:#2a2621!important;border-color:rgba(var(--sw-om-pearl-rgb),.20)!important}
+body.dark .skeleton{background:linear-gradient(145deg,rgba(var(--sw-om-pearl-rgb),.075),rgba(var(--sw-om-pearl-rgb),.035))!important;border-color:rgba(var(--sw-om-pearl-rgb),.08)!important}
+body.dark .skeleton::after{background:linear-gradient(100deg,transparent 22%,rgba(var(--sw-om-pearl-rgb),.09) 50%,transparent 78%)!important}
+body.dark .sw-home-logo-stage{opacity:.10!important;mix-blend-mode:screen}
+body.dark .sw-home-logo-stage::before{opacity:.56!important;filter:blur(22px) saturate(100%)!important}
+body.dark .sw-home-logo-stage::after{opacity:.38!important}
+body.dark .sw-motion-specular{background:radial-gradient(360px circle at var(--sw-mx) var(--sw-my),rgba(var(--sw-om-pearl-rgb),.70) 0%,rgba(var(--sw-om-champagne-rgb),.18) 24%,rgba(var(--sw-om-walnut-rgb),.08) 40%,transparent 67%)!important}
+body.dark .sw-motion-button-specular{background:radial-gradient(110px circle at var(--sw-btn-x,50%) 18%,rgba(var(--sw-om-pearl-rgb),.58),rgba(var(--sw-om-walnut-rgb),.08) 42%,transparent 68%)!important}
+body.dark .sw-ai-breath::before{background:radial-gradient(circle,rgba(var(--sw-om-oxblood-rgb),.52) 0%,rgba(var(--sw-om-oxblood-rgb),.22) 40%,transparent 74%)!important}
+body.dark .sw-ai-breath::after{background:radial-gradient(circle,rgba(var(--sw-om-olive-rgb),.52) 0%,rgba(var(--sw-om-olive-rgb),.22) 40%,transparent 75%)!important}
+body.dark .sw-signwell-ribbon-track{background:linear-gradient(90deg,rgba(var(--sw-om-pearl-rgb),.10),rgba(var(--sw-om-champagne-rgb),.08),rgba(var(--sw-om-pearl-rgb),.10))!important}
+
+@media(max-width:760px){
+  
+  body.dark :is(.glass,.lightcard,.article-card,.topic-card,.share-card,.newsletter-card,.person-card,.about-value,.about-team-card,.article-view,.article-layout,.toc,.hero-card,.about-manifesto,.sw-trust-panel,.sw-related-card){backdrop-filter:blur(11px) saturate(76%)!important;-webkit-backdrop-filter:blur(11px) saturate(76%)!important}
+}

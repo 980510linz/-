@@ -1,0 +1,178 @@
+/* SIGN WELL v24.0.26 · Taiwan Theme + whole-page transition
+   Taiwan-inspired, restrained palette:
+   forest/tea green · temple vermilion · sea-mist blue · rice gold · cypress brown.
+   Compatibility: body.dark remains the persisted legacy selector; body.taiwan-theme is semantic alias.
+*/
+:root{
+  --sw-tw-forest:#24483d;
+  --sw-tw-forest-deep:#14251f;
+  --sw-tw-forest-rgb:36,72,61;
+  --sw-tw-vermilion:#a9503f;
+  --sw-tw-vermilion-rgb:169,80,63;
+  --sw-tw-sea:#8db8c8;
+  --sw-tw-sea-rgb:141,184,200;
+  --sw-tw-rice:#cfb77f;
+  --sw-tw-rice-rgb:207,183,127;
+  --sw-tw-cypress:#765d49;
+  --sw-tw-cypress-rgb:118,93,73;
+  --sw-tw-cream:#f2eadb;
+  --sw-tw-paper:#e8dfcf;
+  --sw-tw-muted:#c2c5bb;
+  --sw-tw-bg:#121b18;
+  --sw-tw-bg-2:#17221d;
+  --sw-tw-bg-3:#211b18;
+  --sw-theme-x:92vw;
+  --sw-theme-y:8vh;
+}
+
+/* ---------- Taiwan theme canvas ---------- */
+body.dark,
+body.taiwan-theme{
+  color-scheme:dark;
+  --ink:var(--sw-tw-cream)!important;
+  --text:var(--sw-tw-cream)!important;
+  --muted:var(--sw-tw-muted)!important;
+  --line:rgba(242,234,219,.135)!important;
+  --line-soft:rgba(242,234,219,.09)!important;
+  --accent:var(--sw-tw-rice)!important;
+  --accent2:var(--sw-tw-sea)!important;
+  background:
+    radial-gradient(62rem 46rem at -6% -7%,rgba(var(--sw-tw-forest-rgb),.42),transparent 69%),
+    radial-gradient(58rem 44rem at 106% 4%,rgba(var(--sw-tw-vermilion-rgb),.19),transparent 72%),
+    radial-gradient(48rem 34rem at 52% 112%,rgba(var(--sw-tw-sea-rgb),.10),transparent 74%),
+    linear-gradient(150deg,var(--sw-tw-bg) 0%,var(--sw-tw-bg-2) 54%,var(--sw-tw-bg-3) 100%)!important;
+  color:var(--sw-tw-cream)!important;
+}
+body.dark::before,
+body.taiwan-theme::before{
+  opacity:.09!important;
+  background-image:repeating-linear-gradient(0deg,rgba(242,234,219,.018) 0 1px,transparent 1px 4px)!important;
+}
+body.dark::after,
+body.taiwan-theme::after{
+  background:
+    radial-gradient(58rem 38rem at 10% 8%,rgba(var(--sw-tw-rice-rgb),.055),transparent 72%),
+    radial-gradient(52rem 36rem at 92% 24%,rgba(var(--sw-tw-sea-rgb),.06),transparent 74%)!important;
+}
+
+body.dark .orb.a,body.taiwan-theme .orb.a{background:radial-gradient(circle,rgba(var(--sw-tw-forest-rgb),.42),transparent 70%)!important}
+body.dark .orb.b,body.taiwan-theme .orb.b{background:radial-gradient(circle,rgba(var(--sw-tw-vermilion-rgb),.19),transparent 72%)!important}
+body.dark .orb.c,body.taiwan-theme .orb.c{background:radial-gradient(circle,rgba(var(--sw-tw-sea-rgb),.15),transparent 72%)!important}
+body.dark .orb.d,body.taiwan-theme .orb.d{background:radial-gradient(circle,rgba(var(--sw-tw-rice-rgb),.10),transparent 74%)!important}
+
+
+body.dark :is(.glass,.hero-card,.home-hero-card,.article-card,.topic-card,.person-card,.share-card,.newsletter-card,.about-manifesto,.about-value,.about-team-card,.article-view,.toc,.sw-trust-panel,.sw-related-card,.card),
+body.taiwan-theme :is(.glass,.hero-card,.home-hero-card,.article-card,.topic-card,.person-card,.share-card,.newsletter-card,.about-manifesto,.about-value,.about-team-card,.article-view,.toc,.sw-trust-panel,.sw-related-card,.card){
+  background:linear-gradient(150deg,rgba(242,234,219,.080),rgba(36,72,61,.090) 54%,rgba(169,80,63,.035))!important;
+  border-color:rgba(242,234,219,.125)!important;
+  box-shadow:0 4px 14px rgba(0,0,0,.11),0 26px 74px rgba(0,0,0,.18),inset 0 1px 0 rgba(242,234,219,.08)!important;
+}
+body.dark :is(h1,h2,h3,h4,strong,b,.brand-name,.person-name,.article-top h1,.hero h1,.page-hero h1,.about-hero h1,.share-title),
+body.taiwan-theme :is(h1,h2,h3,h4,strong,b,.brand-name,.person-name,.article-top h1,.hero h1,.page-hero h1,.about-hero h1,.share-title){
+  color:var(--sw-tw-cream)!important;
+  -webkit-text-fill-color:var(--sw-tw-cream)!important;
+  background:none!important;
+  text-shadow:none!important;
+}
+body.dark :is(p,li,.muted,.meta,.sub,.eyebrow,.kicker,.article-meta,.article-body,.article-body p),
+body.taiwan-theme :is(p,li,.muted,.meta,.sub,.eyebrow,.kicker,.article-meta,.article-body,.article-body p){color:var(--sw-tw-muted)!important}
+body.dark :is(a,.article-body a,.backlink),body.taiwan-theme :is(a,.article-body a,.backlink){color:#b9d8df!important}
+body.dark ::selection,body.taiwan-theme ::selection{background:rgba(var(--sw-tw-vermilion-rgb),.42)!important;color:#fff!important}
+
+body.dark .brand-mark,body.taiwan-theme .brand-mark{
+  background:linear-gradient(145deg,rgba(var(--sw-tw-forest-rgb),.94),rgba(var(--sw-tw-cypress-rgb),.64))!important;
+  border-color:rgba(var(--sw-tw-rice-rgb),.28)!important;
+}
+
+
+
+
+body.dark .default-cover,body.taiwan-theme .default-cover{
+  background:linear-gradient(135deg,#1d3e34 0%,#25382f 46%,#5f4437 100%)!important;
+}
+body.dark .default-cover-mark,body.taiwan-theme .default-cover-mark{color:rgba(var(--sw-tw-rice-rgb),.86)!important}
+body.dark .default-cover-copy,body.taiwan-theme .default-cover-copy{color:#c5c9be!important}
+body.dark .toast,body.taiwan-theme .toast{background:rgba(242,234,219,.94)!important;color:#1b3028!important;border-color:rgba(20,40,33,.10)!important}
+
+/* portfolio compressor tokens */
+body.dark .target,body.taiwan-theme .target,
+body.dark .pick,body.taiwan-theme .pick,
+body.dark .primary,body.taiwan-theme .primary{
+  background:linear-gradient(135deg,var(--sw-tw-forest),#315f50)!important;
+  color:#f8f2e7!important;
+  border-color:rgba(var(--sw-tw-rice-rgb),.24)!important;
+}
+body.dark .bar>i,body.taiwan-theme .bar>i{background:linear-gradient(90deg,var(--sw-tw-sea),var(--sw-tw-rice),var(--sw-tw-vermilion))!important}
+
+/* ---------- whole-page directional theme transition ---------- */
+::view-transition-old(root),::view-transition-new(root){mix-blend-mode:normal}
+html.sw-theme-to-dark::view-transition-old(root){animation:swTwLightOut .32s cubic-bezier(.22,.72,.24,1) both}
+html.sw-theme-to-dark::view-transition-new(root){animation:swTwReveal .70s cubic-bezier(.16,.82,.20,1) both}
+html.sw-theme-to-light::view-transition-old(root){animation:swTwOldOut .34s cubic-bezier(.22,.72,.24,1) both}
+html.sw-theme-to-light::view-transition-new(root){animation:swTwDaylight .68s cubic-bezier(.16,.82,.20,1) both}
+@keyframes swTwLightOut{from{opacity:1;filter:none}to{opacity:.70;filter:saturate(.78) brightness(.90)}}
+@keyframes swTwReveal{
+  0%{clip-path:circle(0 at var(--sw-theme-x) var(--sw-theme-y));filter:saturate(.72) brightness(.82)}
+  52%{filter:saturate(.93) brightness(.94)}
+  100%{clip-path:circle(155vmax at var(--sw-theme-x) var(--sw-theme-y));filter:none}
+}
+@keyframes swTwOldOut{from{opacity:1;filter:none}to{opacity:.68;filter:saturate(.76) brightness(1.06)}}
+@keyframes swTwDaylight{
+  0%{clip-path:circle(0 at var(--sw-theme-x) var(--sw-theme-y));filter:brightness(1.12) saturate(.76) sepia(.08)}
+  55%{filter:brightness(1.025) saturate(.94) sepia(.025)}
+  100%{clip-path:circle(155vmax at var(--sw-theme-x) var(--sw-theme-y));filter:none}
+}
+html.sw-theme-changing body{transition:background-color .38s ease,color .30s ease!important}
+
+html.sw-theme-changing #themeBtn{transform:rotate(14deg) scale(.96);transition:transform .28s cubic-bezier(.2,.9,.2,1)!important}
+
+/* fallback wash — same origin & direction even without View Transition API */
+#swThemeLightWash{
+  position:fixed;inset:0;z-index:2147483000;pointer-events:none;opacity:0;visibility:hidden;
+  transform-origin:var(--sw-theme-x) var(--sw-theme-y);
+}
+html.sw-theme-fallback-to-taiwan #swThemeLightWash{
+  visibility:visible;
+  background:
+    radial-gradient(circle at var(--sw-theme-x) var(--sw-theme-y),rgba(var(--sw-tw-rice-rgb),.34) 0 7%,rgba(var(--sw-tw-forest-rgb),.47) 19%,rgba(var(--sw-tw-vermilion-rgb),.16) 37%,rgba(18,27,24,.82) 72%);
+  animation:swTwFallback .62s cubic-bezier(.18,.78,.20,1) both;
+}
+html.sw-theme-fallback-to-light #swThemeLightWash{
+  visibility:visible;
+  background:
+    radial-gradient(circle at var(--sw-theme-x) var(--sw-theme-y),rgba(255,250,238,.94) 0 8%,rgba(229,242,247,.68) 24%,rgba(248,230,237,.30) 46%,transparent 76%);
+  animation:swTwFallback .62s cubic-bezier(.18,.78,.20,1) both;
+}
+@keyframes swTwFallback{0%{opacity:0;transform:scale(.94)}28%{opacity:.88}100%{opacity:0;transform:scale(1.055)}}
+
+/* theme button communicates Taiwan mode without adding visual noise */
+body.dark #themeBtn,body.taiwan-theme #themeBtn,
+body.dark button.theme#themeBtn,body.taiwan-theme button.theme#themeBtn{
+  color:var(--sw-tw-rice)!important;
+  border-color:rgba(var(--sw-tw-rice-rgb),.25)!important;
+  box-shadow:0 8px 24px rgba(0,0,0,.16),inset 0 1px 0 rgba(255,248,232,.10)!important;
+}
+
+@media(max-width:760px),(pointer:coarse){
+  body.dark,body.taiwan-theme{background-attachment:scroll!important}
+  
+}
+@media(prefers-reduced-motion:reduce){
+  html.sw-theme-to-light::view-transition-old(root),html.sw-theme-to-light::view-transition-new(root),
+  html.sw-theme-to-dark::view-transition-old(root),html.sw-theme-to-dark::view-transition-new(root),
+  html.sw-theme-fallback-to-light #swThemeLightWash,html.sw-theme-fallback-to-taiwan #swThemeLightWash{animation:none!important}
+  html.sw-theme-changing *{transition-duration:.001ms!important}
+}
+
+/* Static legal pages: OS dark follows the same Taiwan palette. */
+@media(prefers-color-scheme:dark){
+  body.sw-legal-static{
+    --bg:var(--sw-tw-bg)!important;--card:rgba(242,234,219,.075)!important;--ink:var(--sw-tw-cream)!important;--muted:var(--sw-tw-muted)!important;
+    color:var(--sw-tw-cream)!important;
+    background:radial-gradient(64rem 48rem at -8% -8%,rgba(var(--sw-tw-forest-rgb),.33),transparent 74%),radial-gradient(58rem 44rem at 108% 8%,rgba(var(--sw-tw-vermilion-rgb),.15),transparent 76%),linear-gradient(150deg,var(--sw-tw-bg),var(--sw-tw-bg-2) 54%,var(--sw-tw-bg-3))!important;
+  }
+  body.sw-legal-static main{background:linear-gradient(150deg,rgba(242,234,219,.085),rgba(var(--sw-tw-forest-rgb),.07))!important;border-color:rgba(242,234,219,.13)!important}
+  body.sw-legal-static main :is(h1,h2,h3,h4,strong){color:var(--sw-tw-cream)!important;-webkit-text-fill-color:var(--sw-tw-cream)!important}
+  body.sw-legal-static main :is(p,li,span,.meta){color:var(--sw-tw-muted)!important;-webkit-text-fill-color:var(--sw-tw-muted)!important}
+  body.sw-legal-static main a{color:#b9d8df!important;-webkit-text-fill-color:#b9d8df!important}
+}

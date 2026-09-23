@@ -1,0 +1,50 @@
+/* SIGN WELL v24.0.07 · Home SIGN WELL Constant Cruise
+   - fixed autonomous slow motion (JS); no scroll acceleration
+   - light mode: permanent left-blue -> right-pink gradient
+   - dark mode: permanent light camel -> champagne gradient
+*/
+body:not(.dark) .sw-signwell-ribbon{
+  --sw-ribbon-c1:#91c5f2;
+  --sw-ribbon-c2:#c2c1e5;
+  --sw-ribbon-c3:#efc2d4;
+}
+body:not(.dark) .sw-signwell-ribbon-track{
+  background-image:linear-gradient(
+    90deg,
+    var(--sw-ribbon-c1) 0%,
+    #9ac8f0 24%,
+    #b1c5eb 39%,
+    var(--sw-ribbon-c2) 52%,
+    #d9bfdc 68%,
+    var(--sw-ribbon-c3) 82%,
+    #f1c7d7 100%
+  )!important;
+  background-size:100% 100%!important;
+  background-position:0 50%!important;
+  opacity:.88!important;
+  filter:saturate(.94) brightness(1.02)!important;
+  transition:none!important;
+}
+body.dark .sw-signwell-ribbon{
+  --sw-ribbon-c1:#c4a987;
+  --sw-ribbon-c2:#ceb592;
+  --sw-ribbon-c3:#d9c4a5;
+}
+body.dark .sw-signwell-ribbon-track{
+  background-image:linear-gradient(
+    90deg,
+    var(--sw-ribbon-c1) 0%,
+    #cab08d 34%,
+    var(--sw-ribbon-c2) 55%,
+    #d4bd9d 76%,
+    var(--sw-ribbon-c3) 100%
+  )!important;
+  background-size:100% 100%!important;
+  background-position:0 50%!important;
+  opacity:.90!important;
+  filter:saturate(.90) brightness(1.035)!important;
+  transition:none!important;
+}
+@media(prefers-reduced-motion:reduce){
+  .sw-signwell-ribbon-track{transition:none!important;will-change:auto!important}
+}
