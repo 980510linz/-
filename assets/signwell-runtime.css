@@ -13,7 +13,7 @@ body{overscroll-behavior-x:none;text-rendering:optimizeLegibility;-webkit-font-s
 :where(p,li,.lead,.about-hero-copy,.newsletter-lead){text-wrap:pretty}
 :where(a,button,input,textarea,select,[role="button"]){-webkit-tap-highlight-color:transparent}
 button,.pillbtn,.softbtn,.newsletter-submit,.search-close{touch-action:manipulation}
-:where(.pillbtn,.softbtn,.newsletter-submit,.nav-item,.search-close){min-height:44px}
+
 :where(.article-body h2,.article-body h3,.article-body h4){scroll-margin-top:96px}
 
 /* Reading surface: keep long-form content visually separated from the viewport edge. */
@@ -63,13 +63,10 @@ body.dark :where(.muted,.article-meta,.meta,.eyebrow,.about-hero-copy,.newslette
   .article-body{font-size:16px!important;line-height:1.88!important}
   .article-body :where(h2,h3){line-height:1.28}
   .page,.wrap,.shell{max-width:100%}
-  .pager{padding-bottom:max(8px,env(safe-area-inset-bottom))}
+  
   .searchbox,.newsletter-terms-card{max-height:min(82dvh,760px)}
 }
-body.sw-scrolling :where(.glass,.pager,.searchbox,.newsletter-terms-card,.overlay>*,.share-sheet-card){
-  -webkit-backdrop-filter:blur(10px) saturate(125%)!important;
-  backdrop-filter:blur(10px) saturate(125%)!important;
-}
+
 body.sw-scrolling :where(.lightcard)::after,
 body.sw-scrolling .cursor-glow{opacity:0!important}
 body.sw-page-hidden *{animation-play-state:paused!important}
@@ -77,16 +74,11 @@ body.sw-page-hidden *{animation-play-state:paused!important}
 /* Low-power/data-saving tier. */
 body.sw-perf-lite .ambient{display:none!important}
 body.sw-perf-lite .grain{opacity:.06!important}
-body.sw-perf-lite :where(.glass,.pager,.searchbox,.newsletter-terms-card){
-  -webkit-backdrop-filter:blur(8px) saturate(115%)!important;
-  backdrop-filter:blur(8px) saturate(115%)!important;
-}
+
 body.sw-perf-lite :where(.lightcard)::after,.sw-perf-lite .sheen-layer{display:none!important}
 
 /* Touch targets and focus quality. */
-@media (pointer:coarse){
-  :where(button,a.nav-item,.pillbtn,.softbtn,[role="button"]){min-height:44px}
-}
+
 :where(button,a,input,textarea,select):focus-visible{outline:3px solid rgba(74,151,221,.30)!important;outline-offset:3px!important}
 
 @media (prefers-reduced-motion:reduce){

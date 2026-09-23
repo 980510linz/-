@@ -46,117 +46,37 @@ body.dark .sw-continue-card{background:rgba(16,31,45,.96);border-color:rgba(230,
    v23.9.18 · Viewport-anchored article font-size liquid dock
    Bottom-center like the Public liquid pager. SMALL = old default.
    ============================================================ */
-.sw-font-dock{
-  --sw-font-index:0;
-  --sw-font-scale:1;
-  position:fixed;
-  left:50%;
-  bottom:max(22px,calc(env(safe-area-inset-bottom) + 14px));
-  transform:translate3d(-50%,0,0) scale(var(--sw-font-scale));
-  transform-origin:50% 50%;
-  z-index:1180;
-  width:194px;
-  height:54px;
-  padding:5px;
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  align-items:stretch;
-  border-radius:27px;
-  isolation:isolate;
-  overflow:hidden;
-  background:linear-gradient(152deg,rgba(255,255,255,.46),rgba(248,252,255,.16) 48%,rgba(255,255,255,.34));
-  border:1px solid rgba(255,255,255,.72);
-  -webkit-backdrop-filter:blur(20px) saturate(160%);
-  backdrop-filter:blur(20px) saturate(160%);
-  box-shadow:0 18px 46px rgba(43,82,119,.15),0 2px 8px rgba(43,82,119,.06),inset 0 1px 1px rgba(255,255,255,.94),inset 0 -1px 0 rgba(112,150,181,.06);
-  user-select:none;
-  -webkit-user-select:none;
-  transition:transform .30s cubic-bezier(.18,1.15,.28,1),box-shadow .24s ease,background .24s ease;
-  will-change:transform;
-}
-.sw-font-dock[data-size="small"]{--sw-font-index:0}
-.sw-font-dock[data-size="medium"]{--sw-font-index:1}
-.sw-font-dock[data-size="large"]{--sw-font-index:2}
-.sw-font-dock::before{
-  content:"";
-  position:absolute;
-  inset:0;
-  border-radius:inherit;
-  padding:1px;
-  pointer-events:none;
-  z-index:4;
-  background:conic-gradient(from 145deg at 50% 50%,rgba(255,255,255,.98),rgba(208,231,252,.42) 24%,rgba(246,222,232,.30) 48%,rgba(224,241,234,.28) 70%,rgba(255,255,255,.98));
-  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
-  -webkit-mask-composite:xor;
-  mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
-  mask-composite:exclude;
-}
-.sw-font-dock-thumb{
-  position:absolute;
-  left:5px;
-  top:5px;
-  bottom:5px;
-  width:calc((100% - 10px)/3);
-  border-radius:22px;
-  z-index:0;
-  transform:translate3d(calc(var(--sw-font-index) * 100%),0,0);
-  background:radial-gradient(120% 100% at 26% 0%,rgba(255,255,255,.98),rgba(255,255,255,.36) 44%,transparent 72%),linear-gradient(155deg,rgba(249,252,255,.88),rgba(225,239,253,.48));
-  box-shadow:inset 0 1px 1px rgba(255,255,255,.98),inset 0 -10px 20px -14px rgba(91,148,198,.34),0 9px 20px rgba(53,97,136,.14);
-  transition:transform .34s cubic-bezier(.18,.86,.22,1),scale .32s cubic-bezier(.18,1.25,.28,1);
-}
-.sw-font-dock.is-changing{--sw-font-scale:1.018}
-.sw-font-dock.is-pressing{--sw-font-scale:1.036}
-.sw-font-dock.is-changing .sw-font-dock-thumb{scale:1.055 1.02}
-.sw-font-dock button{
-  position:relative;
-  z-index:2;
-  border:0!important;
-  background:transparent!important;
-  color:#60788c!important;
-  -webkit-text-fill-color:#60788c!important;
-  min-width:0;
-  min-height:44px;
-  padding:0!important;
-  border-radius:20px;
-  font-size:13px!important;
-  line-height:1;
-  font-weight:820!important;
-  cursor:pointer;
-  touch-action:manipulation;
-  transition:color .22s ease,transform .22s cubic-bezier(.18,1.2,.3,1);
-}
-.sw-font-dock button.active{color:#183e5d!important;-webkit-text-fill-color:#183e5d!important;transform:scale(1.05)}
-.sw-font-dock button:focus-visible{outline:2px solid rgba(70,132,189,.38);outline-offset:-3px}
-body.dark .sw-font-dock{
-  background:linear-gradient(155deg,rgba(42,58,73,.88),rgba(24,38,51,.80));
-  border-color:rgba(218,236,250,.18);
-  box-shadow:0 18px 46px rgba(0,0,0,.28),inset 0 1px 1px rgba(255,255,255,.10);
-}
-body.dark .sw-font-dock-thumb{background:linear-gradient(155deg,rgba(102,132,157,.58),rgba(54,76,95,.58));box-shadow:inset 0 1px 0 rgba(255,255,255,.20),0 8px 20px rgba(0,0,0,.18)}
-body.dark .sw-font-dock button{color:#b7cbd9!important;-webkit-text-fill-color:#b7cbd9!important}
-body.dark .sw-font-dock button.active{color:#fff!important;-webkit-text-fill-color:#fff!important}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 @media(max-width:760px){
   .article-view[data-font-size="small"] .article-body{font-size:16.5px!important;line-height:1.90!important}
   .article-view[data-font-size="medium"] .article-body{font-size:18px!important;line-height:1.94!important}
   .article-view[data-font-size="large"] .article-body{font-size:19.5px!important;line-height:1.98!important}
-  .sw-font-dock{
-    width:188px;
-    height:54px;
-    bottom:calc(env(safe-area-inset-bottom) + 98px);
-    border-radius:27px;
-    -webkit-backdrop-filter:blur(18px) saturate(150%);
-    backdrop-filter:blur(18px) saturate(150%);
-  }
-  .sw-font-dock button{font-size:13px!important}
+  
+  
 }
-@media(max-width:390px){.sw-font-dock{width:176px}}
+
 @media(prefers-reduced-motion:reduce){
-  .sw-font-dock-thumb,.sw-font-dock button,.article-view .article-body{transition:none!important}
-  .sw-font-dock.is-changing,.sw-font-dock.is-pressing{--sw-font-scale:1}
-  .sw-font-dock.is-changing .sw-font-dock-thumb{scale:1}
+  .article-view .article-body{transition:none!important}
+  
+  
 }
-@media print{.sw-font-dock{display:none!important}}
+
 
 
 
@@ -164,18 +84,10 @@ body.dark .sw-font-dock button.active{color:#fff!important;-webkit-text-fill-col
    v23.9.7 · Reader tools / capsule dock refinement
    ============================================================ */
 .sw-reader-tools{grid-template-columns:repeat(2,minmax(0,1fr))!important}
-.sw-font-dock{
-  border-radius:999px!important;
-  padding:5px 6px!important;
-  overflow:hidden!important;
-}
-.sw-font-dock::before{border-radius:999px!important}
-.sw-font-dock-thumb{
-  left:6px!important;top:5px!important;bottom:5px!important;
-  width:calc((100% - 12px)/3)!important;
-  border-radius:999px!important;
-}
-.sw-font-dock button{border-radius:999px!important}
+
+
+
+
 @media(max-width:760px){
   .sw-reader-tools{display:grid!important;grid-template-columns:1fr 1fr!important}
   .sw-reader-tools>button{width:100%!important}
@@ -195,7 +107,7 @@ body.dark .sw-font-dock button.active{color:#fff!important;-webkit-text-fill-col
   .article-view[data-font-size="small"] .article-body{font-size:16.5px!important;line-height:1.90!important}
   .article-view[data-font-size="medium"] .article-body{font-size:18px!important;line-height:1.94!important}
   .article-view[data-font-size="large"] .article-body{font-size:19.5px!important;line-height:1.98!important}
-  .sw-font-dock{bottom:calc(env(safe-area-inset-bottom) + 98px)!important}
+  
 }
 
 
@@ -213,26 +125,13 @@ body.dark .sw-font-dock button.active{color:#fff!important;-webkit-text-fill-col
   0%{opacity:1;transform:translate3d(-50%,0,0) scale(1)}
   100%{opacity:0;transform:translate3d(-50%,12px,0) scale(.94)}
 }
-@media(min-width:761px) and (pointer:fine){
-  .sw-font-dock.sw-font-enter{
-    animation:swFontDockEnter23938 .44s cubic-bezier(.16,1,.3,1) both;
-  }
-  .sw-font-dock.sw-font-exit{
-    pointer-events:none!important;
-    animation:swFontDockExit23938 .24s cubic-bezier(.4,0,.8,.2) both;
-  }
-  .sw-font-dock button.active{
-    animation:swFontChoiceIn23938 .28s cubic-bezier(.16,1,.3,1) both;
-  }
-}
+
 @keyframes swFontChoiceIn23938{
   0%{transform:scale(.90);opacity:.62}
   72%{transform:scale(1.075);opacity:1}
   100%{transform:scale(1.05);opacity:1}
 }
-@media(prefers-reduced-motion:reduce){
-  .sw-font-dock.sw-font-enter,.sw-font-dock.sw-font-exit,.sw-font-dock button.active{animation:none!important}
-}
+
 
 
 /* SIGN WELL v23.9.52 · tables, charts and statistical data blocks */

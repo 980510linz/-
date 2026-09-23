@@ -89,13 +89,8 @@ body.dark :is(.glass,.hero-card,.article-card,.topic-card,.person-card,.share-ca
 }
 
 /* Fixed / floating glass should look suspended, never like a hard sticker. */
-:is(.brand-top,.top-actions button,.top-actions .iconbtn,.pager,.sw-font-dock,.sw-continue-card,
-.sw-article-join-card,.sw-dialog-card,.newsletter-confirm-card,.newsletter-stepup-card){
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.92),var(--sw-soft-float)!important;
-}
-.pager-thumb,.sw-font-dock-thumb{
-  box-shadow:inset 0 1px 1px rgba(255,255,255,.96),inset 0 -8px 18px -14px rgba(87,145,198,.20),0 6px 16px rgba(54,94,132,.055),0 18px 44px rgba(54,94,132,.035)!important;
-}
+
+
 
 /* Stage/cursor glows fade before their geometric bounds. */
 .stage-glow{background:radial-gradient(circle at var(--gx,50%) var(--gy,45%),rgba(150,205,255,.18) 0%,rgba(150,205,255,.075) 42%,rgba(150,205,255,.018) 68%,transparent 90%)!important;filter:blur(18px)!important}

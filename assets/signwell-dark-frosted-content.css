@@ -1,0 +1,74 @@
+/* SIGN WELL v23.9.99 · Dark Frosted Content Glass
+   Scope: Public dark mode content surfaces only.
+   Intent: transparent glass with only a light frosted haze.
+   Navigation / pager / controls intentionally keep their thicker material. */
+
+body.dark{
+  --sw-dark-frost-fill:rgba(244,246,243,.032);
+  --sw-dark-frost-fill-soft:rgba(244,246,243,.014);
+  --sw-dark-frost-edge:rgba(244,246,243,.115);
+  --sw-dark-frost-edge-soft:rgba(244,246,243,.07);
+  --sw-dark-frost-shadow:0 12px 34px rgba(0,0,0,.115),inset 0 1px 0 rgba(244,246,243,.085);
+}
+
+/* Article cards, topic cards and article reader are the thinnest dark-mode glass. */
+body.dark :is(.article-card,.topic-card,.article-view,.sw-related-card,.toc){
+  background:
+    radial-gradient(105% 86% at 8% -10%,rgba(244,246,243,.055),transparent 50%),
+    radial-gradient(92% 96% at 104% 110%,rgba(var(--sw-dark-olive-rgb,88,96,76),.024),transparent 64%),
+    linear-gradient(150deg,var(--sw-dark-frost-fill),var(--sw-dark-frost-fill-soft))!important;
+  border-color:var(--sw-dark-frost-edge-soft)!important;
+  box-shadow:var(--sw-dark-frost-shadow)!important;
+  backdrop-filter:blur(11px) saturate(82%) brightness(1.01)!important;
+  -webkit-backdrop-filter:blur(11px) saturate(82%) brightness(1.01)!important;
+}
+
+/* Kill the older alternating opaque/tinted card fills while retaining a tiny optical tint. */
+body.dark :is(.article-card,.topic-card,.sw-related-card):nth-child(n),
+body.dark[data-page="topics"] .topic-card{
+  background:
+    radial-gradient(108% 90% at 102% 104%,rgba(var(--sw-dark-olive-rgb,88,96,76),.022),transparent 64%),
+    radial-gradient(104% 88% at 4% -8%,rgba(244,246,243,.050),transparent 52%),
+    linear-gradient(150deg,rgba(244,246,243,.031),rgba(244,246,243,.013))!important;
+  border-color:rgba(244,246,243,.075)!important;
+}
+
+/* Article reader: slightly steadier surface so long text remains comfortable. */
+body.dark .article-view{
+  background:
+    radial-gradient(112% 92% at 10% -8%,rgba(244,246,243,.060),transparent 52%),
+    linear-gradient(155deg,rgba(244,246,243,.038),rgba(244,246,243,.016))!important;
+  border-color:rgba(244,246,243,.085)!important;
+}
+
+/* Keep gloss present, but very restrained: a faint mist, not a bright liquid sheen. */
+body.dark :is(.article-card,.topic-card,.sw-related-card).lightcard::after,
+body.dark :is(.article-card,.topic-card,.sw-related-card)::after{
+  opacity:.16!important;
+}
+
+body.dark :is(.article-card,.topic-card,.sw-related-card):hover{
+  background:
+    radial-gradient(110% 92% at 8% -10%,rgba(244,246,243,.070),transparent 52%),
+    linear-gradient(150deg,rgba(244,246,243,.042),rgba(244,246,243,.018))!important;
+  border-color:var(--sw-dark-frost-edge)!important;
+  box-shadow:0 16px 42px rgba(0,0,0,.14),inset 0 1px 0 rgba(244,246,243,.105)!important;
+}
+
+/* Mobile Safari: preserve the transparent feel while lowering live blur cost. */
+@media(max-width:760px),(pointer:coarse){
+  body.dark :is(.article-card,.topic-card,.article-view,.sw-related-card,.toc){
+    backdrop-filter:blur(8px) saturate(80%) brightness(1.01)!important;
+    -webkit-backdrop-filter:blur(8px) saturate(80%) brightness(1.01)!important;
+    box-shadow:0 8px 24px rgba(0,0,0,.11),inset 0 1px 0 rgba(244,246,243,.075)!important;
+  }
+}
+
+/* Accessibility/performance fallback: keep the visual tone without depending on blur. */
+@media(prefers-reduced-transparency:reduce){
+  body.dark :is(.article-card,.topic-card,.article-view,.sw-related-card,.toc){
+    backdrop-filter:none!important;
+    -webkit-backdrop-filter:none!important;
+    background:rgba(30,32,29,.88)!important;
+  }
+}

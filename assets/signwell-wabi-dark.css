@@ -68,17 +68,7 @@ body.dark .orb.d{background:radial-gradient(circle,rgba(var(--sw-dark-olive-rgb)
 body.dark .cursor-glow{background:radial-gradient(circle,rgba(244,246,243,.09),rgba(var(--sw-dark-olive-rgb),.05) 38%,transparent 72%)!important;filter:blur(22px)!important}
 
 /* premium glass chrome */
-body.dark .brand-top,
-body.dark .top-actions :is(button,.iconbtn),
-body.dark .pager,
-body.dark .sw-font-dock,
-body.dark .sw-font-controls,
-body.dark .sw-reader-tools>button,
-body.dark .searchbox,
-body.dark .search-panel,
-body.dark .share-sheet,
-body.dark .newsletter-terms-card,
-body.dark .newsletter-flow-card{
+body.dark .brand-top,body.dark .top-actions :is(button,.iconbtn),body.dark .sw-font-controls,body.dark .sw-reader-tools>button,body.dark .searchbox,body.dark .search-panel,body.dark .share-sheet,body.dark .newsletter-terms-card,body.dark .newsletter-flow-card{
   background:
     radial-gradient(125% 110% at 12% -18%,rgba(244,246,243,.14),transparent 44%),
     radial-gradient(85% 110% at 102% 112%,rgba(var(--sw-dark-walnut-rgb),.10),transparent 60%),
@@ -89,12 +79,7 @@ body.dark .newsletter-flow-card{
   backdrop-filter:blur(22px) saturate(86%)!important;
   -webkit-backdrop-filter:blur(22px) saturate(86%)!important;
 }
-body.dark .pager-thumb,
-body.dark .sw-font-dock-thumb{
-  background:radial-gradient(105% 130% at 18% -4%,rgba(244,246,243,.24),transparent 48%),linear-gradient(145deg,rgba(var(--sw-dark-olive-rgb),.48),rgba(var(--sw-dark-walnut-rgb),.34))!important;
-  border-color:rgba(244,246,243,.16)!important;
-  box-shadow:0 10px 26px rgba(0,0,0,.18),inset 0 1px 0 rgba(244,246,243,.18)!important;
-}
+
 
 /* main glass materials */
 body.dark :is(.glass,.hero-card,.home-hero-card,.article-card,.topic-card,.person-card,.share-card,.newsletter-card,.about-manifesto,.about-value,.about-team-card,.article-view,.toc,.sw-trust-panel,.sw-related-card,.sw-continue-card,.sw-article-join-card){
@@ -107,8 +92,8 @@ body.dark :is(.glass,.hero-card,.home-hero-card,.article-card,.topic-card,.perso
   backdrop-filter:blur(21px) saturate(84%)!important;
   -webkit-backdrop-filter:blur(21px) saturate(84%)!important;
 }
-body.dark :is(.article-card,.topic-card,.about-value,.about-team-card,.person-card,.sw-related-card):nth-child(3n+1){background:radial-gradient(108% 90% at 104% 105%,rgba(var(--sw-dark-oxblood-rgb),.075),transparent 62%),linear-gradient(150deg,rgba(244,246,243,.085),rgba(244,246,243,.035))!important}
-body.dark :is(.article-card,.topic-card,.about-value,.about-team-card,.person-card,.sw-related-card):nth-child(3n+2){background:radial-gradient(108% 90% at 104% 105%,rgba(var(--sw-dark-walnut-rgb),.085),transparent 62%),linear-gradient(150deg,rgba(244,246,243,.085),rgba(244,246,243,.035))!important}
+body.dark :is(.article-card,.topic-card,.about-value,.about-team-card,.person-card,.sw-related-card):nth-child(3n/**/+1){background:radial-gradient(108% 90% at 104% 105%,rgba(var(--sw-dark-oxblood-rgb),.075),transparent 62%),linear-gradient(150deg,rgba(244,246,243,.085),rgba(244,246,243,.035))!important}
+body.dark :is(.article-card,.topic-card,.about-value,.about-team-card,.person-card,.sw-related-card):nth-child(3n/**/+2){background:radial-gradient(108% 90% at 104% 105%,rgba(var(--sw-dark-walnut-rgb),.085),transparent 62%),linear-gradient(150deg,rgba(244,246,243,.085),rgba(244,246,243,.035))!important}
 body.dark :is(.article-card,.topic-card,.about-value,.about-team-card,.person-card,.sw-related-card):nth-child(3n){background:radial-gradient(108% 90% at 104% 105%,rgba(var(--sw-dark-olive-rgb),.085),transparent 62%),linear-gradient(150deg,rgba(244,246,243,.085),rgba(244,246,243,.035))!important}
 body.dark :is(.article-card,.topic-card,.about-value,.about-team-card,.person-card,.sw-related-card):hover{border-color:rgba(244,246,243,.17)!important;box-shadow:0 6px 18px rgba(0,0,0,.14),0 34px 94px rgba(0,0,0,.20),0 96px 190px rgba(0,0,0,.08),inset 0 1px 0 rgba(244,246,243,.14)!important}
 
@@ -117,8 +102,8 @@ body.dark :is(h1,h2,h3,h4,.article-top h1,.section-head h2,.share-title,.newslet
 body.dark :is(p,li,.hero-sub,.page-hero p,.about-hero-copy,.newsletter-lead,.article-card p,.topic-card p,.sw-related-card p,.sw-article-join-copy,.sw-continue-card p){color:var(--sw-dark-text-gray)!important;-webkit-text-fill-color:var(--sw-dark-text-gray)!important}
 body.dark :is(.meta,.article-meta,.eyebrow,.kicker,.card-meta,.topic-count,.sw-data-source,.sw-related-card small,.sw-trust-head span,.sw-trust-item b,.sw-evidence-ref small,.sw-article-disclaimer,.sw-article-join-kicker){color:var(--sw-dark-text-gray-soft)!important;-webkit-text-fill-color:var(--sw-dark-text-gray-soft)!important}
 body.dark a{color:var(--sw-dark-text-gray)!important;-webkit-text-fill-color:var(--sw-dark-text-gray)!important}
-body.dark :is(.nav-item,.sw-font-dock button,.top-actions button,.iconbtn){color:var(--sw-dark-text-gray)!important;-webkit-text-fill-color:var(--sw-dark-text-gray)!important}
-body.dark :is(.nav-item.active,.sw-font-dock button.active){color:var(--sw-dark-text-white)!important;-webkit-text-fill-color:var(--sw-dark-text-white)!important}
+
+
 body.dark :is(.newsletter-terms-agree,.newsletter-terms-agree-label,#newsletterTermsOverlay .newsletter-terms-agree.is-ready){color:var(--sw-dark-text-navy)!important;-webkit-text-fill-color:var(--sw-dark-text-navy)!important}
 
 /* brand — neutral pearl only */
@@ -157,8 +142,8 @@ body.dark .sw-stat-item,body.dark .article-body .sw-stat-item{background:rgba(24
 
 /* generic chips / tags / buttons: suppress legacy bright accents */
 body.dark :is(.tag,.badge,.chip,.pill,.topic-chip,.category-tag,.sw-chip,.sw-status-chip,.sw-article-tag){background:rgba(244,246,243,.06)!important;border-color:var(--sw-dark-line-soft)!important;color:var(--sw-dark-text-gray)!important;-webkit-text-fill-color:var(--sw-dark-text-gray)!important}
-body.dark :is(.tag,.badge,.chip,.pill,.topic-chip,.category-tag,.sw-chip,.sw-status-chip,.sw-article-tag):nth-child(3n+1){box-shadow:inset 0 -1px 0 rgba(var(--sw-dark-oxblood-rgb),.30)!important}
-body.dark :is(.tag,.badge,.chip,.pill,.topic-chip,.category-tag,.sw-chip,.sw-status-chip,.sw-article-tag):nth-child(3n+2){box-shadow:inset 0 -1px 0 rgba(var(--sw-dark-walnut-rgb),.34)!important}
+body.dark :is(.tag,.badge,.chip,.pill,.topic-chip,.category-tag,.sw-chip,.sw-status-chip,.sw-article-tag):nth-child(3n/**/+1){box-shadow:inset 0 -1px 0 rgba(var(--sw-dark-oxblood-rgb),.30)!important}
+body.dark :is(.tag,.badge,.chip,.pill,.topic-chip,.category-tag,.sw-chip,.sw-status-chip,.sw-article-tag):nth-child(3n/**/+2){box-shadow:inset 0 -1px 0 rgba(var(--sw-dark-walnut-rgb),.34)!important}
 body.dark :is(.tag,.badge,.chip,.pill,.topic-chip,.category-tag,.sw-chip,.sw-status-chip,.sw-article-tag):nth-child(3n){box-shadow:inset 0 -1px 0 rgba(var(--sw-dark-olive-rgb),.34)!important}
 
 /* inputs, dialogs, overlays */
@@ -196,12 +181,12 @@ body.dark .sw-page-loader-brand{color:var(--sw-dark-text-white)!important}.dark 
 @keyframes swThemeOld{to{opacity:.72;filter:saturate(.88) brightness(.96)}}
 @keyframes swThemeReveal{from{clip-path:circle(0 at var(--sw-theme-x) var(--sw-theme-y));filter:saturate(.82) brightness(.96)}to{clip-path:circle(150vmax at var(--sw-theme-x) var(--sw-theme-y));filter:none}}
 html.sw-theme-changing body{transition:color .34s ease,background-color .34s ease}
-html.sw-theme-changing .brand-top,html.sw-theme-changing .pager,html.sw-theme-changing .top-actions button{transition:background .42s ease,border-color .42s ease,color .3s ease,box-shadow .42s ease,transform .26s ease!important}
+html.sw-theme-changing .brand-top,html.sw-theme-changing .top-actions button{transition:background .42s ease,border-color .42s ease,color .3s ease,box-shadow .42s ease,transform .26s ease!important}
 
 @media(max-width:760px){
   body.dark{background-attachment:scroll!important}
   body.dark::before{opacity:.075}
-  body.dark :is(.brand-top,.top-actions :is(button,.iconbtn),.pager,.sw-font-dock,.searchbox,.search-panel,.share-sheet,.newsletter-terms-card,.newsletter-flow-card){backdrop-filter:blur(14px) saturate(82%)!important;-webkit-backdrop-filter:blur(14px) saturate(82%)!important}
+  
   body.dark :is(.glass,.hero-card,.home-hero-card,.article-card,.topic-card,.person-card,.share-card,.newsletter-card,.about-manifesto,.about-value,.about-team-card,.article-view,.toc,.sw-trust-panel,.sw-related-card){backdrop-filter:blur(14px) saturate(80%)!important;-webkit-backdrop-filter:blur(14px) saturate(80%)!important;box-shadow:0 2px 8px rgba(0,0,0,.10),0 20px 54px rgba(0,0,0,.14),0 58px 122px rgba(0,0,0,.06),inset 0 1px 0 rgba(244,246,243,.08)!important}
 }
 @media(prefers-reduced-motion:reduce){::view-transition-old(root),::view-transition-new(root){animation:none!important}html.sw-theme-changing *{transition-duration:.001ms!important}}
@@ -217,10 +202,10 @@ html.sw-theme-changing .brand-top,html.sw-theme-changing .pager,html.sw-theme-ch
 
 /* Legacy Public dark-color neutralizer — this file is deliberately loaded last. */
 body.dark :is(.hero h1,.page-hero h1,.about-hero h1,.share-title,.newsletter-card h1,.article-top h1,.section-head h2,.article-card h3,.topic-card h3,.person-name,.about-manifesto h2,.about-team-head h2,.article-view h1){background:none!important;color:var(--sw-dark-text-white)!important;-webkit-text-fill-color:var(--sw-dark-text-white)!important;-webkit-text-stroke:0!important;text-shadow:none!important;filter:none!important}
-body.dark .pager::before{background:conic-gradient(from var(--rim,140deg) at 50% 50%,rgba(244,246,243,.55),rgba(88,96,76,.08) 22%,rgba(116,89,69,.28) 48%,rgba(116,58,63,.07) 72%,rgba(244,246,243,.48))!important}
-body.dark .pager::after{box-shadow:inset 0 0 14px 2px rgba(244,246,243,.08),inset 0 0 0 1px rgba(244,246,243,.08)!important}
-body.dark .pager-thumb::before{background:linear-gradient(160deg,rgba(244,246,243,.42),rgba(88,96,76,.12) 44%,rgba(116,89,69,.24))!important}
-body.dark .thumb-spec{background:linear-gradient(90deg,transparent,rgba(244,246,243,.48),transparent)!important}
+
+
+
+
 body.dark .brand-mark{background:linear-gradient(150deg,rgba(88,96,76,.52),rgba(116,89,69,.34))!important;border-color:rgba(244,246,243,.14)!important;box-shadow:inset 0 1px 1px rgba(244,246,243,.15),0 16px 36px rgba(0,0,0,.20)!important}
 body.dark.is-scrolled .brand-top{background:rgba(24,27,24,.68)!important;box-shadow:0 12px 34px rgba(0,0,0,.22),inset 0 1px 0 rgba(244,246,243,.08)!important}
 body.dark .qr-box{background:rgba(244,246,243,.88)!important;border-color:rgba(244,246,243,.22)!important}

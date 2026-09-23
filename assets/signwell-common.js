@@ -560,3 +560,23 @@ document.documentElement.dataset.signwellRelease="23.9.0";
   document.addEventListener('visibilitychange',()=>{if(!document.hidden)scan()},{passive:true});
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',scan,{once:true});else scan();
 })();
+
+/* v24.0.20 · Portfolio PDF Compressor entry */
+(() => {
+  const mount=()=>{
+    const footer=document.querySelector('.footer');
+    if(!footer || footer.querySelector('.sw-portfolio-tool-link')) return;
+    const a=document.createElement('a');
+    a.className='sw-portfolio-tool-link';
+    a.href='portfolio-compress.html';
+    a.textContent='學習歷程壓縮 · PDF ≤ 4 MB';
+    a.setAttribute('aria-label','開啟學習歷程 PDF 壓縮工具');
+    footer.appendChild(a);
+    if(!document.getElementById('swPortfolioToolStyle')){
+      const style=document.createElement('style');style.id='swPortfolioToolStyle';
+      style.textContent='.sw-portfolio-tool-link{display:inline-flex;align-items:center;justify-content:center;align-self:center;padding:9px 12px;border-radius:999px;border:1px solid rgba(120,140,150,.18);text-decoration:none;font-size:10px;font-weight:800;color:var(--muted,#7b8994);background:rgba(255,255,255,.28);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}body.dark .sw-portfolio-tool-link{color:#d9d2c6;background:rgba(78,86,72,.26);border-color:rgba(239,232,220,.12)}@media(max-width:700px){.sw-portfolio-tool-link{align-self:flex-start}}';
+      document.head.appendChild(style);
+    }
+  };
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',mount,{once:true}); else mount();
+})();
